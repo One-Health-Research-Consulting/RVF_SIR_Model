@@ -19,7 +19,7 @@ library(dplyr)
 Multiplot <- TRUE
 
 #Load plotting functions
-source(here("All_Files_For_Publication/Functions", "Function 3 Plot simulations of a given time period.R"))
+source(here("Functions", "Function 3 Plot simulations of a given time period.R"))
 
 #Set ggplot theme
 plot_theme <- theme_classic() +
@@ -136,8 +136,8 @@ Reffect.plot <- ggplot(final.populations, aes(x=time, y = Reff))+
 ########################################################
 #Make plots for Fig 1, S3, portion of Fig S9 
 #Runs if no scenarios were selected
-if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_higher ==  FALSE & vax.25_lower == FALSE){
-    if(No.q == FALSE & Only.q == FALSE & Vaccinate == FALSE){
+if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_higher ==  FALSE & vax.25_lower == FALSE 
+   & No.q == FALSE & Only.q == FALSE & Vaccinate == FALSE){
       #Figure 1
       fil.name <- "Publication_Figures/Fig 1 Full Simulation SL IM IAE_Aedes SA-IA SC-IC and Re.png"
       Fig1 <- ggarrange(SLplot_historical, MosqIAll, MosqIAEplot, MosqAplot, MosqCplot,  Reffect.plot, draw = FALSE,
@@ -160,7 +160,7 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
       
       
       #For Fig S9 - plot of the simulation Culex mortality rate
-      fil.name.figS9b <- "Publication_Figures/Fig S9b Full Simulation Culex Death rate for publication.png"
+      fil.name.figS9b <- "Publication_Figures/Draft_Figures/Fig S9b Full Simulation Culex Death rate for publication.png"
         SLplot_noLeg <- SLplot + theme(legend.position = "none")
         MosqIAll_noLeg <- MosqIAll + theme(legend.position = "none")
         MosqIAEplot_noLeg <- MosqIAEplot + 
@@ -173,21 +173,20 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
                         ncol = 1, nrow = 4)
       
       ggexport(FigS9b[1], filename = fil.name.figS9b, width=630, height=803, ncol = 1,nrow = 4)
-    }
     
+      if(file.exists("./Publication_Figures/Draft_Figures/Fig S9A Full Simulation Culex Death Rate Lower by 25 Percent for publication.png") & file.exists("./Publication_Figures/Draft_Figures/Fig S9C Full Simulation Culex Death Rate Higher by 25 Percent for publication.png")){
   #Combine FigS9 with the two FigS9s already made (+/-50% biteC)
-  rl <- lapply(list("./Publication_Figures/Fig S9A Full Simulation Culex Death Rate Lower by 25 Percent for publication.png", "Publication_Figures/Fig S9b Full Simulation Culex Death rate for publication.png",  "./Publication_Figures/Fig S9C Full Simulation Culex Death Rate Higher by 25 Percent for publication.png"), png::readPNG)
+  rl <- lapply(list("./Publication_Figures/Draft_Figures/Fig S9A Full Simulation Culex Death Rate Lower by 25 Percent for publication.png", "Publication_Figures/Draft_Figures/Fig S9b Full Simulation Culex Death rate for publication.png",  "./Publication_Figures/Draft_Figures/Fig S9C Full Simulation Culex Death Rate Higher by 25 Percent for publication.png"), png::readPNG)
   gl <- lapply(rl, grid::rasterGrob)
   ml <- marrangeGrob(gl, nrow = 1, ncol = 3, top=NULL, labels = c("A", "B", "C"))
   ml
   ggsave("./Publication_Figures/Fig S9 Combined Sims with various death rates.png", ml)
-  #do.call(gridExtra::grid.arrange, gl, nrow = 1, ncol = 3)
-
+}
 }else{
   #Figure 9a for a 25% lower Culex mortality rate
   if(muC.25_lower == TRUE & Multiplot == TRUE){
-    fil.name.bite.lo <- "./Publication_Figures/Fig S9A Full Simulation Culex Death Rate Lower by 25 Percent for publication.png"
-    
+    fil.name.bite.lo <- "./Publication_Figures/Draft_Figures/Fig S9A Full Simulation Culex Death Rate Lower by 25 Percent for publication.png"
+  
     SLplot_noLeg <- SLplot + theme(legend.position = "none")
     MosqIAll_noLeg <- MosqIAll + theme(legend.position = "none")
     MosqIAEplot_noLeg <- MosqIAEplot + 
@@ -204,7 +203,7 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
     #Figure S9c plot the 25% higher Culex mortality rate
     if( muC.25_higher == TRUE & Multiplot == TRUE){
       
-      fil.name.muC.hi <- "./Publication_Figures/Fig S9C Full Simulation Culex Death Rate Higher by 25 Percent for publication.png"
+      fil.name.muC.hi <- "./Publication_Figures/Draft_Figures/Fig S9C Full Simulation Culex Death Rate Higher by 25 Percent for publication.png"
       
       SLplot_noLeg <- SLplot + theme(legend.position = "none")
       MosqIAll_noLeg <- MosqIAll + theme(legend.position = "none")
@@ -235,7 +234,7 @@ if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_h
     
     #Figure 2
     #R0 vs bite rate and q
-    AeC_q_vs_biteA_R0 <- read.csv(here("All_Files_For_Publication/Data for sensitivity analyses", "R0 Seroprevalence plot q vs biteA Aedes bite rate for 34 years 2021_05_05 For Publication.csv"))
+    AeC_q_vs_biteA_R0 <- read.csv(here("Data for sensitivity analyses", "R0 Seroprevalence plot q vs biteA Aedes bite rate for 34 years 2021_05_05 For Publication.csv"))
      
     #Change to factor
     AeC_q_vs_biteA_R0$q <- as.factor(as.character(AeC_q_vs_biteA_R0$q))
@@ -283,7 +282,7 @@ if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_h
     ggexport(Fig2[1], filename = fil.namefig2, width=630, height=503)
     
     #Fig S10 
-    AeC_q_vs_muC_R0 <- read.csv(here("All_Files_For_Publication/Data for sensitivity analyses", "R0 Seroprevalence plot q vs muC Culex mortality rate for 34 years 2022_04_04 For Publication.csv"))
+    AeC_q_vs_muC_R0 <- read.csv(here("Data for sensitivity analyses", "R0 Seroprevalence plot q vs muC Culex mortality rate for 34 years 2022_04_04 For Publication.csv"))
     
     #Change to factor
     AeC_q_vs_muC_R0$q <- as.factor(as.character(AeC_q_vs_muC_R0$q))
@@ -319,10 +318,10 @@ if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_h
     
     #Figure S5
     #Load data for seroprevalence and extinction single variable plots (A & B)
-    AeC_q <- read.csv(here("All_Files_For_Publication/Data for sensitivity analyses", "q vs Mean Seroprevalence and Extinction Day.csv"))
-    AeC_Tsla <- read.csv(here("All_Files_For_Publication/Data for sensitivity analyses", "Tsla vs Mean Seroprevalence and Extinction Day.csv"))
-    AeC_Tasl <- read.csv(here("All_Files_For_Publication/Data for sensitivity analyses", "Tasl vs Mean Seroprevalence and Extinction Day.csv"))
-    AeC_epsilon <- read.csv(here("All_Files_For_Publication/Data for sensitivity analyses", "epsilon vs Mean Seroprevalence and Extinction Day.csv"))
+    AeC_q <- read.csv(here("Data for sensitivity analyses", "q vs Mean Seroprevalence and Extinction Day.csv"))
+    AeC_Tsla <- read.csv(here("Data for sensitivity analyses", "Tsla vs Mean Seroprevalence and Extinction Day.csv"))
+    AeC_Tasl <- read.csv(here("Data for sensitivity analyses", "Tasl vs Mean Seroprevalence and Extinction Day.csv"))
+    AeC_epsilon <- read.csv(here("Data for sensitivity analyses", "epsilon vs Mean Seroprevalence and Extinction Day.csv"))
     
     All_single <- rbind(AeC_q,  AeC_Tsla, AeC_Tasl, AeC_epsilon)#AeC_biteA,
     
@@ -348,8 +347,8 @@ if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_h
       theme(legend.position = "none")#+
     
     #Load data for Variable by variable plots (C & D)
-    AeC_q_vs_biteA <- read.csv(here("All_Files_For_Publication/Data for sensitivity analyses", "Seroprevalence plot q vs biteA Aedes bite rate for 34 years 2021_04_21 For Publication.csv"))
-    AeC_q_vs_tasl_Persist <- read.csv(here("All_Files_For_Publication/Data for sensitivity analyses", "Persistence plot q vs Tasl Aedes and Culex for 34 years 2020_12_13 For Publication.csv"))
+    AeC_q_vs_biteA <- read.csv(here("Data for sensitivity analyses", "Seroprevalence plot q vs biteA  for 34 years 2022_05_10 For Publication.csv"))
+    AeC_q_vs_tasl_Persist <- read.csv(here("Data for sensitivity analyses", "Persistence plot q vs Tasl  for 34 years 2022_05_09 For Publication.csv"))
     
     #Change to factor
     AeC_q_vs_biteA$q <- as.factor(as.character(AeC_q_vs_biteA$q))
@@ -377,9 +376,7 @@ if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_h
 #Figure 3 and S11 - vaccination scenarios and S4 restricted transovarial and horizontal transmission scenarios
 if(Vaccinate == TRUE){
   if(vax.25_higher == FALSE & vax.25_lower == FALSE){ 
-    AeC_q_vs_vax <-  read.csv(here("All_Files_For_Publication/Data for sensitivity analyses", "Persistence plot q vs vax Aedes and Culex for 34 years 2020_12_13 For Publication.csv"))
-    AeC_vax_vs_biteA <- read.csv(here("All_Files_For_Publication/Data for sensitivity analyses", "Persistence plot biteA vs vax Aedes and Culex for 34 years 2020_12_13 For Publication.csv"))
-    AeC_vax_vs_biteA$biteC <- "biteC"
+    AeC_q_vs_vax <-  read.csv(here("Data for sensitivity analyses", "Persistence plot q vs vax  for 34 years 2022_05_10 For Publication.csv"))
     AeC_q_vs_vax$q <- as.factor(as.character(AeC_q_vs_vax$q))
     
     plot.3c <- ParamByParamPlot(AeC_q_vs_vax, "vax", "Day_of_Extinction", "q", no.leg = FALSE)
@@ -397,7 +394,16 @@ if(Vaccinate == TRUE){
     ggexport(Fig3, filename = fil.name3, width=907 , height=933)
     
     #Figure S11b
-    fil.nameS11part <- "./Publication_Figures/Fig S11b Vaccination simulation as simulated.png"
+    
+    SLplot <- SLplot + theme(legend.position = "none") +
+      theme(axis.text = element_text(size = 14, colour = "black")) +
+      theme(axis.title = element_text(size = 20)) 
+    
+    MosqIAEplot <- MosqIAEplot + theme(legend.position = "none") +
+      theme(axis.text = element_text(size = 14, colour = "black")) +
+      theme(axis.title = element_text(size = 20)) 
+    
+    fil.nameS11part <- "./Publication_Figures/Draft_Figures/Fig S11b Vaccination simulation as simulated.png"
   }
   
   if(vax.25_higher == TRUE){
@@ -410,7 +416,7 @@ if(Vaccinate == TRUE){
       theme(axis.text = element_text(size = 14, colour = "black")) +
       theme(axis.title = element_text(size = 20)) 
     
-    fil.nameS11part <- "./Publication_Figures/Fig 11c Vaccination simulation 25 perct higher.png"
+    fil.nameS11part <- "./Publication_Figures/Draft_Figures/Fig S11c Vaccination simulation 25 perct higher.png"
   }
   
   if(vax.25_lower == TRUE){
@@ -423,8 +429,9 @@ if(Vaccinate == TRUE){
       theme(axis.text = element_text(size = 14, colour = "black")) +
       theme(axis.title = element_text(size = 20)) 
     
-    fil.nameS11part <- "./Publication_Figures/Fig S11a Vaccination simulation 25 perct lower.png"
+    fil.nameS11part <- "./Publication_Figures/Draft_Figures/Fig S11a Vaccination simulation 25 perct lower.png"
   }
+  
   
   #Arrange the plots to save for any vaccination scenario
   FigS11part <- ggarrange(SLplot, 
@@ -434,9 +441,9 @@ if(Vaccinate == TRUE){
   #Save files
   ggexport(FigS11part, filename = fil.nameS11part, width=907 , height=933)
   
-  if(vax.25_higher == FALSE & vax.25_lower == FALSE){  
-    #Combine Fig S11B with the two Fig S11 already made (+/-50% vax)
-    rl2 <- lapply(list("./Publication_Figures/Fig S11a Vaccination simulation 25 perct lower.png", "./Publication_Figures/Fig S11b Vaccination simulation as simulated.png",  "./Publication_Figures/Fig S11c Vaccination simulation 25 perct higher.png"), png::readPNG)
+  if(file.exists("./Publication_Figures/Draft_Figures/Fig S11a Vaccination simulation 25 perct lower.png") & file.exists("./Publication_Figures/Draft_Figures/Fig S11b Vaccination simulation as simulated.png") & file.exists("./Publication_Figures/Draft_Figures/Fig S11c Vaccination simulation 25 perct higher.png")){  
+    #Combine Fig S11B with the two Fig S11 already made
+    rl2 <- lapply(list("./Publication_Figures/Draft_Figures/Fig S11a Vaccination simulation 25 perct lower.png", "./Publication_Figures/Draft_Figures/Fig S11b Vaccination simulation as simulated.png",  "./Publication_Figures/Draft_Figures/Fig S11c Vaccination simulation 25 perct higher.png"), png::readPNG)
     gl2 <- lapply(rl2, grid::rasterGrob)
     ml2 <- marrangeGrob(gl2, nrow = 1, ncol = 3, top=NULL)
     ggsave("./Publication_Figures/Fig S11 Combined Sims with various vaccination rates.png", ml2, width=6.5, height=2.5, units = "in" )
@@ -449,7 +456,7 @@ if(No.q == TRUE ){
   FigS4ab<- ggarrange(SLplot, MosqIAEplot,
                       labels = c("A", "B"), nrow = 2, heights = c(300, 300))
   
-  fil.nameS4ab <- "./Publication_Figures/Fig S4A and B Plot of No Transovarial transmission.png"
+  fil.nameS4ab <- "./Publication_Figures/Draft_Figures/Fig S4A and B Plot of No Transovarial transmission.png"
   
   ggexport(FigS4ab, filename = fil.nameS4ab, width=630, height=400)
 } 
@@ -459,14 +466,16 @@ if(Only.q == TRUE ){
   FigS4c<- ggarrange(SLplot, MosqIAEplot, MosqIAll,
                      labels = c("C", "D", "E"), nrow = 3, heights = c(300, 300, 300))
   
-  fil.nameS4c <- "./Publication_Figures/Fig S4b Aedes and Culex - Plot of No Horizontal transmission.png"
+  fil.nameS4c <- "./Publication_Figures/Draft_Figures/Fig S4b Aedes and Culex - Plot of No Horizontal transmission.png"
   
   ggexport(FigS4c, filename = fil.nameS4c, width=630, height=400)
   
-  rl2 <- lapply(list("./Publication_Figures/Fig S4 Aedes and Culex - Plot of No Transovarial transmission.png", "./Publication_Figures/Fig S4b Aedes and Culex - Plot of No Horizontal transmission.png"), png::readPNG)
+  if(file.exists("./Publication_Figures/Draft_Figures/Fig S4A and B Plot of No Transovarial transmission.png")){
+  rl2 <- lapply(list("./Publication_Figures/Draft_Figures/Fig S4A and B Plot of No Transovarial transmission.png", "./Publication_Figures/Draft_Figures/Fig S4b Aedes and Culex - Plot of No Horizontal transmission.png"), png::readPNG)
   gl2 <- lapply(rl2, grid::rasterGrob)
   ml2 <- marrangeGrob(gl2, nrow = 2, ncol = 1, top=NULL)
   ggsave("./Publication_Figures/Fig S4 Combined Sims with no q and no horizontal transmission.png", ml2, width=3 , height=4, unit = "in")
+  }
 }
 
 ###################################################################
@@ -521,6 +530,39 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
     fil.name.rain <- "Publication_Figures/Fig S2. Rainfall and Temp during study period for publication.png"
     ggexport(FigS2, filename = fil.name.rain, width=630, height=460, ncol = 1,nrow = 1)
   
+    #Randomly selected mosquito population plots - Fig S6 & S12  
+    Myear<- final.populations%>%#Remove years with partial data
+      filter(!MosqYear == "1982")%>%
+      filter(!MosqYear == "1983")%>%
+      filter(!MosqYear == "2017")%>%
+      filter(!MosqYear == "2016")%>%
+      group_by(MosqYear)%>%
+      summarise(n=n())
+    
+   
+    
+    Myear.select <- sample_n(Myear, 1, replace = FALSE)
+    myY.select <- Myear.select$MosqYear
+    Myears.select <- c(myY.select, myY.select+1, myY.select+2)
+    
+    
+    Ran.Year <- final.populations%>%
+      filter(MosqYear %in% Myear.select)
+    Ran.Years <- final.populations%>%
+      filter(MosqYear %in% Myears.select)
+    
+    Ran.Year$simtime <-  seq(1, 365, by = 1)
+    Ran.Years$simtime <-  seq(1, 365+365+365, by = 1)
+    
+    Ran.Year <- Ran.Year%>%
+      mutate(Month_Date = as.yearmon(paste(Ran.Year$Year, Ran.Year$Month), "%Y %m"))
+    
+    #Breaks and lables 
+    break.labels <- unique(Ran.Year$Month_Date)
+    break.labels.Re <- unique(Ran.Years$Year)
+    break.labels.Re <- break.labels.Re[2:4] #Remove first MosqYear time
+    break.seq <- seq(from = 123, to = nrow(Ran.Years), by = 365)
+    
   #Effective R0 plot S6 - enlarged
     Reffect.Enlarge <- ggplot(Ran.Years, aes(x = simtime, y = Reff))+
       geom_line()+ 
@@ -538,29 +580,6 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
 #See R0 analysis code for R0 sensitivity analysis and variable by variable sensitivity ()
     
     
-    #Randomly selected mosquito population plots - Fig S12  
-    set.seed(6242015)
-    Myear<- final.populations%>%#Remove years with partial data
-      filter(!MosqYear == "1982")%>%
-      filter(!MosqYear == "1983")%>%
-      filter(!MosqYear == "2017")%>%
-      filter(!MosqYear == "2016")%>%
-      group_by(MosqYear)%>%
-      summarise(n=n())
-    
-    Myear.select <- sample_n(Myear, 1, replace = FALSE)
-    
-    #remove 
-    Ran.Year <- final.populations%>%
-      filter(MosqYear %in% Myear.select)
-    
-    Ran.Year$simtime <-  seq(1, 365, by = 1)
-    
-    Ran.Year <- Ran.Year%>%
-      mutate(Month_Date = as.yearmon(paste(Ran.Year$Year, Ran.Year$Month), "%Y %m"))
-    
-    #Breaks and lables 
-    break.labels <- unique(Ran.Year$Month_Date)
     
     my_y_title.S12a <- expression(atop(italic("Aedes"), paste(" Population Size")))
     S12.Ae.Plot <-ggplot(Ran.Year, aes(simtime)) + 
@@ -610,3 +629,4 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
     
     }
 }
+

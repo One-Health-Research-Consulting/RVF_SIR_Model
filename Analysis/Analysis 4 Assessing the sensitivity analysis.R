@@ -19,7 +19,7 @@ library(egg)
 
 
 #'Load data produced from the 2_RVF_LHC_Sensitivity_Analysis.R file
-load(here("./All_Files_For_Publication/Data for sensitivity analyses/", "SA_trans_Publication2021_05_07.Rdata"))
+load(here("Data for sensitivity analyses/", "SA_trans_Publication2022_05_09.Rdata"))
 
 SA_trans <- data
 
@@ -27,7 +27,7 @@ SA_trans <- data
 set.seed(623)
 
 #Name according to date run
-tname <- "2021_05_07_scaled_params" #Date of analysis
+tname <- "2022_05_09_scaled_params" #Date of analysis
 
 
 #Set alpha
@@ -135,5 +135,5 @@ SA <- SA%>%
   Estimate.Table <- rownames_to_column(Estimate.Table, "Parameter")
   
   #Write table 
-  write.csv(Estimate.Table, here("Publication_Figures/Analysis of variables_Publication", "Table Estimate of PCCs_for Publication.csv"), row.names = FALSE)
+  write.csv(Estimate.Table, here("Publication_Figures", "Table 1 Estimate of PCC analysis of Sensitivity Analysis.csv"), row.names = FALSE)
 

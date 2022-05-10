@@ -25,7 +25,6 @@ Vaccinate <- FALSE #Change to true is you want to run a simulation where you vac
   vax.proportion <- .26#Proportion of the flock user wants to simulate vaccination in
   vax.25_higher <- FALSE #Run simulation with a host vaccination rate that is 25% higher
   vax.25_lower <- FALSE #Run simulation with a host vaccination rate that is 25% higher
-
 No.q <- FALSE #No transovarial transmission
 Only.q <- FALSE #No horizontal transmission
 muC.25_higher <- FALSE #Run simulation with a Culex mortality rate that is 25% higher
@@ -38,16 +37,16 @@ set.seed(6242015)#This is to ensure the approxfun function always outputs the sa
 
 #Source code
 #Source functions
-source(here("All_Files_For_Publication/Functions", "Function 1 Define Functions for Output of Sensitivity Analysis.R"))
+source(here("Functions", "Function 1 Define Functions for Output of Sensitivity Analysis.R"))
 #Load ODE function
-source(here("All_Files_For_Publication/Model_Scripts", "Model 3 RVFV ODE SIRS function.R"))
+source(here("Model_Scripts", "Model 3 RVFV ODE SIRS function.R"))
 #Load plotting functions
-source(here("All_Files_For_Publication/Functions", "Function 3 Plot simulations of a given time period.R"))
+source(here("Functions", "Function 3 Plot simulations of a given time period.R"))
 #Source integrated hatching data for each timestep - parameter file is sourced by the climate/mosquito hatching code
-source(here("All_Files_For_Publication/Model_Scripts", "Model 2 Mosquito hatch rates at daily timestep.R"))
+source(here("Model_Scripts", "Model 2 Mosquito hatch rates at daily timestep.R"))
 #Source Reffective fuctions
-source(here("All_Files_For_Publication/Functions", "Function 4 Calculate R0.R"))
-source(here("All_Files_For_Publication/Functions", "Function 5 Calculate R0 dfs for plot.R"))
+source(here("Functions", "Function 4 Calculate R0.R"))
+source(here("Functions", "Function 5 Calculate R0 dfs for plot.R"))
 
 
 #Set parameters for various scenarios if they are selected
@@ -342,8 +341,8 @@ Ratio_Tab <- data.frame(matrix(ncol = 2, nrow = 5))
 Ratio_Tab[1,] <- c("Mean annual seroprevalence", paste0( mean.serop, "% (", range.serop[1], "-",  range.serop[2], "%)"))
 Ratio_Tab[2,] <- c("Mean annual maximum host-vector ratio", paste0("1:", mean_max_Host_Mosq_Ratio, " (1:", max_max_Host_Mosq_Ratio, "-1:", min_max_Host_Mosq_Ratio, ")"))
 Ratio_Tab[3,] <- c("Mean annual proportion of infected Aedes eggs", paste0( Mean_IAE_Prop, " (", Min_IAE_Prop, "-",  Max_IAE_Prop, ")"))
-Ratio_Tab[4,] <- c("Mean annual proportion of infected adult Aedes", paste0( mean.IA_NAedesRatio, " (", round(range.IA_NAedesRatio[1],4), "-", round(range.IA_NAedesRatio[2],2), ")"))
-Ratio_Tab[5,] <- c("Mean annual proportion of infected adult Culex", paste0( mean.IC_NCRatio, " (", round(range.IC_NCRatio[1],7), "-",  round(range.IC_NCRatio[2],4), ")"))
+Ratio_Tab[4,] <- c("Mean annual proportion of infected adult Aedes", paste0( Mean_IA_Prop, " (", Min_IA_Prop, "-", Max_IA_Prop, ")"))
+Ratio_Tab[5,] <- c("Mean annual proportion of infected adult Culex", paste0( Mean_IC_Prop, " (", Min_IC_Prop, "-",  Max_IC_Prop, ")"))
 
 nmes.rat.tab <- c("Factor", "mean (range)")
 
@@ -351,7 +350,7 @@ names(Ratio_Tab) <- nmes.rat.tab
 
 if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_lower == FALSE & vax.25_higher == FALSE){
   if(No.q == FALSE & Only.q == FALSE & Vaccinate == FALSE){
-write.csv(Ratio_Tab, "./Publication_Figures/Table 1 infected proportions host-vector ratios and seroprevalence_publication.csv", row.names = FALSE)
+write.csv(Ratio_Tab, "./Publication_Figures/Table S6 infected proportions host-vector ratios and seroprevalence_publication.csv", row.names = FALSE)
   }
 }
 

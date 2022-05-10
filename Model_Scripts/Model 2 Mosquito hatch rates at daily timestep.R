@@ -6,11 +6,11 @@
 
 
 #Load undefined hatching and climate data
-All_Precip <- read.csv(here("All_Files_For_Publication", "Combined Temp and Precip Data for RVF Simulation.csv"))
+All_Precip <- read.csv(here("", "Combined Temp and Precip Data for RVF Simulation.csv"))
 #Functions for setting the hatching switches the data
-source(here("All_Files_For_Publication/Functions", "Function 2 - Aedes and Culex Hatch Forcing by Mean Temps.R"))
+source(here("Functions", "Function 2 - Aedes and Culex Hatch Forcing by Mean Temps.R"))
 #Source parameters
-source(here("All_Files_For_Publication/Model_Scripts", "Model 1 - RVFV Optimized Parameters.R"))
+source(here("Model_Scripts", "Model 1 - RVFV Optimized Parameters.R"))
 
 
   #Define hatching days

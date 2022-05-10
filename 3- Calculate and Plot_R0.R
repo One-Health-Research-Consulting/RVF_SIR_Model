@@ -11,9 +11,9 @@ library(here)
 #library(ggplot2)
 
 #Source Parameters
-source(here("All_Files_For_Publication", "1- Run RVFV Simulations.R"))
-source(here("All_Files_For_Publication/Functions", "Function 4 Calculate R0.R"))
-source(here("All_Files_For_Publication/Functions", "Function 5 Calculate R0 dfs for plot.R"))
+source(here("", "1- Run RVFV Simulations.R"))
+source(here("Functions", "Function 4 Calculate R0.R"))
+source(here("Functions", "Function 5 Calculate R0 dfs for plot.R"))
 
 # Define popluation sizes for different R0 scenarios
 mean_popn   <- c(NS = m_NS, NL = m_NL, Na = m_NAedes,       NC = m_NC) 
@@ -217,11 +217,11 @@ FigS7.R0.init <- ggarrange( plot.Tasl, plot.Tcsl, plot.muA, plot.muC, plot.biteA
 
 
 
-ggexport(FigS7.R0.init, filename = "Publication_Figures/Fig S7_draft R0 change with params plots mean peak only.png", 
+ggexport(FigS7.R0.init, filename = "Publication_Figures/Draft_Figures/Fig S7_draft R0 change with params plots mean peak only.png", 
          ncol = 2, nrow = 4, width = 800, height = 880)
 
 #Plot Fig S7 which adds three lines of R0 at the mean populations to Fig S8
-source(here("All_Files_For_Publication/Analysis", "Analysis 5 Plot R0 changes at peak and mean populations.R"))
+source(here("Analysis", "Analysis 5 Plot R0 changes at peak and mean populations.R"))
 
 ###############################################################
 # Figure S8 Vary each parameter to see the affect on R0

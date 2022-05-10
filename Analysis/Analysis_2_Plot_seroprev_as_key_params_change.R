@@ -22,9 +22,9 @@ library(ggplot2)
 library(ggpubr)
 
 #Set variables do you want to compare and using which output
-Q_biteA_Seroprev.mean <- TRUE #Transovarial Transmission vs Aedes bite rate evaluating seroprevalence
-Q_muC_Seroprev.mean <- FALSE  #Transovarial Transmission vs Culex mortality rate evaluating seroprevalence
-Vax_Q_Persistence <- FALSE    #Transovarial Transmission vs vaccination rate evaluating persistence
+Q_biteA_Seroprev.mean <- FALSE #Transovarial Transmission vs Aedes bite rate evaluating seroprevalence
+Q_muC_Seroprev.mean <- FALSE  #Transovarial Transmission vs Culex mortality rate evaluating seroprevalence; in manuscript just use with R0
+Vax_Q_Persistence <- TRUE    #Transovarial Transmission vs vaccination rate evaluating persistence
 Q_Tasl_Persistence <- FALSE   #Transovarial Transmission vs host-to-Aedes transmission rate evaluating persistence
 
 #Additional variable
@@ -39,13 +39,13 @@ set.seed(6242015)#This is to ensure the approxfun function always outputs the sa
 
 #Source code
 #Source  functions
-source(here("All_Files_For_Publication/Functions", "Function 1 Define Functions for Output of Sensitivity Analysis.R"))
+source(here("Functions", "Function 1 Define Functions for Output of Sensitivity Analysis.R"))
 #Source model definitions
-source(here("All_Files_For_Publication/Model_Scripts", "Model 2 Mosquito hatch rates at daily timestep.R"))
+source(here("Model_Scripts", "Model 2 Mosquito hatch rates at daily timestep.R"))
 #Source ODE function
-source(here("All_Files_For_Publication/Model_Scripts", "Model 3 RVFV ODE SIRS function.R"))
+source(here("Model_Scripts", "Model 3 RVFV ODE SIRS function.R"))
 #Source Function to calculate R0
-source(here("All_Files_For_Publication/Functions", "Function 4 Calculate R0.R"))
+source(here("Functions", "Function 4 Calculate R0.R"))
 
 #Set up each analysis
 #Set scales - see how seroprevelance changes with different combinations of q and bite rates
@@ -142,6 +142,18 @@ z <- length(near.continuous_vec)
 num.rows <- r*z
 summary.dat <- data.frame(matrix(nrow = num.rows, ncol = 4))
 names(summary.dat) <- c(var1, var2, outcome, "mean_popn_R0")
+
+##If we are looking at vaccine levels we need to hold the original starting values for R and S sheep and lambs to change it back at the end of the the vax loop
+if(Vax_Q_Persistence == TRUE){
+origRS <- initial.populations[["RS"]]
+origSS <- initial.populations[["SS"]]
+origVS <- initial.populations[["VS"]]
+origRL <- initial.populations[["RL"]]
+origSL <- initial.populations[["SL"]]
+origVL <- initial.populations[["VL"]]
+origAL <- initial.populations[["AL"]]
+}
+
 
 j <- 1    
 
@@ -317,6 +329,8 @@ time.title <- round(end.time/365,0)
 
 var.title <- paste(var1, "vs", var2, sep = " ")
 
+folder.title <- "Data for sensitivity analyses/"
+
 #filenames
 plot.title <- paste(out.title, var.title, cu.title, "for", time.title, "years", Datestamp, "For Publication",sep = " ")
 
@@ -324,8 +338,8 @@ if(R0_plot==TRUE){
   plot.title <- paste("R0", plot.title, sep = " ")
 }
 
-data.file.title <- paste0(plot.title, ".Rdata")
-csv.file.title <- paste0(plot.title, ".csv")
+data.file.title <- paste0(folder.title, plot.title, ".Rdata")
+csv.file.title <- paste0(folder.title, plot.title, ".csv")
 
 #Save
 save(summary.dat, file = data.file.title )
@@ -380,10 +394,10 @@ if(R0_plot == TRUE){
   
   R0.seroprev.plot <- ggarrange(R0.seroprev.plot)
   
-  ggexport(R0.seroprev.plot, filename = paste0(plot.title, ".png"), width=1004, height=601, ncol = 1,nrow = 1)
+  ggexport(R0.seroprev.plot, filename = paste0("Publication_Figures/Draft_Figures/", plot.title, ".png"), width=1004, height=601, ncol = 1,nrow = 1)
   
 }else{
-  png.file.title <- paste0(plot.title, ".png")
+  png.file.title <- paste0("Publication_Figures/Draft_Figures/", plot.title, ".png")
   ggsave(png.file.title)
 }
 
