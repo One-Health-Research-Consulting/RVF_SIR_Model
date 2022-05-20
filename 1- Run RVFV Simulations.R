@@ -47,7 +47,7 @@ source(here("Model_Scripts", "Model 2 Mosquito hatch rates at daily timestep.R")
 #Source Reffective fuctions
 source(here("Functions", "Function 4 Calculate R0.R"))
 source(here("Functions", "Function 5 Calculate R0 dfs for plot.R"))
-
+source(here("Functions", "Function 7 Manage model outputs.R"))
 
 #Set parameters for various scenarios if they are selected
 if(Vaccinate == TRUE){
@@ -93,6 +93,11 @@ start.time <- 0
 end.time <- tail(All_Precip$SimDay, 1) #3000#
 timestep <- 1
 times <- seq(from=start.time, to=end.time, by=timestep)
+
+#' Create model folders
+#' ==============
+
+ model_run_path <- create_model_run_path(param_vec = param_vec)
 
 #' Run the model
 #' =============
@@ -350,7 +355,9 @@ names(Ratio_Tab) <- nmes.rat.tab
 
 if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_lower == FALSE & vax.25_higher == FALSE){
   if(No.q == FALSE & Only.q == FALSE & Vaccinate == FALSE){
-write.csv(Ratio_Tab, "./Publication_Figures/Table S6 infected proportions host-vector ratios and seroprevalence_publication.csv", row.names = FALSE)
+#write.csv(Ratio_Tab, "./Publication_Figures/Table S6 infected proportions host-vector ratios and seroprevalence_publication.csv", row.names = FALSE)
+    table_6_path <- sprintf("./%s%/Publication_Figures/Table S6 infected proportions host-vector ratios and seroprevalence_publication.csv")
+  write.csv(Ratio_Tab, table_6_path, row.names = FALSE)
   }
 }
 
@@ -369,4 +376,8 @@ vxp <- (unlist(param_vec["vax"])/(unlist(param_vec["muL"])+ unlist(param_vec["g"
   print(paste("The ending seroprevalence is ", round(End.Seroprevalence, 2), sep = ""))
   print(paste0("The mean incidence rate per 100 sheep-years is ", round(mean.inc.per.100,1), "."))
     
+  ## save R data for use in 3 - Calculate and Plot_R0.R
   
+  rdata_path <- sprintf("%s/rvfv_sim.Rdata", model_run_path)
+  
+  save(rdata_path)

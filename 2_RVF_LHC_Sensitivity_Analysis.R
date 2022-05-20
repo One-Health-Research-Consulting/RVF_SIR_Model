@@ -39,6 +39,9 @@ source(here("Model_Scripts", "Model 1 - RVFV Optimized Parameters.R"))
 #Functions for pulling output of analysis
 source(here("Functions", "Function 1 Define Functions for Output of Sensitivity Analysis.R"))
 source(here("Functions", "Function 6 Latin Hypercube Analysis.R"))
+source(here("Functions", "Function 7 Manage model outputs.R"))
+
+model_run_path <- read_model_run_path()
 
 # Load precipitation and Temp data 
   All_Precip <- read.csv(here("", "Combined Temp and Precip Data for RVF Simulation.csv"))
@@ -76,7 +79,27 @@ data <- data.frame()
 All_Precip1 <- data.frame()
 
 #Run lapply
-data.list <- mclapply(listargs, function(x) HypercubeSA(param_matrix = x, empty.dat = data[0,], empty.dat.precip = All_Precip1, precip.dat = All_Precip,  precipdef.fun = DayDefinition, Ae.endem.fun = AedesForcingEndemicMeanT,  Cu.fun = CulexForcingMeanT, Ae.dev.fun = dev_ALP, Cu.dev.fun = dev_CLP, ode.fun = ODE.RVFV.deterministic.SIRS, get.fun0 = Define.MosqYr, get.fun1 = Get.Extinct.Day, get.fun2 = Get.Max.Outbreak.Size.MosqYear, get.fun3 = Get.Mean.SeroP.MosqY, get.fun4 = Get.Mean.Outbreak.Size.MosqYear, get.fun5 = Get.Mean.Outbreak.lengths.MosqYear, get.fun6 = Get.Prop.Infected.Eggs, dev_param_vec = dev.params.set, pop_vec = initial.populations, timestp = times, file_date = Datestamp),
+data.list <- mclapply(listargs, function(x) HypercubeSA(param_matrix = x,
+                                                        empty.dat = data[0,],
+                                                        empty.dat.precip = All_Precip1,
+                                                        precip.dat = All_Precip,
+                                                        precipdef.fun = DayDefinition,
+                                                        Ae.endem.fun = AedesForcingEndemicMeanT,
+                                                        Cu.fun = CulexForcingMeanT,
+                                                        Ae.dev.fun = dev_ALP,
+                                                        Cu.dev.fun = dev_CLP,
+                                                        ode.fun = ODE.RVFV.deterministic.SIRS,
+                                                        get.fun0 = Define.MosqYr,
+                                                        get.fun1 = Get.Extinct.Day,
+                                                        get.fun2 = Get.Max.Outbreak.Size.MosqYear,
+                                                        get.fun3 = Get.Mean.SeroP.MosqY,
+                                                        get.fun4 = Get.Mean.Outbreak.Size.MosqYear,
+                                                        get.fun5 = Get.Mean.Outbreak.lengths.MosqYear,
+                                                        get.fun6 = Get.Prop.Infected.Eggs,
+                                                        dev_param_vec = dev.params.set,
+                                                        pop_vec = initial.populations,
+                                                        timestp = times,
+                                                        file_date = Datestamp),
                       mc.cores = core, mc.preschedule = FALSE) 
 
 #Turn results into a list
@@ -98,9 +121,11 @@ names(data) <- c(
   )
 
 #Create file name
-dat.file <- paste("Data for sensitivity analyses/SA_trans_Publication", Datestamp, ".Rdata", sep = "")
+
+dat.file <- paste(model_run_path, "/Data for sensitivity analyses/SA_trans_Publication.Rdata", sep = "")
 
 
+# 
 # Save the data
 save(data, file = dat.file)#Save the data
   

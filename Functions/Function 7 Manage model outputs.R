@@ -10,12 +10,14 @@ create_model_folders <- function(run_id,overwrite = FALSE){
   dir.create(folder_path,recursive = TRUE)
 
   ## Create set of subfolders for different outputs ----  
-  sub_folders <- c("Publication_Figures","Data for sensistivity analysis" )
+  sub_folders <- c("Publication_Figures/Draft_Figures","Data for sensistivity analysis" )
   
   for(folder in sub_folders){
     sub_folder_path <- sprintf("%s/%s", folder_path, folder)
     dir.create(sub_folder_path,recursive = TRUE)
   }
+  
+  
   
   return(folder_path)
 }
@@ -25,9 +27,22 @@ write_model_run_path <- function(folder_path){
   saveRDS(object = folder_path,"model_runs/current_run_path.RDS")
 }
 
+create_model_run_path <- function(param_vec){
+  run_id <- get_run_id(param_vec)
+  
+  folder_path <- create_model_folders(run_id)
+  
+  write_model_run_path(folder_path)
+  
+  write_param_vec_rds(param_vec, folder_path)
+  
+  return(folder_path)
+}
+
+
 read_model_run_path <- function(){
   if(!file.exists("model_runs/current_run_path.RDS")){
-    stop("File not found: Use create_model_run() to generate a new or 
+    stop("File not found: Use create_model_run_path() to generate a new or 
          use set_model_run_path() to use previous a model model")
   }
   readRDS("model_runs/current_run_path.RDS")
@@ -36,6 +51,7 @@ read_model_run_path <- function(){
 delete_model_run_path <- function(){
   unlink("model_runs/current_run_path.RDS")
 }
+
 
 set_model_run_path <- function(run_id){
   folder_path <- sprintf("%s/%s", "model_runs", run_id)

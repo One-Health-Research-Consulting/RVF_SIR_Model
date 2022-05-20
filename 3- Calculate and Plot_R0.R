@@ -11,9 +11,16 @@ library(here)
 #library(ggplot2)
 
 #Source Parameters
-source(here("", "1- Run RVFV Simulations.R"))
+#source(here("", "1- Run RVFV Simulations.R")) ## ideall would save an .Rdata file and reload
 source(here("Functions", "Function 4 Calculate R0.R"))
 source(here("Functions", "Function 5 Calculate R0 dfs for plot.R"))
+source(here("Functions", "Function 7 Manage model outputs.R"))
+
+model_run_path <- read_model_run_path()
+
+load_path <- sprintf("%s/rvfv_sim.Rdata")
+
+load(load_path)
 
 # Define popluation sizes for different R0 scenarios
 mean_popn   <- c(NS = m_NS, NL = m_NL, Na = m_NAedes,       NC = m_NC) 
@@ -217,7 +224,10 @@ FigS7.R0.init <- ggarrange( plot.Tasl, plot.Tcsl, plot.muA, plot.muC, plot.biteA
 
 
 
-ggexport(FigS7.R0.init, filename = "Publication_Figures/Draft_Figures/Fig S7_draft R0 change with params plots mean peak only.png", 
+## create file name ----
+figs7_path <- sprintf("%s/Publication_Figures/Draft_Figures/Fig S7_draft R0 change with params plots mean peak only.png", model_run_path)
+
+ggexport(FigS7.R0.init, filename = figs7_path, 
          ncol = 2, nrow = 4, width = 800, height = 880)
 
 #Plot Fig S7 which adds three lines of R0 at the mean populations to Fig S8
@@ -290,7 +300,9 @@ All.param.plot <- ggplot(All.param.plot.dat) +
 
 All.param.plot <- ggarrange(All.param.plot)
 
-ggexport(All.param.plot, filename = "Publication_Figures/Fig S8 R0 Senstivity to all Parameters.png", 
+figS8_path<- sprintf("%s/Publication_Figures/Fig S8 R0 Senstivity to all Parameters.png",model_run_path)
+
+ggexport(All.param.plot, filename = figS8_path, 
          width = 779, height = 597)
 
 ###############################################################
