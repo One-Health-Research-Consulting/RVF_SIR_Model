@@ -62,3 +62,7 @@ write_param_vec_rds <- function(folder_path, param_vec){
   param_vec_path <- sprintf("%s/%s",folder_path,"param_vec.RDS")
   saveRDS(object = param_vec,file = param_vec_path)
 }
+
+make_file_name <- function(model_run_path,file_name){
+  sprintf("%s/%s",model_run_path,file_name)
+}

@@ -339,7 +339,9 @@ if(R0_plot==TRUE){
 }
 
 data.file.title <- paste0(folder.title, plot.title, ".Rdata")
+data.file.title <- make_file_name(model_run_path,data.file.title)
 csv.file.title <- paste0(folder.title, plot.title, ".csv")
+csv.file.title <- make_file_name(model_run_path,csv.file.title)
 
 #Save
 save(summary.dat, file = data.file.title )
@@ -394,10 +396,13 @@ if(R0_plot == TRUE){
   
   R0.seroprev.plot <- ggarrange(R0.seroprev.plot)
   
-  ggexport(R0.seroprev.plot, filename = paste0("Publication_Figures/Draft_Figures/", plot.title, ".png"), width=1004, height=601, ncol = 1,nrow = 1)
+  seroprev.plot.path <- paste0("Publication_Figures/Draft_Figures/", plot.title, ".png")
+  seroprev.plot.path <- make_file_name(model_run_path,seroprev.plot.path)
+  ggexport(R0.seroprev.plot, filename = seroprev.plot.path, width=1004, height=601, ncol = 1,nrow = 1)
   
 }else{
   png.file.title <- paste0("Publication_Figures/Draft_Figures/", plot.title, ".png")
+  png.file.title <- make_file_name(model_run_path,png.file.title)
   ggsave(png.file.title)
 }
 

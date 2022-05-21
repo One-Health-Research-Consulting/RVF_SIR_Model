@@ -20,6 +20,10 @@ Multiplot <- TRUE
 
 #Load plotting functions
 source(here("Functions", "Function 3 Plot simulations of a given time period.R"))
+source(here("Functions", "Function 7 Manage model outputs.R"))
+
+model_run_path <- read_model_run_path()
+
 
 #Set ggplot theme
 plot_theme <- theme_classic() +
@@ -140,6 +144,7 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
    & No.q == FALSE & Only.q == FALSE & Vaccinate == FALSE){
       #Figure 1
       fil.name <- "Publication_Figures/Fig 1 Full Simulation SL IM IAE_Aedes SA-IA SC-IC and Re.png"
+      fil.name <- sprintf("%s/%s",model_run_path,fil.name)
       Fig1 <- ggarrange(SLplot_historical, MosqIAll, MosqIAEplot, MosqAplot, MosqCplot,  Reffect.plot, draw = FALSE,
                         labels = c("A", "B", "C", "D", "E", "F"),
                         ncol = 1, nrow = 6)
@@ -155,7 +160,9 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
       
       FigS3 <- ggarrange(PeakIMosq_Plot, draw = FALSE, ncol = 1, nrow = 1)
       
-      ggexport(FigS3[1], filename = "Publication_Figures/Fig S3 Annual ratio of infected Culex and infected aedes populations by number of infected animals.png", 
+      FigS3_path <- sprintf("%s/%s", model_run_path, "Publication_Figures/Fig S3 Annual ratio of infected Culex and infected aedes populations by number of infected animals.png")
+      
+      ggexport(FigS3[1], filename = FigS3_path, 
                width=593, height=230, ncol = 1, nrow = 1)
       
       
@@ -172,6 +179,8 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
                         labels = c("A", "B", "C", "D"),
                         ncol = 1, nrow = 4)
       
+      
+      fil.name.figS9b <-  sprintf("%s/%s",model_run_path,fil.name.figS9b)
       ggexport(FigS9b[1], filename = fil.name.figS9b, width=630, height=803, ncol = 1,nrow = 4)
     
       if(file.exists("./Publication_Figures/Draft_Figures/Fig S9A Full Simulation Culex Death Rate Lower by 25 Percent for publication.png") & file.exists("./Publication_Figures/Draft_Figures/Fig S9C Full Simulation Culex Death Rate Higher by 25 Percent for publication.png")){
@@ -198,6 +207,7 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
                        labels = c("A", "B", "C", "D"),
                        ncol = 1, nrow = 4)
     
+    fil.name.bite.lo <- sprintf("%s/%s",model_run_path,fil.name.bite.lo)
     ggexport(FigS9A[1], filename = fil.name.bite.lo, width=630, height=803, ncol = 1,nrow = 4)
   }else{
     #Figure S9c plot the 25% higher Culex mortality rate
@@ -216,6 +226,7 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
                          labels = c("A", "B", "C", "D"),
                          ncol = 1, nrow = 4)
       
+      fil.name.muC.hi <- sprintf("%s/%s", model_run_path, fil.name.muC.hi)
       ggexport(FigS9C[1], filename = fil.name.muC.hi, width=630, height=803, ncol = 1,nrow = 4)
     }else{
         print(MosqAplot)
@@ -279,6 +290,8 @@ if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_h
                       ncol = 1, nrow = 2,
                       common.legend = TRUE, legend = "right")
     fil.namefig2 <- "./Publication_Figures/Fig 2 R0 and seroprevalence while changing biteA and q.png"
+    
+    fil.namefig2 <- sprintf("%s/%s", model_run_path,fil.namefig2)
     ggexport(Fig2[1], filename = fil.namefig2, width=630, height=503)
     
     #Fig S10 
@@ -313,6 +326,9 @@ if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_h
                       ncol = 1, nrow = 1)
     
     fil.namefigS10 <- "./Publication_Figures/Fig S10 R0 and seroprevalence while changing muC and q.png"
+    
+    fil.namefigS10 <- make_file_name(model_run_path,fil.namefigS10)
+    fil.namefigS10 <- make_file_name(model_run_path,fil.namefigS10)
     ggexport(FigS10[1], filename = fil.namefigS10, width=630, height=403)
     
     
@@ -364,6 +380,7 @@ if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_h
                       labels = c("A", "B", "C", "D"), align = "h", 
                       heights = c(300,300),  widths = c(1.5,2.5))
     fil.nameS5 <- "./Publication_Figures/Fig S5 Aedes and Culex - Plot of single variable effect on seroprevalence and persistance for publication.png"
+    fil.nameS5 <- make_file_name(model_run_path,fil.nameS5)
     ggexport(FigS5, filename = fil.nameS5, width=907 , height=834)
     
   }
@@ -390,7 +407,7 @@ if(Vaccinate == TRUE){
                       heights = c(300, 300, 300))
     
     fil.name3 <- "./Publication_Figures/Fig 3 Vaccination simulation and sensitivity to transovarial transmission.png"
-    
+    fil.name3 <- make_file_name(model_run_path,fil.name3)
     ggexport(Fig3, filename = fil.name3, width=907 , height=933)
     
     #Figure S11b
@@ -439,6 +456,7 @@ if(Vaccinate == TRUE){
                          labels = c("A", "B"), nrow = 2, heights = c(300, 300))
   
   #Save files
+  fil.nameS11part <- make_file_name(model_run_path,fil.nameS11part)
   ggexport(FigS11part, filename = fil.nameS11part, width=907 , height=933)
   
   if(file.exists("./Publication_Figures/Draft_Figures/Fig S11a Vaccination simulation 25 perct lower.png") & file.exists("./Publication_Figures/Draft_Figures/Fig S11b Vaccination simulation as simulated.png") & file.exists("./Publication_Figures/Draft_Figures/Fig S11c Vaccination simulation 25 perct higher.png")){  
@@ -457,7 +475,7 @@ if(No.q == TRUE ){
                       labels = c("A", "B"), nrow = 2, heights = c(300, 300))
   
   fil.nameS4ab <- "./Publication_Figures/Draft_Figures/Fig S4A and B Plot of No Transovarial transmission.png"
-  
+  fil.nameS4ab <- make_file_name(model_run_path,fil.nameS4ab)
   ggexport(FigS4ab, filename = fil.nameS4ab, width=630, height=400)
 } 
 
@@ -467,7 +485,7 @@ if(Only.q == TRUE ){
                      labels = c("C", "D", "E"), nrow = 3, heights = c(300, 300, 300))
   
   fil.nameS4c <- "./Publication_Figures/Draft_Figures/Fig S4b Aedes and Culex - Plot of No Horizontal transmission.png"
-  
+  fil.nameS4c <- make_file_name(model_run_path,fil.nameS4c)
   ggexport(FigS4c, filename = fil.nameS4c, width=630, height=400)
   
   if(file.exists("./Publication_Figures/Draft_Figures/Fig S4A and B Plot of No Transovarial transmission.png")){
@@ -528,6 +546,8 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
     FigS2 <- ggarrange(FigS2.Rain, FigS2.Temp, 
                        ncol = 1, nrow = 2, labels = c("A", "B"))
     fil.name.rain <- "Publication_Figures/Fig S2. Rainfall and Temp during study period for publication.png"
+    
+    fil.name.rain<- make_file_name(model_run_path,fil.name.rain)
     ggexport(FigS2, filename = fil.name.rain, width=630, height=460, ncol = 1,nrow = 1)
   
     #Randomly selected mosquito population plots - Fig S6 & S12  
@@ -575,6 +595,8 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
     
     fil.name.S6Reff <- "./Publication_Figures/Fig S6 Effective R0 over three years.png"
     
+    fil.name.S6Reff <- make_file_name(model_run_path,fil.name.S6Reff)
+    
     ggexport(S6.Reffect.Plot, filename = fil.name.S6Reff, width=630, height=202, ncol = 1,nrow = 1)
     
 #See R0 analysis code for R0 sensitivity analysis and variable by variable sensitivity ()
@@ -603,7 +625,7 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
                                  ncol = 1, nrow = 2)
     
     fil.name.AeCu <- "./Publication_Figures/Fig S12. Aedes and Culex pops over one year for publication.png"
-    
+    fil.name.AeCu<- make_file_name(model_run_path,fil.name.AeCu)
     ggexport(S12.MosqPop.Plot[1], filename = fil.name.AeCu, width=630, height=402, ncol = 1,nrow = 4)
   
     # Start at same Randomly selected year for effective R plot - Fig S8    
