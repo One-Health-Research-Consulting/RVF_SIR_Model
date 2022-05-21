@@ -66,3 +66,21 @@ write_param_vec_rds <- function(folder_path, param_vec){
 make_file_name <- function(model_run_path,file_name){
   sprintf("%s/%s",model_run_path,file_name)
 }
+
+
+wait_for_outputs <- function(load_path, counter = 0, counter_max = 3, sleep_time = 10*60){
+  counter <- counter + 1
+  if(!file.exists(load_path) & counter  == counter_max){
+    stop(sprintf("%s not found, make sure script 1 was run", load_path))
+  }
+  
+  if(!file.exists(load_path) & counter < counter_max){
+    print("sleep system")
+    Sys.sleep(sleep_time)
+    
+    wait_for_outputs(load_path, counter)
+  }
+  
+  return("output found")
+  
+}
