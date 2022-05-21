@@ -34,7 +34,9 @@ source(here("Model_Scripts", "Model 3 RVFV ODE SIRS function.R"))
 source(here("Functions", "Function 3 Plot simulations of a given time period.R"))
 #Source climate dataframe - this sources "RVFV Optimized Parameters for publication.R" 
 source(here("Model_Scripts", "Model 2 Mosquito hatch rates at daily timestep.R"))
+source(here("Functions", "Function 7 Manage model outputs.R"))
 
+model_run_path <- read_model_run_path()
 #Set parameter to check
 if(Check_Q == TRUE){
   param <- "q"
@@ -122,8 +124,9 @@ names(tab) <- c("Mean_Seroprevalence", "Extinction_Day", "Parameter_Value", "Par
 
 #Create file names
 data.file.title <- paste("Data for sensitivity analyses/", param, " vs Mean Seroprevalence and Extinction Day.Rdata", sep = "")
+data.file.title <- make_file_name(model_run_path,data.file.title)
 csv.file.title <- paste("Data for sensitivity analyses/", param, " vs Mean Seroprevalence and Extinction Day.csv", sep = "")
-
+csv.file.title <- make_file_name(model_run_path,csv.file.title)
 #Save data files
 save(tab, file = data.file.title )#Save the data
 write.csv(tab, csv.file.title, row.names = FALSE)
@@ -152,4 +155,6 @@ Fig <- ggarrange(plot.SeroP, plot.Extinct, draw = FALSE,#
                   ncol = 2, nrow = 1)
 
 fil.name <- paste0("Publication_Figures/Draft_Figures/Fig of ", param, " vs mean seroprevalence and persistence.png")
+
+fil.name <- make_file_name(model_run_path, fil.name)
 ggexport(Fig, filename = fil.name, width=522, height=305, ncol = 2,nrow = 1)

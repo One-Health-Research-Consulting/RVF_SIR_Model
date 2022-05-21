@@ -17,9 +17,13 @@ library(tibble)
 library(ggpubr)
 library(egg)
 
+source(here("Functions", "Function 7 Manage model outputs.R"))
+
+model_run_path <- read_model_run_path()
+
 
 #'Load data produced from the 2_RVF_LHC_Sensitivity_Analysis.R file
-load(here("Data for sensitivity analyses/", "SA_trans_Publication2022_05_09.Rdata"))
+load(here(model_run_path,"Data for sensitivity analyses/", "SA_trans_Publication.Rdata"))
 
 SA_trans <- data
 
@@ -135,5 +139,5 @@ SA <- SA%>%
   Estimate.Table <- rownames_to_column(Estimate.Table, "Parameter")
   
   #Write table 
-  write.csv(Estimate.Table, here("Publication_Figures", "Table 1 Estimate of PCC analysis of Sensitivity Analysis.csv"), row.names = FALSE)
+  write.csv(Estimate.Table, here(model_run_path,"Publication_Figures", "Table 1 Estimate of PCC analysis of Sensitivity Analysis.csv"), row.names = FALSE)
 

@@ -3,8 +3,13 @@
 #' Date: 5/3/2022
 #' 
 #' 
-#' Purpose: To add lines of the effect that varying the selected parameters have on the estimate of R0 at mean host and vector populations. 
+#' Purpose: To add lines of the effect that varying the selected parameters have
+#' on the estimate of R0 at mean host and vector populations. 
 #' This file can only be run after 3- Calculate and Plot_R0.R.
+
+source(here("Functions", "Function 7 Manage model outputs.R"))
+
+model_run_path <- read_model_run_path()
 
 #Define new population set
 mean_A_only <- c(NS = m_NS, NL = m_NL, Na = m_NAedes,  NC = 0) 
@@ -220,5 +225,5 @@ FigS7.R0 <- ggarrange( plot.Tasl_mean, plot.Tcsl_mean, plot.muA_mean, plot.muC_m
 
 
 
-
-ggexport(FigS7.R0, filename = "Publication_Figures/Fig S7 R0 change with params plots mean and mean peak pops.png", ncol = 2, nrow = 4, width = 880, height = 880)
+FigS7.R0.path <- make_file_name(model_run_path, "Publication_Figures/Fig S7 R0 change with params plots mean and mean peak pops.png")
+ggexport(FigS7.R0, filename = FigS7.R0.path, ncol = 2, nrow = 4, width = 880, height = 880)
