@@ -18,7 +18,10 @@ source(here("Functions", "Function 7 Manage model outputs.R"))
 
 model_run_path <- read_model_run_path()
 
-load_path <- sprintf("%s/rvfv_sim.Rdata")
+load_path <- sprintf("%s/rvfv_sim.Rdata",model_run_path)
+
+# if the file doesnt exist, wait 10 mins and check again
+wait_for_outputs(load_path = load_path)
 
 load(load_path)
 
