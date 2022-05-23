@@ -30,11 +30,13 @@ write_model_run_path <- function(folder_path){
 create_model_run_path <- function(param_vec){
   run_id <- get_run_id(param_vec)
   
+  print(sprintf("Model run id: %s", run_id))
+  
   folder_path <- create_model_folders(run_id)
   
   write_model_run_path(folder_path)
   
-  write_param_vec_rds(param_vec, folder_path)
+  write_param_vec_rds(folder_path, param_vec)
   
   return(folder_path)
 }
