@@ -98,7 +98,7 @@ times <- seq(from=start.time, to=end.time, by=timestep)
 #' ==============
 
  model_run_path <- create_model_run_path(param_vec = param_vec)
-
+ 
 #' Run the model
 #' =============
 start.run.time <- Sys.time()
@@ -356,7 +356,7 @@ names(Ratio_Tab) <- nmes.rat.tab
 if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_lower == FALSE & vax.25_higher == FALSE){
   if(No.q == FALSE & Only.q == FALSE & Vaccinate == FALSE){
 #write.csv(Ratio_Tab, "./Publication_Figures/Table S6 infected proportions host-vector ratios and seroprevalence_publication.csv", row.names = FALSE)
-    table_6_path <- sprintf("./%s%/Publication_Figures/Table S6 infected proportions host-vector ratios and seroprevalence_publication.csv")
+    table_6_path <- sprintf("./%s/Publication_Figures/Table S6 infected proportions host-vector ratios and seroprevalence_publication.csv", model_run_path)
   write.csv(Ratio_Tab, table_6_path, row.names = FALSE)
   }
 }
@@ -380,4 +380,7 @@ vxp <- (unlist(param_vec["vax"])/(unlist(param_vec["muL"])+ unlist(param_vec["g"
   
   rdata_path <- sprintf("%s/rvfv_sim.Rdata", model_run_path)
   
-  save(rdata_path)
+  save.image(file = rdata_path)
+  
+  
+  
