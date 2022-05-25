@@ -19,21 +19,24 @@ options(clustermq.scheduler = "multicore")
 
 # tar_make_future() configuration (okay to leave alone):
 # Install packages {{future}}, {{future.callr}}, and {{future.batchtools}} to allow use_targets() to configure tar_make_future() options.
+source("packages.R")
 
 # Load the R scripts with your custom functions:
-for (file1 in list.files("Functions", full.names = TRUE)) source(file1)
+for (file in list.files("Functions", full.names = TRUE)) source(file)
+for(run_funcs in list.files(pattern = "\\d[-_]",full.names = TRUE)) source(run_funcs)
+
 # source("other_functions.R") # Source other scripts as needed. # nolint
 
 # Replace the target list below with your own:
 list(
   tar_target(
-    name = create_run_path,
+    name = Create_Run_Path,
     command = create_model_run_path(),
     cue = targets::tar_cue("always")
   ),
   tar_target(
     name = RVFV_SIM,
-    command = source("1- Run RVFV Simulations.R"),
+    command = run_rvfv_simulations(Create_Run_Path),
     cue = targets::tar_cue("always")
   ),
   # tar_target(
@@ -43,12 +46,12 @@ list(
   # ),
   tar_target(
     name = Calc_Plot_R0,
-    command = trigger_calc_plot(RVFV_SIM),
+    command = calculate_plot_R0(RVFV_SIM),
     cue = targets::tar_cue("always")
   ),
   tar_target(
-    name = remove_run_path,
-    command = delete_model_run_path(),
+    name = Remove_Run_Path,
+    command = delete_model_run_path(Calc_Plot_R0),
     cue = targets::tar_cue("always")
   )
 )
