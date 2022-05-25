@@ -2,7 +2,7 @@
 
 
 get_run_id <- function(param_vec){
-  rlang::hash(list(param_vec,Sys.time()))
+  rlang::hash(Sys.time())
 }
 
 create_model_folders <- function(run_id,overwrite = FALSE){
@@ -27,16 +27,13 @@ write_model_run_path <- function(folder_path){
   saveRDS(object = folder_path,"model_runs/current_run_path.RDS")
 }
 
-create_model_run_path <- function(param_vec){
-  run_id <- get_run_id(param_vec)
-  
+create_model_run_path <- function(){
+  run_id <- get_run_id()
   print(sprintf("Model run id: %s", run_id))
   
   folder_path <- create_model_folders(run_id)
   
   write_model_run_path(folder_path)
-  
-  write_param_vec_rds(folder_path, param_vec)
   
   return(folder_path)
 }
