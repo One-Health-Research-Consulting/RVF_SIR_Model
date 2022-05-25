@@ -23,7 +23,7 @@ model_run_path <- read_model_run_path()
 
 
 #'Load data produced from the 2_RVF_LHC_Sensitivity_Analysis.R file
-load(here(model_run_path,"Data for sensitivity analyses/", "SA_trans_Publication.Rdata"))
+load(here(model_run_path,"Data for sensitivity analyses", "SA_trans_Publication.Rdata"))
 
 SA_trans <- data
 

@@ -9,6 +9,8 @@
 #' 
 #' Here S = number of susceptibles, I = number of infecteds, E = number exposed, V = number vaccinated, A = number with maternal immunity and R = number of recovereds.
 
+print("Starting RVF SIM")
+
 #Load packages:
 library(dplyr)
 library(egg)
@@ -19,6 +21,8 @@ library(zoo)
 library(here)
 library(ggpubr)
 library(stringr)
+
+print("packages loaded")
 
 #Set Scenarios  - User decides at the start
 Vaccinate <- FALSE #Change to true is you want to run a simulation where you vaccinate the sheep and select a vaccination %
@@ -48,6 +52,8 @@ source(here("Model_Scripts", "Model 2 Mosquito hatch rates at daily timestep.R")
 source(here("Functions", "Function 4 Calculate R0.R"))
 source(here("Functions", "Function 5 Calculate R0 dfs for plot.R"))
 source(here("Functions", "Function 7 Manage model outputs.R"))
+
+print("sourced functions")
 
 #Set parameters for various scenarios if they are selected
 if(Vaccinate == TRUE){
@@ -88,6 +94,9 @@ if(muC.25_lower == TRUE){
   param_vec["muC"] <- param_vec[["muC"]] * 0.75
 }
 
+
+print("created param_vec")
+
 #Set time
 start.time <- 0
 end.time <- tail(All_Precip$SimDay, 1) #3000#
@@ -96,8 +105,13 @@ times <- seq(from=start.time, to=end.time, by=timestep)
 
 #' Create model folders
 #' ==============
+print("creating model run folders")
+# read in model run path
+model_run_path <- read_model_run_path()
 
- model_run_path <- create_model_run_path(param_vec = param_vec)
+# write params
+write_param_vec_rds(model_run_path, param_vec)
+
  
 #' Run the model
 #' =============
