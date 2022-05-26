@@ -25,7 +25,7 @@ Vaccinate <- FALSE #Change to true is you want to run a simulation where you vac
   vax.proportion <- .26#Proportion of the flock user wants to simulate vaccination in
   vax.25_higher <- FALSE #Run simulation with a host vaccination rate that is 25% higher
   vax.25_lower <- FALSE #Run simulation with a host vaccination rate that is 25% higher
-No.q <- FALSE #No transovarial transmission
+No.q <- TRUE #No transovarial transmission
 Only.q <- FALSE #No horizontal transmission
 muC.25_higher <- FALSE #Run simulation with a Culex mortality rate that is 25% higher
 muC.25_lower <- FALSE #Run simulation with a Culex mortality rate that is 25% lower
@@ -88,6 +88,19 @@ if(muC.25_lower == TRUE){
   param_vec["muC"] <- param_vec[["muC"]] * 0.75
 }
 
+scenarios <- cbind("Vaccinate" = Vaccinate, "vax.25_higher" = vax.25_higher, "vax.25_lower" = vax.25_lower, "No.q" = No.q, "Only.q" = Only.q, "muC.25_higher" = muC.25_higher, "muC.25_lower" = muC.25_lower)
+ind <- which(scenarios, TRUE)
+if(ind == 0){
+  scenario.phrase <- "No Scenario"
+}else{
+  scenario.phrase <- unlist(dimnames(scenarios)[2])
+  scenario.phrase <- scenario.phrase[ind[2]]
+}
+
+today <- Sys.Date()
+Param.file.name <- paste0("Simulation Runs/RVF_Simulation_Parameters ", today, " For ", scenario.phrase, ".Rds")
+saveRDS(param_vec, file = here("Publication_Figures", Param.file.name))
+
 #Set time
 start.time <- 0
 end.time <- tail(All_Precip$SimDay, 1) #3000#
@@ -128,8 +141,14 @@ Yr<-as.data.frame(Yr)
 final.populations <- cbind(Yr, final.populations)
 final.populations$Year<-as.numeric(final.populations$Year)
 
-#Define hatching days
+#Define Season (MosqYr)
 final.populations <- Define.MosqYr(final.populations, All_Precip)
+
+#Save final.populations dataframe for run
+Data.file.name <- paste0("Simulation Runs/RVF_Simulation_Run ", today, " For ", scenario.phrase, ".Rds")
+saveRDS(final.populations, file = here("Publication_Figures", Data.file.name))
+
+
 #Set outbreak parameter to mark 2010 outbreak on the timeline
 outbreak2010 <- which(final.populations$Year == 2010 & final.populations$MosqDay == 163) #February 10, 2010
 
