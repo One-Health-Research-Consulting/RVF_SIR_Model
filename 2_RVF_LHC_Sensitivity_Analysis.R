@@ -24,10 +24,10 @@
 # library(parallel)
 # library(R.utils)
 # library(here)
-RVF_LHC_SA <- function(target){
+RVF_LHC_SA <- function(target, h = 4000){
 #Set scenario
 SA <- TRUE
-h <- 4000 #Number of simulations to run in sensitivity anlaysis
+h <- h #Number of simulations to run in sensitivity anlaysis
 
 #Source data and code
 #Functions for setting the hatching switches the data
