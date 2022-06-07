@@ -35,21 +35,21 @@ list(
     cue = targets::tar_cue("always")
   ),
   tar_target(
-    name = RVFV_SIM,
+    name = a_RVFV_SIM,
     command = run_rvfv_simulations(Create_Run_Path)
   ),
-  # tar_target(
-  #   name = LHC_SA,
-  #   command = RVF_LHC_SA(Create_Run_Path),
-  #   cue = targets::tar_cue("never") ## takes around 100hrs on 8 core machine
-  # ),
   tar_target(
-    name = Calc_Plot_R0,
-    command = calculate_plot_R0(RVFV_SIM)
+    name = b_LHC_SA,
+    command = RVF_LHC_SA(Create_Run_Path, h = 1),
+    cue = targets::tar_cue("never") ## takes around 100hrs on 8 core machine
+  ),
+  tar_target(
+    name = c_Calc_Plot_R0,
+    command = calculate_plot_R0(a_RVFV_SIM)
   ),
   tar_target(
     name = Remove_Run_Path,
-    command = delete_model_run_path(Calc_Plot_R0),
+    command = delete_model_run_path(c_Calc_Plot_R0),
     cue = targets::tar_cue("always")
   )
 )
