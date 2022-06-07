@@ -398,7 +398,9 @@ vxp <- (unlist(param_vec["vax"])/(unlist(param_vec["muL"])+ unlist(param_vec["g"
   
   save.image(file = rdata_path)
   
-  return("RVFV Sim")
+  return_value <- paste("RVFV Sim:",run_path_target,sep = " ")
+  
+  return(return_value)
   
 }
   

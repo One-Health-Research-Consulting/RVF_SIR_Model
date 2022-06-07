@@ -109,7 +109,7 @@ pts$X <- R0params[x]
 if(!names(R0params[x])=="biteA"){
   stop()
 }
-plot.biteA <- ggplot()+#
+plot.biteA <<- ggplot()+#
   geom_line(data = df_plot, aes(x = Value, y = R0_both, col = "1B"), size = 1, alpha = .5, linetype = "dashed")  +
   geom_line(data = df_plot, aes(x = Value, y = R0_A, col = "2A"), size = 1, alpha = .5, linetype = "dashed")  +
   geom_line(data = df_plot, aes(x = Value, y = R0_C, col = "3C"), size = 1, alpha = .5, linetype = "dashed")  +
@@ -132,7 +132,7 @@ pts$X <- R0params[x]
 if(!names(R0params[x])=="q"){
   stop()
 }
-plot.q <- ggplot()+#
+plot.q <<- ggplot()+#
   geom_line(data = df_plot, aes(x = Value, y = R0_both, col = "1B"), size = 1, alpha = .5, linetype = "dashed")  +
   geom_line(data = df_plot, aes(x = Value, y = R0_A, col = "2A"), size = 1, alpha = .5, linetype = "dashed")  +
   geom_line(data = df_plot, aes(x = Value, y = R0_C, col = "3C"), size = 1, alpha = .5, linetype = "dashed")  +
@@ -155,7 +155,7 @@ pts$X <- R0params[x]
 if(!names(R0params[x])=="Tcsl"){
   stop()
 }
-plot.Tcsl <- ggplot()+#
+plot.Tcsl <<- ggplot()+#
   geom_line(data = df_plot, aes(x = Value, y = R0_both, col = "1B"), size = 1, alpha = .5, linetype = "dashed")  +
   geom_line(data = df_plot, aes(x = Value, y = R0_A, col = "2A"), size = 1, alpha = .5, linetype = "dashed")  +
   geom_line(data = df_plot, aes(x = Value, y = R0_C, col = "3C"), size = 1, alpha = .5, linetype = "dashed")  +
@@ -178,7 +178,7 @@ pts$X <- R0params[x]
 if(!names(R0params[x])=="muC"){
   stop()
 }
-plot.muC <- ggplot()+#
+plot.muC <<- ggplot()+#
   geom_line(data = df_plot, aes(x = Value, y = R0_both, col = "1B"), size = 1, alpha = .5, linetype = "dashed")  +
   geom_line(data = df_plot, aes(x = Value, y = R0_A, col = "2A"), size = 1, alpha = .5, linetype = "dashed")  +
   geom_line(data = df_plot, aes(x = Value, y = R0_C, col = "3C"), size = 1, alpha = .5, linetype = "dashed")  +
@@ -201,7 +201,7 @@ pts$X <- R0params[x]
 if(!names(R0params[x])=="biteC"){
   stop()
 }
-plot.biteC <- ggplot()+#
+plot.biteC <<- ggplot()+#
   geom_line(data = df_plot, aes(x = Value, y = R0_both, col = "1B"), size = 1, alpha = .5, linetype = "dashed")  +
   geom_line(data = df_plot, aes(x = Value, y = R0_A, col = "2A"), size = 1, alpha = .5, linetype = "dashed")  +
   geom_line(data = df_plot, aes(x = Value, y = R0_C, col = "3C"), size = 1, alpha = .5, linetype = "dashed")  +

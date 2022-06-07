@@ -26,8 +26,8 @@
 # library(here)
 RVF_LHC_SA <- function(target, h = 4000){
 #Set scenario
-SA <- TRUE
-h <- h #Number of simulations to run in sensitivity anlaysis
+SA <<- TRUE
+h <<- h #Number of simulations to run in sensitivity analysis
 
 #Source data and code
 #Functions for setting the hatching switches the data
@@ -48,7 +48,7 @@ model_run_path <- target
   
 #Set timing
 start.time <- 0
-end.time <- nrow(All_Precip) 
+end.time <<- nrow(All_Precip) 
 timestep <- 1
 times <- seq(from = start.time, 
              to = end.time, 

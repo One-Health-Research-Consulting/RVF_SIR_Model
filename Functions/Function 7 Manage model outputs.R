@@ -1,8 +1,8 @@
 ## create folder for outputs from hash of params vector
 
 
-get_run_id <- function(){
-  rlang::hash(Sys.time())
+get_run_id <- function(value = Sys.time()){
+  rlang::hash(value)
 }
 
 create_model_folders <- function(run_id,overwrite = FALSE){
@@ -10,7 +10,7 @@ create_model_folders <- function(run_id,overwrite = FALSE){
   dir.create(folder_path,recursive = TRUE)
 
   ## Create set of subfolders for different outputs ----  
-  sub_folders <- c("Publication_Figures/Draft_Figures","Data for sensistivity analysis" )
+  sub_folders <- c("Publication_Figures/Draft_Figures","Data for sensitivity analyses" )
   
   for(folder in sub_folders){
     sub_folder_path <- sprintf("%s/%s", folder_path, folder)
@@ -25,8 +25,8 @@ write_model_run_path <- function(folder_path){
   saveRDS(object = folder_path,"model_runs/current_run_path.RDS")
 }
 
-create_model_run_path <- function(){
-  run_id <- get_run_id()
+create_model_run_path <- function(value = Sys.time()){
+  run_id <- get_run_id(value)
   print(sprintf("Model run id: %s", run_id))
   
   folder_path <- create_model_folders(run_id)
@@ -47,10 +47,15 @@ read_model_run_path <- function(){
 
 delete_model_run_path <- function(target,...){
   dep_obj <- paste(target,...,collapse = ", ")
+  pathRemoved <- readRDS("model_runs/current_run_path.RDS")
   unlink("model_runs/current_run_path.RDS")
-  message("Current_run_path.RDS removed. 
+  message(glue::glue("Current_run_path.RDS removed.
+          Any outputs were saved in {pathRemoved}
+  
           Use set_model_run_path to interactively 
-          set the model run path")
+          set the model run path"))
+
+  
   return("current_run_path.RDS removed")
 }
 

@@ -40,8 +40,8 @@ list(
   ),
   tar_target(
     name = b_LHC_SA,
-    command = RVF_LHC_SA(Create_Run_Path, h = 1),
-    cue = targets::tar_cue("never") ## takes around 100hrs on 8 core machine
+    command = RVF_LHC_SA(Create_Run_Path, h = 1)
+    #cue = targets::tar_cue("never") ## 4k sims takes around 100hrs on 8 core machine
   ),
   tar_target(
     name = c_Calc_Plot_R0,
