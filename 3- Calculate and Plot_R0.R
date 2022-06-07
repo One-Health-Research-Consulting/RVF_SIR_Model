@@ -4,12 +4,15 @@
 #' 
 #' 
 #' Purpose: To calculate R0 at different population sizes, produce Figures S7 and S8. Figure S7 is produced using the mean peak vector populations. 
+calculate_plot_R0 <- function(rvfv_sim_tar){
 
-library(here)
-#Only need these libraries if you aren't sourcing the 1- Run RVFV Simulations.R file.
-library(stringr)
-library(ggplot2)
-library(ggpubr)
+print(rvfv_sim_tar)
+
+# library(here)
+# #Only need these libraries if you aren't sourcing the 1- Run RVFV Simulations.R file.
+# library(stringr)
+# library(ggplot2)
+# library(ggpubr)
 
 #Source Parameters
 #source(here("", "1- Run RVFV Simulations.R")) ## ideall would save an .Rdata file and reload
@@ -27,11 +30,11 @@ wait_for_outputs(load_path = load_path)
 load(load_path)
 
 # Define popluation sizes for different R0 scenarios
-mean_popn   <- c(NS = m_NS, NL = m_NL, Na = m_NAedes,       NC = m_NC) 
-peak_popn   <- c(NS = m_NS, NL = m_NL, Na = m_peak_NAedes,  NC = m_peak_NC) 
-max_popn    <- c(NS = m_NS, NL = m_NL, Na = max_NAedes,     NC = max_NC) 
-peak_A_only <- c(NS = m_NS, NL = m_NL, Na = m_peak_NAedes,  NC = 0) 
-peak_C_only <- c(NS = m_NS, NL = m_NL, Na = 0,              NC = m_peak_NC) 
+mean_popn   <<- c(NS = m_NS, NL = m_NL, Na = m_NAedes,       NC = m_NC) 
+peak_popn   <<- c(NS = m_NS, NL = m_NL, Na = m_peak_NAedes,  NC = m_peak_NC) 
+max_popn    <<- c(NS = m_NS, NL = m_NL, Na = max_NAedes,     NC = max_NC) 
+peak_A_only <<- c(NS = m_NS, NL = m_NL, Na = m_peak_NAedes,  NC = 0) 
+peak_C_only <<- c(NS = m_NS, NL = m_NL, Na = 0,              NC = m_peak_NC) 
 
 
 ################################################################################
@@ -40,7 +43,7 @@ emt <- list()
 dat <- data.frame()
 
 #Give vector of variables that you want to plot - note if add or change order will need to change order of plots below and in file to plot supplemental figure at mean pops
-R0_vec <- c("Tasl", "muA", "biteA", "q", "Tcsl", "muC", "biteC")
+R0_vec <<- c("Tasl", "muA", "biteA", "q", "Tcsl", "muC", "biteC")
 
 #Get a list of all the data frames. Each dataframe has the value of R0 for each population size as you vary the variables listed in R0_vec
 R0_plot_dat <-  lst.R0.var(empty.dat = dat, empty.lst = emt, both.pop = peak_popn, A.pop = peak_A_only, C.pop = peak_C_only, R0params.func = R0params, get.fun.1 = calc_R0, var_vec = R0_vec)
@@ -60,7 +63,7 @@ pts$X <- R0params[x]
 if(!names(R0params[x])=="Tasl"){
   stop()
 }
-plot.Tasl <- ggplot()+#
+plot.Tasl <<- ggplot()+#
   geom_line(data = df_plot, aes(x = Value, y = R0_both, col = "1B"), size = 1, alpha = .5, linetype = "dashed")  +
   geom_line(data = df_plot, aes(x = Value, y = R0_A, col = "2A"), size = 1, alpha = .5, linetype = "dashed")  +
   geom_line(data = df_plot, aes(x = Value, y = R0_C, col = "3C"), size = 1, alpha = .5, linetype = "dashed")  +
@@ -83,7 +86,7 @@ pts$X <- R0params[x]
 if(!names(R0params[x])=="muA"){
   stop()
 }
-plot.muA <- ggplot()+#
+plot.muA <<- ggplot()+#
   geom_line(data = df_plot, aes(x = Value, y = R0_both, col = "1B"), size = 1, alpha = .5, linetype = "dashed")  +
   geom_line(data = df_plot, aes(x = Value, y = R0_A, col = "2A"), size = 1, alpha = .5, linetype = "dashed")  +
   geom_line(data = df_plot, aes(x = Value, y = R0_C, col = "3C"), size = 1, alpha = .5, linetype = "dashed")  +
@@ -317,3 +320,6 @@ R0_peak <- round(calc_R0(R0params, peak_popn), digits=3)
 cat("Mean popns:      R0 =", round(calc_R0(R0params, mean_popn), digits=3), "\n")
 cat("Peak popns:      R0 =", round(calc_R0(R0params, peak_popn), digits=3), "\n")
 cat("Max popns:       R0 =", round(calc_R0(R0params, max_popn), digits=3), "\n")
+
+return("Calculate and Plot R0 Completed")
+}
