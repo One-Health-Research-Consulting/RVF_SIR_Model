@@ -119,7 +119,7 @@ R0params <- c( DaysCumRainA=DaysCumRainA, DaysCumRainC=DaysCumRainC, TempAC=Temp
 #Latin hypercube sensitivity analysis multilevel analysis
 if(SA == TRUE){
                         lhs<-maximinLHS(h,49)
-                        params.matrix_trans <- cbind(DaysCumRainA, DaysCumRainC, TempAC, MinRainA, MinRainC,  DaysCanHatchA, CulexHatchDelay,
+                        params.matrix_trans <<- cbind(DaysCumRainA, DaysCumRainC, TempAC, MinRainA, MinRainC,  DaysCanHatchA, CulexHatchDelay,
                                                      sigma_sl = lhs[, 10] * (sigma_sl.max - sigma_sl.min) + sigma_sl.min, 
                                                      g, muS, soldS, 
                                                      rhoS = lhs[, 14] * (rhoS.max - rhoS.min) + rhoS.min, 
