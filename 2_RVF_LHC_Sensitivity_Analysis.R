@@ -14,17 +14,17 @@
 #'* Mean size of an outbreak 
 #'* Maximum size of a single outbreak
 #' ###############################################
-#Load libraries
-library(codetools)
-library(ggplot2)
-library(deSolve)
-library(zoo)
-library(dplyr)
-library(lhs)
-library(parallel)
-library(R.utils)
-library(here)
-
+# #Load libraries
+# library(codetools)
+# library(ggplot2)
+# library(deSolve)
+# library(zoo)
+# library(dplyr)
+# library(lhs)
+# library(parallel)
+# library(R.utils)
+# library(here)
+RVF_LHC_SA <- function(target){
 #Set scenario
 SA <- TRUE
 h <- 4000 #Number of simulations to run in sensitivity anlaysis
@@ -41,7 +41,7 @@ source(here("Functions", "Function 1 Define Functions for Output of Sensitivity 
 source(here("Functions", "Function 6 Latin Hypercube Analysis.R"))
 source(here("Functions", "Function 7 Manage model outputs.R"))
 
-model_run_path <- read_model_run_path()
+model_run_path <- target
 
 # Load precipitation and Temp data 
   All_Precip <- read.csv(here("", "Combined Temp and Precip Data for RVF Simulation.csv"))
@@ -128,4 +128,5 @@ dat.file <- paste(model_run_path, "/Data for sensitivity analyses/SA_trans_Publi
 # 
 # Save the data
 save(data, file = dat.file)#Save the data
-  
+
+}
