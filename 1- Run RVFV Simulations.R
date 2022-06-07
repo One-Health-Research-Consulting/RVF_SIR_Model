@@ -9,20 +9,22 @@
 #' 
 #' Here S = number of susceptibles, I = number of infecteds, E = number exposed, V = number vaccinated, A = number with maternal immunity and R = number of recovereds.
 
+run_rvfv_simulations <- function(run_path_target){
+
 print("Starting RVF SIM")
 
-#Load packages:
-library(dplyr)
-library(egg)
-library(codetools)
-library(ggplot2)
-library(deSolve)
-library(zoo)
-library(here)
-library(ggpubr)
-library(stringr)
-
-print("packages loaded")
+# #Load packages:
+# library(dplyr)
+# library(egg)
+# library(codetools)
+# library(ggplot2)
+# library(deSolve)
+# library(zoo)
+# library(here)
+# library(ggpubr)
+# library(stringr)
+# 
+# print("packages loaded")
 
 #Set Scenarios  - User decides at the start
 Vaccinate <- FALSE #Change to true is you want to run a simulation where you vaccinate the sheep and select a vaccination %
@@ -35,7 +37,7 @@ muC.25_higher <- FALSE #Run simulation with a Culex mortality rate that is 25% h
 muC.25_lower <- FALSE #Run simulation with a Culex mortality rate that is 25% lower
 
 #Always False:
-SA <- FALSE #This should always be FALSE: If you want to run a sensitivity analysis, you need to use a different simulation file 
+SA <<- FALSE #This should always be FALSE: If you want to run a sensitivity analysis, you need to use a different simulation file 
 
 set.seed(6242015)#This is to ensure the approxfun function always outputs the same mosquito hatching patterns
 
@@ -107,7 +109,7 @@ times <- seq(from=start.time, to=end.time, by=timestep)
 #' ==============
 print("creating model run folders")
 # read in model run path
-model_run_path <- read_model_run_path()
+model_run_path <- run_path_target
 
 # write params
 write_param_vec_rds(model_run_path, param_vec)
@@ -155,7 +157,7 @@ outbreak2010 <- which(final.populations$Year == 2010 & final.populations$MosqDay
 
 ###Plots to check results quickly, to plot all together use the multiplot analysis file
 #Set ggplot theme
-thesis_theme <- theme_classic() +
+thesis_theme <<- theme_classic() +
   theme(axis.text = element_text(size = 10, colour = "black")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
   theme(axis.title = element_text(size = rel(1.5))) + 
@@ -245,10 +247,10 @@ ALP_rates <- final.populations%>%
 CLP_rates <- final.populations%>%
   filter(SCLP >=1)
 
-mdev_ALP <- mean(ALP_rates$dev_ALP) 
-mmu_ALP <- mean(ALP_rates$muALP) 
+mdev_ALP <<- mean(ALP_rates$dev_ALP) 
+mmu_ALP <<- mean(ALP_rates$muALP) 
 
-mdev_CLP <- mean(CLP_rates$dev_CLP) 
+mdev_CLP <<- mean(CLP_rates$dev_CLP) 
 mmu_CLP <- mean(CLP_rates$muCLP) 
 
   #Calculate the mean population sizes
@@ -256,21 +258,21 @@ final.populations <- final.populations%>%
   mutate(NSL = NS + NL)%>%
   mutate(All_AEggs = SAE + IAE)
 
-m_NS <- mean(final.populations$NS, na.rm = TRUE)
-m_NL <- mean(final.populations$NL, na.rm = TRUE)
-m_NSL <- mean(final.populations$NSL, na.rm = TRUE)
-m_AE <- mean(final.populations$All_AEggs, na.rm = TRUE)
+m_NS <<- mean(final.populations$NS, na.rm = TRUE)
+m_NL <<- mean(final.populations$NL, na.rm = TRUE)
+m_NSL <<- mean(final.populations$NSL, na.rm = TRUE)
+m_AE <<- mean(final.populations$All_AEggs, na.rm = TRUE)
 
 #Mean population sizes across ALL years when a mosquito of the relevant species is present
 #Aedes
-m_NAedes <- Get.Mean.Vec.Pops(final.populations, "NAedes")[1]
-max_NAedes <- Get.Mean.Vec.Pops(final.populations, "NAedes")[2]
-m_peak_NAedes <- Get.Mean.Vec.Pops(final.populations, "NAedes")[3]
+m_NAedes <<- Get.Mean.Vec.Pops(final.populations, "NAedes")[1]
+max_NAedes <<- Get.Mean.Vec.Pops(final.populations, "NAedes")[2]
+m_peak_NAedes <<- Get.Mean.Vec.Pops(final.populations, "NAedes")[3]
 
 #Culex
-m_NC <- Get.Mean.Vec.Pops(final.populations, "NC")[1]
-max_NC <- Get.Mean.Vec.Pops(final.populations, "NC")[2]
-m_peak_NC <- Get.Mean.Vec.Pops(final.populations, "NC")[3]
+m_NC <<- Get.Mean.Vec.Pops(final.populations, "NC")[1]
+max_NC <<- Get.Mean.Vec.Pops(final.populations, "NC")[2]
+m_peak_NC <<- Get.Mean.Vec.Pops(final.populations, "NC")[3]
 
 #Table S6 
 #The proportion of Aedes eggs that are infected
@@ -396,5 +398,7 @@ vxp <- (unlist(param_vec["vax"])/(unlist(param_vec["muL"])+ unlist(param_vec["g"
   
   save.image(file = rdata_path)
   
+  return("RVFV Sim")
   
+}
   
