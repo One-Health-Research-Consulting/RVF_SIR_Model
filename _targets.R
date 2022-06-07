@@ -22,7 +22,7 @@ options(clustermq.scheduler = "multicore")
 source("packages.R")
 
 # Load the R scripts with your custom functions:
-for (file in list.files("Functions", full.names = TRUE)) source(file)
+for (file in list.files("Functions",pattern = "Function [7,8]", full.names = TRUE)) source(file)
 for(run_funcs in list.files(pattern = "\\d[-_]",full.names = TRUE)) source(run_funcs)
 
 # source("other_functions.R") # Source other scripts as needed. # nolint
@@ -36,18 +36,16 @@ list(
   ),
   tar_target(
     name = RVFV_SIM,
-    command = run_rvfv_simulations(Create_Run_Path),
-    cue = targets::tar_cue("always")
+    command = run_rvfv_simulations(Create_Run_Path)
   ),
   # tar_target(
   #   name = LHC_SA,
-  #   command = source("2_RVF_LHC_Sensitivity_Analysis.R"),
+  #   command = RVF_LHC_SA(Create_Run_Path),
   #   cue = targets::tar_cue("never") ## takes around 100hrs on 8 core machine
   # ),
   tar_target(
     name = Calc_Plot_R0,
-    command = calculate_plot_R0(RVFV_SIM),
-    cue = targets::tar_cue("always")
+    command = calculate_plot_R0(RVFV_SIM)
   ),
   tar_target(
     name = Remove_Run_Path,
