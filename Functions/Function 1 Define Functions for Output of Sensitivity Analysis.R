@@ -3,8 +3,8 @@
 #' author: "Mindy Rostal"
 #' date: "May 5, 2022"
 #' ---
-library(stringr)
-library(rlang)
+#' library(stringr)
+#' library(rlang)
 
 #Add MosqYear/Month info to final.populations database 
 
