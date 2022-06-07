@@ -5,9 +5,9 @@
 #' 
 #' Purpose: To calculate R0 (or effective R0) at different population sizes, produce Figures S6, S7 and S8 and parts of Figures 1 and S9. Figure S7 is produced using the mean peak vector populations. 
 
-#Libraries 
-library(dplyr)
-library(ggplot2)
+# #Libraries 
+# library(dplyr)
+# library(ggplot2)
 
 theme_louise <- function () { 
   theme_grey(base_size=14, base_family="Avenir") 

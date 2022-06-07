@@ -1,7 +1,7 @@
 ## create folder for outputs from hash of params vector
 
 
-get_run_id <- function(param_vec){
+get_run_id <- function(){
   rlang::hash(Sys.time())
 }
 
@@ -16,8 +16,6 @@ create_model_folders <- function(run_id,overwrite = FALSE){
     sub_folder_path <- sprintf("%s/%s", folder_path, folder)
     dir.create(sub_folder_path,recursive = TRUE)
   }
-  
-  
   
   return(folder_path)
 }
@@ -47,8 +45,13 @@ read_model_run_path <- function(){
   readRDS("model_runs/current_run_path.RDS")
 }
 
-delete_model_run_path <- function(){
+delete_model_run_path <- function(target,...){
+  dep_obj <- paste(target,...,collapse = ", ")
   unlink("model_runs/current_run_path.RDS")
+  message("Current_run_path.RDS removed. 
+          Use set_model_run_path to interactively 
+          set the model run path")
+  return("current_run_path.RDS removed")
 }
 
 
