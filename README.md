@@ -1,6 +1,11 @@
 # RVF_SIR_Model
 Repository of code to simulate 34-years of RVFV transmission at a single pan in central South Africa.
 
+This project uses renv for dependency management.   
+1. install the `renv` [package](https://rstudio.github.io/renv/index.html)
+2. run `renv::activate()`
+3. run `renv::restore()` to install the right versions of packages (this may take a while)
+
 To run the simulations, run the scripts in order according to the file number. If the file name starts with the term Function or Model, then it should not be run by the user and will be called by the main scripts. If a file name starts with the term Analysis, then it may be run by the user depending on the level of analysis they would like to do. The main scripts will allow the user to run the 34-year simulation with the option of various scenarios (e.g., vaccination), run the Latin hypercube sensitivity analysis, run the variable-by-variable analyses and estimate R_0. The analysis scripts will produce plots and analyze the Latin hypercube results. The model scripts contain the parameter list, the mosquito hatching determination and the ODE function. The function scripts have all other functions defined for the analyses. 
 
 1. Run the simulation:
