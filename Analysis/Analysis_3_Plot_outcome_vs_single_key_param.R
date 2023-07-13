@@ -12,13 +12,14 @@ library(stringr)
 library(tidyr)
 
 #Set parameters
-Check_Q <- TRUE
-Check_Tasl <- FALSE
+Check_Q <- FALSE
+Check_Tasl <- TRUE
 Check_Tsla <- FALSE
 Check_epsilon <- FALSE
 
 #Always False:
 SA <- FALSE #Sensitivity analysis, needs a different simulation file 
+Var_Select <- FALSE #This should always be FALSE: If you want to run a sensitivity analysis, you need to use a different simulation file 
 Vaccinate <- FALSE #Change to true is you want to run a simulation where you vaccinate the sheep and select a vaccination %
 No.q <- FALSE #No transovarial transmission
 Only.q <- FALSE #No horizontal transmission
@@ -27,13 +28,13 @@ set.seed(6242015)#This is to ensure the approxfun function always outputs the sa
 
 #Source other code
 #Source assessment functions
-source(here("Functions", "Function 1 Define Functions for Output of Sensitivity Analysis.R"))
+source(here("All_Files_For_Publication/Functions", "Function 1 Define Functions for Output of Sensitivity Analysis.R"))
 #Load ODE function
-source(here("Model_Scripts", "Model 3 RVFV ODE SIRS function.R"))
+source(here("All_Files_For_Publication/Model_Scripts", "Model 3 RVFV ODE SIRS function.R"))
 #Load plotting functions
-source(here("Functions", "Function 3 Plot simulations of a given time period.R"))
+source(here("All_Files_For_Publication/Functions", "Function 3 Plot simulations of a given time period.R"))
 #Source climate dataframe - this sources "RVFV Optimized Parameters for publication.R" 
-source(here("Model_Scripts", "Model 2 Mosquito hatch rates at daily timestep.R"))
+source(here("All_Files_For_Publication/Model_Scripts", "Model 2 Mosquito hatch rates at daily timestep.R"))
 
 #Set parameter to check
 if(Check_Q == TRUE){
@@ -51,7 +52,7 @@ if(Check_epsilon == TRUE){
 }
 
 #Create vector of values to simulate, including the value for that parameter that is used in the model
-vec <- seq(0,1, 0.05) 
+vec <- seq(0,1, 0.05) #0.3
 
 vec <- c(vec, param_vec[param])
 
@@ -121,8 +122,8 @@ j <- j+1
 names(tab) <- c("Mean_Seroprevalence", "Extinction_Day", "Parameter_Value", "Parameter_Tested")
 
 #Create file names
-data.file.title <- paste("Data for sensitivity analyses/", param, " vs Mean Seroprevalence and Extinction Day.Rdata", sep = "")
-csv.file.title <- paste("Data for sensitivity analyses/", param, " vs Mean Seroprevalence and Extinction Day.csv", sep = "")
+data.file.title <- paste("./All_Files_For_Publication/Data_for_sensitivity_analysis/", param, " vs Mean Seroprevalence and Extinction Day.Rdata", sep = "")
+csv.file.title <- paste("./All_Files_For_Publication/Data_for_sensitivity_analysis/", param, " vs Mean Seroprevalence and Extinction Day.csv", sep = "")
 
 #Save data files
 save(tab, file = data.file.title )#Save the data
@@ -151,5 +152,5 @@ Fig <- ggarrange(plot.SeroP, plot.Extinct, draw = FALSE,#
                   labels = c("A", "B"), #
                   ncol = 2, nrow = 1)
 
-fil.name <- paste0("Publication_Figures/Draft_Figures/Fig of ", param, " vs mean seroprevalence and persistence.png")
+fil.name <- paste0("./All_Files_For_Publication/Data_for_sensitivity_analysis/Fig of ", param, " vs mean seroprevalence and persistence.png")
 ggexport(Fig, filename = fil.name, width=522, height=305, ncol = 2,nrow = 1)

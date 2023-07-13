@@ -11,9 +11,9 @@ library(here)
 #library(ggplot2)
 
 #Source Parameters
-source(here("", "1- Run RVFV Simulations.R"))
-source(here("Functions", "Function 4 Calculate R0.R"))
-source(here("Functions", "Function 5 Calculate R0 dfs for plot.R"))
+source(here("All_Files_For_Publication", "1- Run RVFV Simulations.R"))
+source(here("All_Files_For_Publication/Functions", "Function 4 Calculate R0.R"))
+source(here("All_Files_For_Publication/Functions", "Function 5 Calculate R0 dfs for plot.R"))
 
 # Define popluation sizes for different R0 scenarios
 mean_popn   <- c(NS = m_NS, NL = m_NL, Na = m_NAedes,       NC = m_NC) 
@@ -22,6 +22,14 @@ max_popn    <- c(NS = m_NS, NL = m_NL, Na = max_NAedes,     NC = max_NC)
 peak_A_only <- c(NS = m_NS, NL = m_NL, Na = m_peak_NAedes,  NC = 0) 
 peak_C_only <- c(NS = m_NS, NL = m_NL, Na = 0,              NC = m_peak_NC) 
 
+#Set ggplot theme for printing PDFs (for pngs change to thesis_theme and adjust saving file type)
+plot_theme <- theme_classic() +
+  theme(axis.text = element_text(size = 5.5, colour = "black")) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  theme(axis.title = element_text(size = 10)) + 
+  theme(legend.text = element_text(size = 5)) + 
+  theme(legend.title = element_text(size = 7)) + 
+  theme(plot.title = element_text(size=16))
 
 ################################################################################
 #Prepare empty df and lists
@@ -62,7 +70,7 @@ plot.Tasl <- ggplot()+#
                      labels = expression(paste(italic("Aedes"), " and ", italic("Culex")),  paste(italic("Aedes"), " Only"), 
                                          paste(italic("Culex"), " Only"))) +
   labs(x = expression(paste(italic("Aedes"), "-to-Host Transmission Rate")), y = expression(paste("R" [0]))) +
-  thesis_theme +
+  plot_theme +
   theme(legend.text.align = 0)
 
 #muA
@@ -85,7 +93,7 @@ plot.muA <- ggplot()+#
                      labels = expression(paste(italic("Aedes"), " and ", italic("Culex")),  paste(italic("Aedes"), " Only"), 
                                          paste(italic("Culex"), " Only"))) +
   labs(x = expression(paste(italic("Aedes"), " Mortality Rate")), y = expression(paste("R" [0]))) +
-  thesis_theme+
+  plot_theme+
   theme(legend.text.align = 0)
 
 #biteA
@@ -108,7 +116,7 @@ plot.biteA <- ggplot()+#
                      labels = expression(paste(italic("Aedes"), " and ", italic("Culex")),  paste(italic("Aedes"), " Only"), 
                                          paste(italic("Culex"), " Only"))) +
   labs(x = expression(paste(italic("Aedes"), " Bite Rate")), y = expression(paste("R" [0]))) +
-  thesis_theme +
+  plot_theme +
   theme(legend.text.align = 0)
 
 #q
@@ -131,7 +139,7 @@ plot.q <- ggplot()+#
                      labels = expression(paste(italic("Aedes"), " and ", italic("Culex")),  paste(italic("Aedes"), " Only"), 
                                          paste(italic("Culex"), " Only"))) +
   labs(x = "Transovarial Transmission Rate", y = expression(paste("R" [0]))) +
-  thesis_theme +
+  plot_theme +
   theme(legend.text.align = 0)
 
 #Tcsl
@@ -154,7 +162,7 @@ plot.Tcsl <- ggplot()+#
                      labels = expression(paste(italic("Aedes"), " and ", italic("Culex")),  paste(italic("Aedes"), " Only"), 
                                          paste(italic("Culex"), " Only"))) +
   labs(x = expression(paste(italic("Culex"), "-to-Host Transmission Rate")), y = expression(paste("R" [0]))) +
-  thesis_theme +
+  plot_theme +
   theme(legend.text.align = 0)
 
 #muC
@@ -177,7 +185,7 @@ plot.muC <- ggplot()+#
                      labels = expression(paste(italic("Aedes"), " and ", italic("Culex")),  paste(italic("Aedes"), " Only"), 
                                          paste(italic("Culex"), " Only"))) +
   labs(x = expression(paste(italic("Culex"), " Mortality Rate")), y = expression(paste("R" [0]))) +
-  thesis_theme +
+  plot_theme +
   theme(legend.text.align = 0)
 
 #biteC
@@ -200,7 +208,7 @@ plot.biteC <- ggplot()+#
                      labels = expression(paste(italic("Aedes"), " and ", italic("Culex")),  paste(italic("Aedes"), " Only"), 
                                          paste(italic("Culex"), " Only"))) +
   labs(x = expression(paste(italic("Culex"), " Bite Rate")), y = expression(paste("R" [0]))) +
-  thesis_theme +
+  plot_theme +
   theme(legend.text.align = 0)
 
 
@@ -216,12 +224,13 @@ FigS7.R0.init <- ggarrange( plot.Tasl, plot.Tcsl, plot.muA, plot.muC, plot.biteA
 
 
 
-
-ggexport(FigS7.R0.init, filename = "Publication_Figures/Draft_Figures/Fig S7_draft R0 change with params plots mean peak only.png", 
-         ncol = 2, nrow = 4, width = 800, height = 880)
+ggexport(FigS7.R0.init, filename = "Publication_Figures/Fig S7_draft R0 change with params plots mean peak only.pdf", 
+         ncol = 2, nrow = 4, width = 5, height = 7)
+#ggexport(FigS7.R0.init, filename = "Publication_Figures/Fig S7_draft R0 change with params plots mean peak only.png", 
+#         ncol = 2, nrow = 4, width = 800, height = 880)
 
 #Plot Fig S7 which adds three lines of R0 at the mean populations to Fig S8
-source(here("Analysis", "Analysis 5 Plot R0 changes at peak and mean populations.R"))
+source(here("All_Files_For_Publication/Analysis", "Analysis_5 Plot R0 changes at peak and mean populations.R"))
 
 ###############################################################
 # Figure S8 Vary each parameter to see the affect on R0
@@ -265,7 +274,7 @@ All.param.plot <- ggplot(All.param.plot.dat) +
   geom_boxplot(aes(x = param, y = R0, colour = TaxaGroup)) + 
   scale_x_discrete(labels=expression(paste(italic("Culex"), " bite rate"), paste("Transmission ", italic("Culex"), "-to-ruminants"), 
                                      paste("Transmission ruminants-to-", italic("Culex")), paste(italic("Culex"), " carrying capacity"), 
-                                     paste(italic("Culex"), " egg mortality rate"), paste("Adult ", italic("Culex"), " death rate"), 
+                                     paste(italic("Culex"), " egg mortality rate"), paste("Adult ", italic("Culex"), " mortality rate"), 
                                      paste("Days before ", italic("Culex"), " first blood meal"), paste(italic("Culex"), " hatching rate"), 
                                      paste("Survival fraction of ", italic("Culex"), " larve/pupae"), 
                                      paste("Proportion of infected ", italic("Culex"), " eggs that survive"), paste("Number of ", italic("Culex"), " eggs laid"), 
@@ -277,21 +286,23 @@ All.param.plot <- ggplot(All.param.plot.dat) +
                                      paste(italic("Aedes"), " carrying capacity"), paste(italic("Aedes"), " egg mortality rate"), 
                                      paste(italic("Aedes"), " mortality rate"), paste("Number of ", italic("Aedes"), " eggs laid"), 
                                      paste(italic("Aedes"), " egg laying rate"), paste("Host carrying capacity"), paste("Rate maternal antibodies wane"), 
-                                     paste("RVFV abortion rate"), paste("Lamb specific RVF mortality"), paste("Lamb death rate"), 
+                                     paste("RVFV abortion rate"), paste("Lamb specific RVF mortality"), paste("Lamb mortality rate"), 
                                      paste("Rate lamb are purchased at"), paste("Lamb birth rate"), paste("Sheep specific RVF mortality"), 
-                                     paste("Rate sheep are sold"), paste("Sheep death rate"), paste("Lamb growth rate"), paste("Host recovery rate"), 
+                                     paste("Rate sheep are sold"), paste("Sheep mortality rate"), paste("Lamb growth rate"), paste("Host recovery rate"), 
                                      paste("Days ", italic("Aedes"), " can hatch"), paste("Days after ", italic("Aedes Culex"), " can hatch"), 
                                      paste("Minimum rainfall for ", italic("Culex"), " to hatch"), paste("Minimum rainfall for ", italic("Aedes"), " to hatch"), 
                                      paste("Temperature threshold to hatch mosquitoes"), paste("Days of rainfall to hatch ", italic("Culex")), paste("Days of rainfall to hatch ", italic("Aedes")) ))+
-  scale_color_manual(name = "Type of Parameter", breaks = unique(All.param.plot.dat$TaxaGroup), values = c("darkgreen", "orange",  "Indianred2", "darkslategray3" )) +
+  scale_color_manual(name = "Type of \nParameter", breaks = unique(All.param.plot.dat$TaxaGroup), values = c("darkgreen", "orange",  "Indianred2", "darkslategray3" )) +
   coord_flip() + 
   labs(y = "Reproduction Number", x = "Parameter", color = "Type of Parameter")+
-  thesis_theme
+  plot_theme
 
 All.param.plot <- ggarrange(All.param.plot)
 
-ggexport(All.param.plot, filename = "Publication_Figures/Fig S8 R0 Senstivity to all Parameters.png", 
-         width = 779, height = 597)
+ggexport(All.param.plot, filename = "Publication_Figures/Fig S8 R0 Senstivity to all Parameters.pdf", 
+         width = 5, height = 7)
+#ggexport(All.param.plot, filename = "Publication_Figures/Fig S8 R0 Senstivity to all Parameters.png", 
+#         width = 779, height = 597)
 
 ###############################################################
 #Calculate the R0 values

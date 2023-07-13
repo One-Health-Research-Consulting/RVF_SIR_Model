@@ -27,21 +27,22 @@ library(here)
 
 #Set scenario
 SA <- TRUE
+Var_Select <- FALSE # This should always be false; if you want to identify parameter values you need to run a different file. This file does the sensitivity analysis for the parameter set used in the publication
 h <- 4000 #Number of simulations to run in sensitivity anlaysis
 
 #Source data and code
 #Functions for setting the hatching switches the data
-source(here("Functions", "Function 2 - Aedes and Culex Hatch Forcing by Mean Temps.R"))
+source(here("All_Files_For_Publication/Functions", "Function 2 - Aedes and Culex Hatch Forcing by Mean Temps.R"))
 #ODE equation
-source(here("Model_Scripts", "Model 3 RVFV ODE SIRS function.R"))
+source(here("All_Files_For_Publication/Model_Scripts", "Model 3 RVFV ODE SIRS function.R"))
 #Load parameters
-source(here("Model_Scripts", "Model 1 - RVFV Optimized Parameters.R"))
+source(here("All_Files_For_Publication/Model_Scripts", "Model 1 - RVFV Selected Parameters.R"))
 #Functions for pulling output of analysis
-source(here("Functions", "Function 1 Define Functions for Output of Sensitivity Analysis.R"))
-source(here("Functions", "Function 6 Latin Hypercube Analysis.R"))
+source(here("All_Files_For_Publication/Functions", "Function 1 Define Functions for Output of Sensitivity Analysis.R"))
+source(here("All_Files_For_Publication/Functions", "Function 6 Latin Hypercube Analysis.R"))
 
 # Load precipitation and Temp data 
-  All_Precip <- read.csv(here("", "Combined Temp and Precip Data for RVF Simulation.csv"))
+  All_Precip <- read.csv(here("All_Files_For_Publication", "Combined Temp and Precip Data for RVF Simulation.csv"))
   
 #Set timing
 start.time <- 0
@@ -98,7 +99,7 @@ names(data) <- c(
   )
 
 #Create file name
-dat.file <- paste("Data for sensitivity analyses/SA_trans_Publication", Datestamp, ".Rdata", sep = "")
+dat.file <- paste("SA_trans_Publication", Datestamp, ".Rdata", sep = "")
 
 
 # Save the data

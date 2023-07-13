@@ -23,14 +23,14 @@ library(ggpubr)
 
 #Set variables do you want to compare and using which output
 Q_biteA_Seroprev.mean <- FALSE #Transovarial Transmission vs Aedes bite rate evaluating seroprevalence
-Q_muC_Seroprev.mean <- FALSE  #Transovarial Transmission vs Culex mortality rate evaluating seroprevalence; in manuscript just use with R0
-Vax_Q_Persistence <- TRUE    #Transovarial Transmission vs vaccination rate evaluating persistence
+  R0_plot <- TRUE              #Also examine the effect on R0 and both persistence and seroprevalence - works with Q_biteA_Seroprev.mean == TRUE
+Q_muC_Seroprev.mean <- TRUE  #Transovarial Transmission vs Culex mortality rate evaluating seroprevalence; Not for plot, but for single line in results
+Vax_Q_Persistence <- FALSE    #Transovarial Transmission vs vaccination rate evaluating persistence
 Q_Tasl_Persistence <- FALSE   #Transovarial Transmission vs host-to-Aedes transmission rate evaluating persistence
 
-#Additional variable
-R0_plot <- FALSE              #Also examine the effect on R0 and both persistence and seroprevalence
 #No scenarios are evaluated by this code, these should always be FALSE:
 SA <- FALSE #This should always be FALSE: If you want to run a sensitivity analysis, you need to use a different simulation file 
+Var_Select <- FALSE #This should always be FALSE: If you want to run a sensitivity analysis, you need to use a different simulation file 
 Vaccinate <- FALSE #Change to true is you want to run a simulation where you vaccinate the sheep and select a vaccination %
 No.q <- FALSE #No transovarial transmission
 Only.q <- FALSE #No horizontal transmission
@@ -39,17 +39,18 @@ set.seed(6242015)#This is to ensure the approxfun function always outputs the sa
 
 #Source code
 #Source  functions
-source(here("Functions", "Function 1 Define Functions for Output of Sensitivity Analysis.R"))
+source(here("All_Files_For_Publication/Functions", "Function 1 Define Functions for Output of Sensitivity Analysis.R"))
 #Source model definitions
-source(here("Model_Scripts", "Model 2 Mosquito hatch rates at daily timestep.R"))
+source(here("All_Files_For_Publication/Model_Scripts", "Model 2 Mosquito hatch rates at daily timestep.R"))
 #Source ODE function
-source(here("Model_Scripts", "Model 3 RVFV ODE SIRS function.R"))
+source(here("All_Files_For_Publication/Model_Scripts", "Model 3 RVFV ODE SIRS function.R"))
 #Source Function to calculate R0
-source(here("Functions", "Function 4 Calculate R0.R"))
+source(here("All_Files_For_Publication/Functions", "Function 4 Calculate R0.R"))
 
 #Set up each analysis
 #Set scales - see how seroprevelance changes with different combinations of q and bite rates
-q_vec <- c(0, .1, .2, .3, .4, .5, .6, param_vec$q, .8, .9, .99)#q vector
+q_vec_R01 <- c(0, .1, .2, .3, .4, .5, .6, param_vec$q, .8, .9, .99)#q vector
+q_vec <- c(0, 0.25, 0.5, param_vec$q, 0.75, 0.99)#q vector
 biteA_vec <- seq(from = .05, to = 1, by = .025) #biteA vector
 biteA_vec_R01 <- seq(from = .01, to = 0.45, by = .01)#Smaller range and increments to examine R0 around 1
 muC_vec_R01 <- seq(from = .01, to = 0.21, by = .025)#With a death rate >~0.35 Culex populations are so exponentially small, it breaks the model
@@ -82,6 +83,7 @@ if(Q_biteA_Seroprev.mean == TRUE){
   if(R0_plot == TRUE){
     near.continuous_vec <- biteA_vec_R01
     fun.2 <- fun_ext
+    discrete_vec <- q_vec_R01
   }
   var1 <- var_q
   var2 <- var_biteA
@@ -121,6 +123,15 @@ if(Vax_Q_Persistence == TRUE){
   var1.plot <- "Transovarial Transmission"
   var2.plot <- "Percent of Flock Vaccinated"
   outcome.plot <- "Day of Extinction"
+  
+  #If we are looking at vaccine levels we need to hold the original starting values for R and S sheep and lambs to change it back at the end of the the vax loop
+  origRS <- initial.populations[["RS"]]
+  origSS <- initial.populations[["SS"]]
+  origVS <- initial.populations[["VS"]]
+  origRL <- initial.populations[["RL"]]
+  origSL <- initial.populations[["SL"]]
+  origVL <- initial.populations[["VL"]]
+  origAL <- initial.populations[["AL"]]
 }
 
 if(Q_Tasl_Persistence == TRUE){
@@ -142,18 +153,6 @@ z <- length(near.continuous_vec)
 num.rows <- r*z
 summary.dat <- data.frame(matrix(nrow = num.rows, ncol = 4))
 names(summary.dat) <- c(var1, var2, outcome, "mean_popn_R0")
-
-##If we are looking at vaccine levels we need to hold the original starting values for R and S sheep and lambs to change it back at the end of the the vax loop
-if(Vax_Q_Persistence == TRUE){
-origRS <- initial.populations[["RS"]]
-origSS <- initial.populations[["SS"]]
-origVS <- initial.populations[["VS"]]
-origRL <- initial.populations[["RL"]]
-origSL <- initial.populations[["SL"]]
-origVL <- initial.populations[["VL"]]
-origAL <- initial.populations[["AL"]]
-}
-
 
 j <- 1    
 
@@ -226,7 +225,7 @@ for(param1.2 in discrete_vec){
       
       #Mean population sizes across ALL years when a mosquito of the relevant species is present
       m_NAedes <- Get.Mean.Vec.Pops(final.populations, "NAedes")[1]
-      m_NC <- et.Mean.Vec.Pops(final.populations, "NC")[1]
+      m_NC <- Get.Mean.Vec.Pops(final.populations, "NC")[1]
       
       #Put populations into one vector
       mean_popn   <- c(NS = m_NS, NL = m_NL, Na = m_NAedes, NC = m_NC)
@@ -319,7 +318,7 @@ if(Q_biteA_Seroprev.mean == TRUE ){
 if(Q_muC_Seroprev.mean == TRUE){
   cu.title <- "Culex mortality rate"
 }else{
-  cu.title <- ""
+ cu.title <- ""
 }
 
 
@@ -329,8 +328,6 @@ time.title <- round(end.time/365,0)
 
 var.title <- paste(var1, "vs", var2, sep = " ")
 
-folder.title <- "Data for sensitivity analyses/"
-
 #filenames
 plot.title <- paste(out.title, var.title, cu.title, "for", time.title, "years", Datestamp, "For Publication",sep = " ")
 
@@ -338,8 +335,8 @@ if(R0_plot==TRUE){
   plot.title <- paste("R0", plot.title, sep = " ")
 }
 
-data.file.title <- paste0(folder.title, plot.title, ".Rdata")
-csv.file.title <- paste0(folder.title, plot.title, ".csv")
+data.file.title <- paste0("./All_Files_For_Publication/Data_for_sensitivity_analysis/", plot.title, ".Rdata")
+csv.file.title <- paste0("./All_Files_For_Publication/Data_for_sensitivity_analysis/", plot.title, ".csv")
 
 #Save
 save(summary.dat, file = data.file.title )
@@ -350,7 +347,7 @@ print(paste0("Successfully completed at ", Sys.time()))
 
 #Make Plots
 if(Vax_Q_Persistence == TRUE ){ 
-  ggplot(summary.dat, aes_string(x = "PropVax", y = outcome, color = var1))+
+  ggplot(summary.dat, aes(x = PropVax, y = .data[[outcome]], color = .data[[var1]]))+
     geom_point()+
     geom_line()+
     scale_color_discrete(name = var1.plot, breaks = discrete_vec, labels = discrete_vec)+
@@ -360,7 +357,7 @@ if(Vax_Q_Persistence == TRUE ){
           axis.title = element_text(colour = "black", size=12), 
           axis.text = element_text(colour = "black", size = 10))
 }else{
-  ggplot(summary.dat, aes_string(x = var2, y = outcome, color = var1))+
+  ggplot(summary.dat, aes(x = .data[[var2]], y = .data[[outcome]], color = .data[[var1]]))+
     geom_point()+
     geom_line()+
     labs(x = var2.plot, y = outcome.plot)+
@@ -378,13 +375,13 @@ if(R0_plot == TRUE){
     mutate(Persist_long = if_else(Persistence > 12165, "Yes", "No"))%>%
     mutate(Persist_year = if_else(R0_when_q0 >1, "Yes", "No"))
   
-  R0.seroprev.plot <- ggplot(summary.dat, aes_string(x = "mean_popn_R0", y = outcome, color = var1))+
+  R0.seroprev.plot <- ggplot(summary.dat, aes(x = mean_popn_R0, y = .data[[outcome]], color = .data[[var1]]))+
     geom_line(aes(linetype = Persist_year))+
     geom_point(aes(shape = Persist_long), size = 3)+
     scale_color_discrete(name = var1.plot, breaks = discrete_vec, labels = discrete_vec)+
     scale_shape_manual(name = "34-Year Persistance", values=c(4, 1))+
     scale_linetype_manual(name = "Within Year Persistence", values = c( "dashed","solid"), labels = c("Within Year Extinction Without Transovarial Transmission", "Within Year Persistence Without Transovarial Transmission"))  + 
-    labs(x = expression(paste("R" [0])), y = outcome.plot)+#, title = plot.title)+ 
+    labs(x = expression(paste("R" [0])), y = outcome.plot)+
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
           panel.background = element_blank(), axis.line = element_line(colour = "black"), 
           axis.title = element_text(colour = "black", size=12), 
@@ -394,10 +391,10 @@ if(R0_plot == TRUE){
   
   R0.seroprev.plot <- ggarrange(R0.seroprev.plot)
   
-  ggexport(R0.seroprev.plot, filename = paste0("Publication_Figures/Draft_Figures/", plot.title, ".png"), width=1004, height=601, ncol = 1,nrow = 1)
+  ggexport(R0.seroprev.plot, filename = paste0("./All_Files_For_Publication/Data_for_sensitivity_analysis/", plot.title, ".png"), width=1004, height=601, ncol = 1,nrow = 1)
   
 }else{
-  png.file.title <- paste0("Publication_Figures/Draft_Figures/", plot.title, ".png")
+  png.file.title <- paste0("./All_Files_For_Publication/Data_for_sensitivity_analysis/", plot.title, ".png")
   ggsave(png.file.title)
 }
 

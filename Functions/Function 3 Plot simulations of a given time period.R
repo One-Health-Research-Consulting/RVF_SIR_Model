@@ -7,19 +7,26 @@
 
 ###########################################################################
 #1
-ParamByParamPlot <- function(df1, colx, coly, color1, no.leg){
+ParamByParamPlot <- function(df1, colx, coly, color1, no.leg, R0){
   
   discrete_vec <- as.factor(sort(unique(df1[[color1]])))
   discrete_vec2 <- discrete_vec
   
   if(no.leg ==TRUE){
-    thesis_theme <- thesis_theme + theme(legend.position = "none")
+    thesis_theme <- plot_theme + theme(legend.position = "none")
+  }else{
+    thesis_theme <- plot_theme
   }
   
   if(color1 == "q"){
     df1[[color1]] <- as.factor(df1[[color1]])
-    legend.name <- "Transovarial Transmission"
-    color_vec <- c("salmon", "sandybrown", "mediumseagreen", "turquoise", "lightslateblue", "orchid1")
+    legend.name <- "Transovarial  \nTransmission"
+    if(R0 == TRUE){
+    color_vec <- c(viridis::viridis(n = 11))
+    }else{
+      color_vec <- c(viridis::viridis(n = 6))
+    }
+    #color_vec <- c("salmon", "sandybrown", "mediumseagreen", "turquoise", "lightslateblue", "orchid1")
   }
   if(color1 == "vax"){
     legend.name = "Percent Vaccinated"
@@ -78,7 +85,8 @@ ParamByParamPlot <- function(df1, colx, coly, color1, no.leg){
   if(colx == "vax"){
     df1[[color1]] <- as.factor(df1[[color1]])
 
-    Fig <- ggplot(df1, aes_string(x = "PropVax", y = coly, color = color1))+
+    #Fig <- ggplot(df1, aes_string(x = "PropVax", y = coly, color = color1))+
+     Fig <- ggplot(df1, aes(x = PropVax, y = .data[[coly]], color = .data[[color1]]))+
       geom_line()+
       geom_point()+
       scale_colour_manual(name  = legend.name, breaks= discrete_vec, labels=discrete_vec2, values = color_vec)+
@@ -86,11 +94,13 @@ ParamByParamPlot <- function(df1, colx, coly, color1, no.leg){
       thesis_theme
   }else{
 
-  Fig <- ggplot(df1, aes_string(x = colx, y = coly, color = color1))+
+  Fig <- ggplot(df1, aes(x = .data[[colx]], y = .data[[coly]], color = .data[[color1]]))+
     geom_line() +
     geom_point() +
     labs(x = x.lab.name, y = y.lab.name)+
     scale_colour_manual(name  = legend.name, breaks= discrete_vec, labels=discrete_vec2, values = color_vec)+
+    #scale_color_viridis(discrete = TRUE, option = color_vec,name  = legend.name, breaks= discrete_vec, labels=discrete_vec2)+
+    #scale_colour_manual(name  = legend.name, breaks= discrete_vec, labels=discrete_vec2, values = color_vec)+
     thesis_theme
   }
   return(Fig)

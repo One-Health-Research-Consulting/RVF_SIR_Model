@@ -22,31 +22,33 @@ library(stringr)
 
 #Set Scenarios  - User decides at the start
 Vaccinate <- FALSE #Change to true is you want to run a simulation where you vaccinate the sheep and select a vaccination %
-  vax.proportion <- .26#Proportion of the flock user wants to simulate vaccination in
+  vax.proportion <- .27#Proportion of the flock user wants to simulate vaccination in
   vax.25_higher <- FALSE #Run simulation with a host vaccination rate that is 25% higher
   vax.25_lower <- FALSE #Run simulation with a host vaccination rate that is 25% higher
-No.q <- TRUE #No transovarial transmission
+
+No.q <- FALSE #No transovarial transmission
 Only.q <- FALSE #No horizontal transmission
 muC.25_higher <- FALSE #Run simulation with a Culex mortality rate that is 25% higher
 muC.25_lower <- FALSE #Run simulation with a Culex mortality rate that is 25% lower
 
 #Always False:
 SA <- FALSE #This should always be FALSE: If you want to run a sensitivity analysis, you need to use a different simulation file 
+Var_Select <- FALSE  #This should always be FALSE: If you want to run a sensitivity analysis, you need to use a different simulation file 
 
 set.seed(6242015)#This is to ensure the approxfun function always outputs the same mosquito hatching patterns
 
 #Source code
 #Source functions
-source(here("Functions", "Function 1 Define Functions for Output of Sensitivity Analysis.R"))
+source(here("All_Files_For_Publication/Functions", "Function 1 Define Functions for Output of Sensitivity Analysis.R"))
 #Load ODE function
-source(here("Model_Scripts", "Model 3 RVFV ODE SIRS function.R"))
+source(here("All_Files_For_Publication/Model_Scripts", "Model 3 RVFV ODE SIRS function.R"))
 #Load plotting functions
-source(here("Functions", "Function 3 Plot simulations of a given time period.R"))
+source(here("All_Files_For_Publication/Functions", "Function 3 Plot simulations of a given time period.R"))
 #Source integrated hatching data for each timestep - parameter file is sourced by the climate/mosquito hatching code
-source(here("Model_Scripts", "Model 2 Mosquito hatch rates at daily timestep.R"))
+source(here("All_Files_For_Publication/Model_Scripts", "Model 2 Mosquito hatch rates at daily timestep.R"))
 #Source Reffective fuctions
-source(here("Functions", "Function 4 Calculate R0.R"))
-source(here("Functions", "Function 5 Calculate R0 dfs for plot.R"))
+source(here("All_Files_For_Publication/Functions", "Function 4 Calculate R0.R"))
+source(here("All_Files_For_Publication/Functions", "Function 5 Calculate R0 dfs for plot.R"))
 
 
 #Set parameters for various scenarios if they are selected
@@ -88,19 +90,6 @@ if(muC.25_lower == TRUE){
   param_vec["muC"] <- param_vec[["muC"]] * 0.75
 }
 
-scenarios <- cbind("Vaccinate" = Vaccinate, "vax.25_higher" = vax.25_higher, "vax.25_lower" = vax.25_lower, "No.q" = No.q, "Only.q" = Only.q, "muC.25_higher" = muC.25_higher, "muC.25_lower" = muC.25_lower)
-ind <- which(scenarios, TRUE)
-if(ind == 0){
-  scenario.phrase <- "No Scenario"
-}else{
-  scenario.phrase <- unlist(dimnames(scenarios)[2])
-  scenario.phrase <- scenario.phrase[ind[2]]
-}
-
-today <- Sys.Date()
-Param.file.name <- paste0("Simulation Runs/RVF_Simulation_Parameters ", today, " For ", scenario.phrase, ".Rds")
-saveRDS(param_vec, file = here("Publication_Figures", Param.file.name))
-
 #Set time
 start.time <- 0
 end.time <- tail(All_Precip$SimDay, 1) #3000#
@@ -141,14 +130,8 @@ Yr<-as.data.frame(Yr)
 final.populations <- cbind(Yr, final.populations)
 final.populations$Year<-as.numeric(final.populations$Year)
 
-#Define Season (MosqYr)
+#Define hatching days
 final.populations <- Define.MosqYr(final.populations, All_Precip)
-
-#Save final.populations dataframe for run
-Data.file.name <- paste0("Simulation Runs/RVF_Simulation_Run ", today, " For ", scenario.phrase, ".Rds")
-saveRDS(final.populations, file = here("Publication_Figures", Data.file.name))
-
-
 #Set outbreak parameter to mark 2010 outbreak on the timeline
 outbreak2010 <- which(final.populations$Year == 2010 & final.populations$MosqDay == 163) #February 10, 2010
 
@@ -175,7 +158,7 @@ SLplot <-ggplot(final.populations, aes(x=time)) +
   geom_vline(xintercept = outbreak2010, color = "dark blue")+#This is 2-15-2010
   labs( x = "Year", y = "Sheep and \nLambs")+
   scale_x_continuous(labels = unique(final.populations$Year), breaks = seq(from = 1, to = end, by = 365)) +
-  scale_colour_manual("", values =c("SS" = "black","IS"= "red", "RS" = "green", "VS" = "blue", "SL" = "gray","IL"= "pink", "RL" = "light green", "VL" = "light blue", "AL" = "violet")) +
+  scale_colour_manual( name = "Population", values =c("SS" = "black","IS"= "red", "RS" = "green", "VS" = "blue", "SL" = "gray","IL"= "pink", "RL" = "light green", "VL" = "light blue", "AL" = "violet")) +
   thesis_theme+
   theme(plot.margin=unit(c(1,.5,.5,.5),"cm"),#top, right, bottom and left.
         legend.key.size = unit(.25, "cm"))#decrease space between the legend items
@@ -218,8 +201,10 @@ PeakInfectedMosq <- full_join(PeakInfectedMosq, Outbreaks)
 #remove 2017 since only 1/2 a MosqYear
 PeakInfectedMosq <- filter(PeakInfectedMosq, !MosqYear == 2017)
 
-PeakIMosq_Plot <- ggplot(PeakInfectedMosq, aes(x = Ratio_iCu_to_iAe, y = Endemic))+
+PeakIMosq_Plot <- ggplot(PeakInfectedMosq, aes(x = Ratio_iCu_to_iAe, y = Endemic), label = MosqYear +1 )+ #Add 1 to the Mosq year to get the actual year for the spring of the mosquito season
   geom_point()+ 
+  lims(x=c(0,7))+
+  geom_text(aes(label=ifelse(Endemic>125, MosqYear +1 , "")),hjust=-.3,vjust=.35) +
   labs( x = "Ratio of Infected Culex to Infected Aedes", y = "Infected Animals")+ #"Difference between Infected Culex and Aedes Population Sizes"
   thesis_theme + 
   theme(plot.margin=unit(c(.5,.5,.5,.5),"cm"))
@@ -229,14 +214,14 @@ minCpop_MosqYR <- final.populations%>%
   filter(Month == 8) %>% 
   group_by(MosqYear)%>%
   summarise(MinSC = min(SC), MinEC = min(EC), MinIC = min(IC))%>% 
-  mutate(across(.fns = ~replace(., . <1 , 0)))
+  mutate(across(MinSC:MinIC, .fns = ~replace(., . <1 , 0)))
 
 #Number of surviving Aedes mosquitoes
 minApop_MosqYR <- final.populations%>% 
   filter(Month == 8) %>% 
   group_by(MosqYear)%>%
   summarise(MinSA = min(SA), MinEA = min(EA), MinIA = min(IA))%>% 
-  mutate(across(.fns = ~replace(., . <1 , 0)))
+  mutate(across(MinSA:MinIA, .fns = ~replace(., . <1 , 0)))
 
 #For use in the R0 analyses 
   #Calculate the mean dev_ALP, dev_CLP, mu_CLP and mu_ALP only from days when these factors are non-zero
@@ -360,8 +345,8 @@ Ratio_Tab <- data.frame(matrix(ncol = 2, nrow = 5))
 Ratio_Tab[1,] <- c("Mean annual seroprevalence", paste0( mean.serop, "% (", range.serop[1], "-",  range.serop[2], "%)"))
 Ratio_Tab[2,] <- c("Mean annual maximum host-vector ratio", paste0("1:", mean_max_Host_Mosq_Ratio, " (1:", max_max_Host_Mosq_Ratio, "-1:", min_max_Host_Mosq_Ratio, ")"))
 Ratio_Tab[3,] <- c("Mean annual proportion of infected Aedes eggs", paste0( Mean_IAE_Prop, " (", Min_IAE_Prop, "-",  Max_IAE_Prop, ")"))
-Ratio_Tab[4,] <- c("Mean annual proportion of infected adult Aedes", paste0( Mean_IA_Prop, " (", Min_IA_Prop, "-", Max_IA_Prop, ")"))
-Ratio_Tab[5,] <- c("Mean annual proportion of infected adult Culex", paste0( Mean_IC_Prop, " (", Min_IC_Prop, "-",  Max_IC_Prop, ")"))
+Ratio_Tab[4,] <- c("Mean annual proportion of infected adult Aedes", paste0( Mean_IA_Prop, " (", round(Min_IA_Prop[1],4), "-", round(Max_IA_Prop[1],2), ")"))
+Ratio_Tab[5,] <- c("Mean annual proportion of infected adult Culex", paste0( Mean_IC_Prop, " (", round(Min_IC_Prop[1],7), "-",  round(Max_IC_Prop[1],4), ")"))
 
 nmes.rat.tab <- c("Factor", "mean (range)")
 
@@ -376,6 +361,11 @@ write.csv(Ratio_Tab, "./Publication_Figures/Table S6 infected proportions host-v
 #calculate vax.prop from vax
 vxp <- (unlist(param_vec["vax"])/(unlist(param_vec["muL"])+ unlist(param_vec["g"]) + unlist(param_vec["vax"])))
 
+###############
+#For scenarios save data so figures can be plotted together
+if(No.q == TRUE){
+  write.csv(final.populations, "All_Files_For_Publication/Data_for_sensitivity_analysis/Data from most recent sim with no q.csv", row.names = FALSE)
+}
 
   ###################################
   #Add Effective R0 to final.populations
