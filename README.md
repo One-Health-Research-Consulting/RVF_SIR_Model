@@ -9,29 +9,29 @@ This project uses renv for dependency management.
 To run the simulations, run the scripts in order according to the file number. If the file name starts with the term Function or Model, then it should not be run by the user and will be called by the main scripts. If a file name starts with the term Analysis, then it may be run by the user depending on the level of analysis they would like to do. The main scripts will allow the user to run the 34-year simulation with the option of various scenarios (e.g., vaccination), run the Latin hypercube sensitivity analysis, run the variable-by-variable analyses and estimate R_0. The analysis scripts will produce plots and analyze the Latin hypercube results. The model scripts contain the parameter list, the mosquito hatching determination and the ODE function. The function scripts have all other functions defined for the analyses. 
 
 1. Run the simulation:
-Start with the “1-Run RVFV Simulations.R” file. The user will start by indicating whether they would like to run a specific scenario (with vaccination, without transovarial transmission, without horizontal transmission, and with a higher or lower Culex mortality rate). If the vaccination scenario is selected the user must also indicate the proportion of animals that will be vaccinated and may select scenarios with a 25% higher or lower vaccine proportion from what was selected. To run these additional vaccine scenarios both “Vaccinate”, and the proportion higher or lower must be set to “TRUE”. If all scenarios are set to FALSE, then the full simulation will be run. Note that the SA scenario should always be FALSE, as there is a separate code to run the Latin hypercube sensitivity analysis.
+Start with the “1-Run RVFV Simulations.R” file. The user will start by indicating whether they would like to run a specific scenario (with vaccination, without transovarial transmission, without horizontal transmission, a low starting population of infected Aedes eggs, and with a higher or lower Culex mortality rate). If the vaccination scenario is selected the user must also indicate the proportion of animals that will be vaccinated and may select scenarios with a 3 times higher or 25% lower vaccine proportion from what was selected. The user may also set vax.burst to true and then can choose from various years during which animals are vaccinated at the given vax.proportion over 7 days in July for each year that is indicated by the user.  To run these additional vaccine scenarios both “Vaccinate”, and the proportion higher or lower or vax.burst must be set to “TRUE”. If all scenarios are set to FALSE, then the full, exemplar simulation will be run. Note that the SA scenario should always be FALSE, as there is a separate code to run the Latin hypercube sensitivity analysis.
 
 Source all required code. If a scenario is selected, then the code will adjust the parameter list as required.
 
 The simulation is run, and results are converted to a data frame.
 
-The Define.MosqYr adds the annual season (allowing the year to be assessed from September-August according to the mosquito season rather than the calendar year).
+The Define.MosqYr adds the annual season (allowing the year to be assessed from September-August according to the mosquito season (MosqYr) rather than the calendar year).
 
-Three plots are made for a quick spot check. SLplot shows the host dynamics, MosqIAEplot plots the population of infected Aedes eggs, MosqIAll plots the infected Aedes and Culex adults and PeakIMosq_Plot plots the ratio of infected Culex to Aedes vs infected livestock. To make the plots from the publication, run the multiplot code (“Analysis 1 Code for multiplots.R”).
+Three plots are made for a quick spot check. SLplot shows the host dynamics, MosqIAEplot plots the population of infected Aedes eggs, MosqIAll plots the infected Aedes and Culex adults and PeakIMosq_Plot plots the ratio of infected Culex to Aedes vs infected livestock. A plot of the effective R0 is also included. For the vax.burst scenarios, the results for most plots are written as a csv file to faciliate combining of these plots for the publication. To make the plots from the publication, run the multiplot code (“Analysis 1 Code for multiplots.R”).
 
 The code also calculates some metrics and provides a data frame of the number of infected hosts per season. Metrics include size of annual outbreaks, summarize the number of infected Culex and Aedes at the end of the year, calculate the mean larval/pupal development and mortality rates (which varies daily dependent on temperature), calculate the mean population sizes (for mosquitoes this only includes days when there is at least one adult mosquito present) and the mean mosquito population during each season’s peak for each species.
 
-The code produces Table S6, which includes the mean seroprevalence, the mean annual maximum host-vector ratio, mean annual proportion of infected Aedes eggs, mean annual proportion of infected adult Aedes, and the mean annual proportion of infected adult Culex. The table will be saved if no other scenarios are selected (e.g., all scenarios are set to FALSE).
+The code produces Table S1, which includes the mean seroprevalence, the mean annual maximum host-vector ratio, mean annual proportion of infected Aedes eggs, mean annual proportion of infected adult Aedes, and the mean annual proportion of infected adult Culex. The table will be saved if no other scenarios are selected (e.g., all scenarios are set to FALSE).
 
 Calculate the effective R0 for each timestep of the simulation.
 
 Files sourced:
-*Model 1 - RVFV Optimized Parameters for publication.R (sourced within Model 2 *Mosquito hatch rates at daily timestep.R)
-*Model 2 Mosquito hatch rates at daily timestep.R
-	**Function 2 - Aedes and Culex Hatch Forcing by Mean Temps.R
+*Function 1 Define Functions for Output of Sensitivity Analysis.R
 *Model 3 RVFV ODE SIRS function.R
 *Function 3 Plot simulations for a given time period.R
-*Function 1 Define Functions for Output of Sensitivity Analysis.R
+*Model 2 Mosquito hatch rates at daily timestep.R (which includes)
+	**Function 2 - Aedes and Culex Hatch Forcing by Mean Temps.R
+ 	**Model 1 - RVFV Optimized Parameters for publication.R (sourced within Model 2 *Mosquito hatch rates at daily timestep.R)
 *Function 4 Calculate R0.R
 *Function 5 Calculate R0 dfs for plot.R
 
