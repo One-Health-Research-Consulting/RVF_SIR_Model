@@ -53,7 +53,7 @@ Files sourced:
 *Function 2 - Aedes and Culex Hatch Forcing by Mean Temps.R
 
 3. Run the R0 analysis
-Run the 3- Calculate and Plot_R0.R code. This code will calculate R_0 for various populations and then plot the sensitivity analyses. Use the function lst.R0.var (defined in Function 5 Calculate R0 dfs for plot.R) to produce a list of data frames, where each data frame has the value of R_0for each population size as you vary the variables listed in R0_vec. Calculate the value of R_0 using the values of the parameters used in the full simulation for the peak_popn, peak_A_only and peak_C_only and store in a dataframe.
+Run the 3- Calculate and Plot_R0.R code. This code will calculate R_0 for various populations and then plot the sensitivity analyses. Use the function lst.R0.var (defined in Function 5 Calculate R0 dfs for plot.R) to produce a list of data frames, where each data frame has the value of R_0 for each population size as you vary the variables listed in R0_vec. Calculate the value of R_0 using the values of the parameters used in the full simulation for the peak_popn, peak_A_only and peak_C_only and store in a dataframe.
 
 The population vectors are defined for the hosts and vectors as follows:
 mean_popn: All population means calculated across the entire simulation – the mean population of adult sheep, lambs and the mean population (when at least one adult mosquito of the species is present) of Aedes and Culex. 
