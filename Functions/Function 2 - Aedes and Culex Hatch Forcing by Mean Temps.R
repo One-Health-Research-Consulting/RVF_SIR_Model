@@ -138,7 +138,7 @@ dev_CLP <-  function(dat, rh025, HA, TH, HH){
   dat = as.data.frame(dat)
   dat$MeanK = dat$FinalMeanTemp + 273.15 #change to Kelvins
   dat$Dev_CLP = (rh025*((dat$MeanK)/298.15)*exp((HA/1.987)*((1/298.15) - (1/dat$MeanK))))/(1+exp((HH/1.987)*((1/TH)-(1/dat$MeanK))))
-  dat$Dev_CLP = dat$Dev_CLP * 0.7650069
+  dat$Dev_CLP = dat$Dev_CLP * 0.7650069 #0.77#
   return(dat)
 }
 
@@ -146,7 +146,7 @@ dev_ALP <-  function(dat, rh025, HA, TH, HH){
   dat = as.data.frame(dat)
   dat$MeanK = dat$FinalMeanTemp + 273.15 #change to Kelvins
   dat$Dev_ALP = (rh025*((dat$MeanK)/298.15)*exp((HA/1.987)*((1/298.15) - (1/dat$MeanK))))/(1+exp((HH/1.987)*((1/TH)-(1/dat$MeanK))))
-  dat$Dev_ALP = dat$Dev_ALP * 1.392704
+  dat$Dev_ALP = dat$Dev_ALP * 1.392704 #1.39#
   return(dat)
 }
 

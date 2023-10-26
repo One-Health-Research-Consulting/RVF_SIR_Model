@@ -34,6 +34,9 @@ mean_pts$X <- R0params[x]
 if(!names(R0params[x])=="Tasl"){
   stop()
 }
+
+
+
 plot.Tasl_mean <- plot.Tasl+ 
   geom_line(data = df_plot, aes(x = Value, y = R0_both, col = "1B"), size = 1)  + 
   geom_line(data = df_plot, aes(x = Value, y = R0_A, col = "2A"), size = 1)  +
@@ -49,9 +52,10 @@ plot.Tasl_mean <- plot.Tasl+
   geom_hline(aes(yintercept = 1.0), col = "dark grey", linetype = "dashed") +
   scale_color_manual(name = "Mosquito System", values = c("1B" = "slateblue2", "2A" = "Indianred2", "3C" ="darkslategray3", "coral4" = "coral4", "gray" = "gray" ), 
                      labels = expression(paste(italic("Aedes"), " and ", italic("Culex")),  paste(italic("Aedes"), " Only"), paste(italic("Culex"), " Only"), paste("Mean Mosquito Populations"), paste("Mean Peak Mosquito Populations"))) +
-  labs(x = expression(paste(italic("Aedes"), "-to-Host Transmission Rate")), y = expression(paste("R" [0]))) +
+  labs(x = expression(paste(italic("Aedes"), "-to-Host Transmission Fraction")), y = expression(paste("R" [0]))) + #
   plot_theme + 
-  theme(legend.position="none")
+  theme(legend.position="none",
+        axis.title.x = element_text(size = 9))
 
 #muA
 df_plot <- as.data.frame(R0_plot_dat_mean[[2]])
@@ -124,7 +128,7 @@ plot.q_mean <- plot.q +
   geom_hline(aes(yintercept = 1.0), col = "dark grey", linetype = "dashed") +
     scale_color_manual(name = "Mosquito System", values = c("1B" = "slateblue2", "2A" = "Indianred2", "3C" ="darkslategray3", "coral4" = "coral4", "gray" = "gray" ), 
                        labels = expression(paste(italic("Aedes"), " and ", italic("Culex")),  paste(italic("Aedes"), " Only"), paste(italic("Culex"), " Only"), paste("Mean Mosquito Populations"), paste("Mean Peak Mosquito Populations"))) +
-  labs(x = "Transovarial Transmission Rate", y = expression(paste("R" [0]))) +
+  labs(x = "Transovarial Transmission \nFraction", y = expression(paste("R" [0]))) +
   plot_theme + 
   theme(legend.position="none")
 
@@ -149,9 +153,10 @@ plot.Tcsl_mean <- plot.Tcsl +
   geom_hline(aes(yintercept = 1.0), col = "dark grey", linetype = "dashed") +
     scale_color_manual(name = "Mosquito System", values = c("1B" = "slateblue2", "2A" = "Indianred2", "3C" ="darkslategray3", "coral4" = "coral4", "gray" = "gray" ), 
                        labels = expression(paste(italic("Aedes"), " and ", italic("Culex")),  paste(italic("Aedes"), " Only"), paste(italic("Culex"), " Only"), paste("Mean Mosquito Populations"), paste("Mean Peak Mosquito Populations"))) +
-  labs(x = expression(paste(italic("Culex"), "-to-Host Transmission Rate")), y = expression(paste("R" [0]))) +
+  labs(x = expression(paste(italic("Culex"), "-to-Host Transmission Fraction")), y = expression(paste("R" [0]))) +
   plot_theme + 
-  theme(legend.position="none")
+  theme(legend.position="none",
+        axis.title.x = element_text(size = 9))
 
 #muC
 df_plot <- as.data.frame(R0_plot_dat_mean[[6]])
@@ -236,13 +241,13 @@ plot.list <- list(plot.Tasl_mean, plot.Tcsl_mean,
 
 
 
-FigS7.R0 <- ggarrange( plot.Tasl_mean, plot.Tcsl_mean, plot.muA_mean, plot.muC_mean, plot.biteA_mean, plot.biteC_mean, 
+FigS4.R0 <- ggarrange( plot.Tasl_mean, plot.Tcsl_mean, plot.muA_mean, plot.muC_mean, plot.biteA_mean, plot.biteC_mean, 
                       plot.q_mean, leg,
                       ncol = 2, nrow = 4, 
                       labels = c("A", "B", "C", "D", "E", "F", "G", ""))
 
 
 
-ggexport(FigS7.R0, filename = "Publication_Figures/Fig S7 R0 change with params plots mean and mean peak pops.pdf", ncol = 2, nrow = 4, width = 5, height = 7)
+ggexport(FigS4.R0, filename = "Publication_Figures/Fig S4 R0 change with params plots mean and mean peak pops.pdf", ncol = 2, nrow = 4, width = 5, height = 7)
 
-#ggexport(FigS7.R0, filename = "Publication_Figures/Fig S7 R0 change with params plots mean and mean peak pops.png", ncol = 2, nrow = 4, width = 880, height = 880)
+

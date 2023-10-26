@@ -28,6 +28,7 @@ library(here)
 #Set scenario
 SA <- TRUE
 Var_Select <- FALSE # This should always be false; if you want to identify parameter values you need to run a different file. This file does the sensitivity analysis for the parameter set used in the publication
+burst <- FALSE # This should always be false; 
 h <- 4000 #Number of simulations to run in sensitivity anlaysis
 
 #Source data and code
@@ -99,7 +100,7 @@ names(data) <- c(
   )
 
 #Create file name
-dat.file <- paste("SA_trans_Publication", Datestamp, ".Rdata", sep = "")
+dat.file <- paste("All_Files_For_Publication/Data_for_sensitivity_analysis/SA_trans_Publication", Datestamp, ".Rdata", sep = "")
 
 
 # Save the data

@@ -27,13 +27,20 @@ Q_biteA_Seroprev.mean <- FALSE #Transovarial Transmission vs Aedes bite rate eva
 Q_muC_Seroprev.mean <- TRUE  #Transovarial Transmission vs Culex mortality rate evaluating seroprevalence; Not for plot, but for single line in results
 Vax_Q_Persistence <- FALSE    #Transovarial Transmission vs vaccination rate evaluating persistence
 Q_Tasl_Persistence <- FALSE   #Transovarial Transmission vs host-to-Aedes transmission rate evaluating persistence
+Q_IAE_Persistence <- FALSE     # Transovarial Transmission vs the initial infected egg population
 
 #No scenarios are evaluated by this code, these should always be FALSE:
 SA <- FALSE #This should always be FALSE: If you want to run a sensitivity analysis, you need to use a different simulation file 
 Var_Select <- FALSE #This should always be FALSE: If you want to run a sensitivity analysis, you need to use a different simulation file 
-Vaccinate <- FALSE #Change to true is you want to run a simulation where you vaccinate the sheep and select a vaccination %
+Vaccinate <- FALSE #Change to true if you want to run a simulation where you vaccinate the lambs and select a vaccination %
+vax.burst <- FALSE #Change to true if you want to run a simulation where you vaccinate the adult sheep and lambs to a set vaccination % within 1 week per year (2nd week of July), 100% vaccination is not possible
+burst <- FALSE #Change to true if vax.burst is TRUE
 No.q <- FALSE #No transovarial transmission
 Only.q <- FALSE #No horizontal transmission
+
+if(Vax_Q_Persistence == TRUE){
+  Vaccinate <- TRUE #Need this true to get sigvax to do the daily vaccination rate - otherwise it will be 0 even if you put in a vax.prop value
+}
 
 set.seed(6242015)#This is to ensure the approxfun function always outputs the same mosquito hatching patterns
 
@@ -50,11 +57,13 @@ source(here("All_Files_For_Publication/Functions", "Function 4 Calculate R0.R"))
 #Set up each analysis
 #Set scales - see how seroprevelance changes with different combinations of q and bite rates
 q_vec_R01 <- c(0, .1, .2, .3, .4, .5, .6, param_vec$q, .8, .9, .99)#q vector
+#qmuC_vec_R01 <- c(0, .1, .2, .3, .4, .5, .6, param_vec$q, 0.75, 0.755, 0.76, 0.78, .8, .9, .99)#q vector
 q_vec <- c(0, 0.25, 0.5, param_vec$q, 0.75, 0.99)#q vector
 biteA_vec <- seq(from = .05, to = 1, by = .025) #biteA vector
 biteA_vec_R01 <- seq(from = .01, to = 0.45, by = .01)#Smaller range and increments to examine R0 around 1
-muC_vec_R01 <- seq(from = .01, to = 0.21, by = .025)#With a death rate >~0.35 Culex populations are so exponentially small, it breaks the model
+muC_vec_R01 <- c( 0.0565003, seq(from = .01, to = 0.33, by = .025))#With a death rate >~0.35 Culex populations are so exponentially small, it breaks the model
 Tasl_vec <- seq(from = 0.05, to = 1, by = 0.05)#host-to-Aedes transmission 
+IAE_vec <- c(seq(0.0001, 0.005, by = 0.0005), 0.0008, 0.001) #ratio of infected to non-infected eggs
 #Vaccination
 Prop_vax_vec <- c(0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, .99)#proportion of hosts vaccinated
 
@@ -64,6 +73,8 @@ var_biteA <- "biteA"
 var_muC <- "muC"
 var_vax <- "vax"
 var_Tasl <- "Tasl"
+# for variables
+var_IAE <- "IAE"
 #for vaccination calculations
 var_g <- "g"
 var_muL <- "muL"
@@ -100,6 +111,7 @@ if(Q_muC_Seroprev.mean == TRUE){
   if(R0_plot == TRUE){
     near.continuous_vec <- muC_vec_R01
     fun.2 <- fun_ext
+    discrete_vec <- q_vec_R01
   }
   var1 <- var_q
   var2 <- var_muC
@@ -146,6 +158,18 @@ if(Q_Tasl_Persistence == TRUE){
   outcome.plot <- "Day of Extinction"
 }
 
+if(Q_IAE_Persistence == TRUE){
+  discrete_vec <- q_vec
+  near.continuous_vec <- IAE_vec
+  var1 <- var_q
+  var2 <- var_IAE
+  outcome <- outcome_extinct
+  fun.1 <- fun_ext
+  var1.plot <- "Transovarial Transmission"
+  var2.plot <- "Ratio of Susceptible to Infected Aedes Eggs"
+  outcome.plot <- "Day of Extinction"
+}
+
 #Make blank dataframe
 r <- length(discrete_vec)
 z <- length(near.continuous_vec)
@@ -168,6 +192,7 @@ times <- seq(from=start.time, to=end.time, by=timestep)
 for(param1.2 in discrete_vec){
   param_vec[var1] <- param1.2
   for(param2 in near.continuous_vec){
+    if(Q_IAE_Persistence == FALSE){
     param_vec[var2] <- param2
     param1 <- param1.2
     
@@ -184,6 +209,10 @@ for(param1.2 in discrete_vec){
       initial.populations[["AL"]] <- origAL
       initial.populations[["SL"]] <- NL - initial.populations[["RL"]] - initial.populations[["VL"]] - initial.populations[["AL"]] 
     }
+    }else{
+      initial.populations[["IAE"]] <- initial.populations[["SAE"]]*param2
+      param1 <- param1.2
+    }
     
     set.seed(6242015)#Set seed so reproducible with approxfun    
     
@@ -199,6 +228,8 @@ for(param1.2 in discrete_vec){
                               sigC = sigimpCMean, 
                               sigdevA = sigimp_dev_ALP,
                               sigdevC = sigimp_dev_CLP,
+                              sigvax = sigimp_vax,
+                              vax.b = burst,
                               end.t = end.time
     )
     
@@ -249,10 +280,17 @@ for(param1.2 in discrete_vec){
       out.2 <- fun.2(final.populations)
     }
     
+    if(Q_IAE_Persistence == FALSE){
     summary.dat[j, "param1"] <- param1
     summary.dat[j, var1] <- param_vec[var1]
     summary.dat[j, var2] <- param_vec[var2]
     summary.dat[j, outcome] <- out
+    }else{
+      summary.dat[j, "param1"] <- param1
+      summary.dat[j, var1] <- param_vec[var1]
+      summary.dat[j, var2] <- initial.populations[["IAE"]]/initial.populations[["SAE"]]
+      summary.dat[j, outcome] <- out
+    }
     
     if(R0_plot == TRUE){
       summary.dat[j, "mean_popn_R0"] <- R0_est
@@ -261,6 +299,26 @@ for(param1.2 in discrete_vec){
     
     if(Vax_Q_Persistence  == TRUE){
       summary.dat[j, "PropVax"] <- param2_inv
+    }
+    
+    if(Q_muC_Seroprev.mean == TRUE  & R0_plot == TRUE){
+      ###################################
+      #Add Effective R0 to final.populations
+      R_pops <- select(final.populations, SS, SL, SA, SC, MosqYear)
+      
+      Reff.list <- apply(R_pops, 1, function(x) R_eff(x,  params = R0params, get.fun1 = calc_R0))
+      
+      final.populations$Reff <- Reff.list  
+      
+      Reff_pop <- final.populations%>%
+        group_by(MosqYear)%>%
+        summarize(Reff_mean = mean(Reff),
+                  Reff_max = max(Reff))
+      
+      summary.dat[j, "mean_R0_Reff"] <- mean(Reff_pop$Reff_mean)
+      summary.dat[j, "max_R0_Reff"] <- max(Reff_pop$Reff_max)
+      summary.dat[j, "mean_max_R0_Reff"] <- mean(Reff_pop$Reff_max)
+      
     }
     
     j <- j+1

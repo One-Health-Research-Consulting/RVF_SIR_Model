@@ -69,9 +69,10 @@ plot.Tasl <- ggplot()+#
   scale_color_manual(name = "Mosquito System", values = c("1B" = "slateblue2", "2A" = "Indianred2", "3C" ="darkslategray3" ), 
                      labels = expression(paste(italic("Aedes"), " and ", italic("Culex")),  paste(italic("Aedes"), " Only"), 
                                          paste(italic("Culex"), " Only"))) +
-  labs(x = expression(paste(italic("Aedes"), "-to-Host Transmission Rate")), y = expression(paste("R" [0]))) +
+  labs(x = expression(paste(italic("Aedes"), "-to-Host Transmission Fraction")), y = expression(paste("R" [0]))) +
   plot_theme +
-  theme(legend.text.align = 0)
+  theme(legend.text.align = 0,
+        axis.title.x = element_text(size = 9))
 
 #muA
 df_plot <- as.data.frame(R0_plot_dat[[2]])
@@ -94,7 +95,8 @@ plot.muA <- ggplot()+#
                                          paste(italic("Culex"), " Only"))) +
   labs(x = expression(paste(italic("Aedes"), " Mortality Rate")), y = expression(paste("R" [0]))) +
   plot_theme+
-  theme(legend.text.align = 0)
+  theme(legend.text.align = 0,
+        )
 
 #biteA
 df_plot <- as.data.frame(R0_plot_dat[[3]])
@@ -138,7 +140,7 @@ plot.q <- ggplot()+#
   scale_color_manual(name = "Mosquito System", values = c("1B" = "slateblue2", "2A" = "Indianred2", "3C" ="darkslategray3" ), 
                      labels = expression(paste(italic("Aedes"), " and ", italic("Culex")),  paste(italic("Aedes"), " Only"), 
                                          paste(italic("Culex"), " Only"))) +
-  labs(x = "Transovarial Transmission Rate", y = expression(paste("R" [0]))) +
+  labs(x = "Transovarial Transmission \nFraction", y = expression(paste("R" [0]))) +
   plot_theme +
   theme(legend.text.align = 0)
 
@@ -161,9 +163,10 @@ plot.Tcsl <- ggplot()+#
   scale_color_manual(name = "Mosquito System", values = c("1B" = "slateblue2", "2A" = "Indianred2", "3C" ="darkslategray3" ), 
                      labels = expression(paste(italic("Aedes"), " and ", italic("Culex")),  paste(italic("Aedes"), " Only"), 
                                          paste(italic("Culex"), " Only"))) +
-  labs(x = expression(paste(italic("Culex"), "-to-Host Transmission Rate")), y = expression(paste("R" [0]))) +
+  labs(x = expression(paste(italic("Culex"), "-to-Host Transmission \nFraction")), y = expression(paste("R" [0]))) +
   plot_theme +
-  theme(legend.text.align = 0)
+  theme(legend.text.align = 0,
+        axis.title.x = element_text(size = 9))
 
 #muC
 df_plot <- as.data.frame(R0_plot_dat[[6]])
@@ -217,23 +220,23 @@ plot.list <- list(plot.Tasl, plot.Tcsl,
                plot.biteA, plot.biteC, 
                plot.q)
 
-FigS7.R0.init <- ggarrange( plot.Tasl, plot.Tcsl, plot.muA, plot.muC, plot.biteA, plot.biteC, 
+FigS4.R0.init <- ggarrange( plot.Tasl, plot.Tcsl, plot.muA, plot.muC, plot.biteA, plot.biteC, 
                       plot.q,
                       ncol = 2, nrow = 4, 
                       labels = c("A", "B", "C", "D", "E", "F", "G"))
 
 
 
-ggexport(FigS7.R0.init, filename = "Publication_Figures/Fig S7_draft R0 change with params plots mean peak only.pdf", 
+ggexport(FigS4.R0.init, filename = "Publication_Figures/Fig S4_draft R0 change with params plots mean peak only.pdf", 
          ncol = 2, nrow = 4, width = 5, height = 7)
 #ggexport(FigS7.R0.init, filename = "Publication_Figures/Fig S7_draft R0 change with params plots mean peak only.png", 
 #         ncol = 2, nrow = 4, width = 800, height = 880)
 
-#Plot Fig S7 which adds three lines of R0 at the mean populations to Fig S8
+#Plot Fig S4 which adds three lines of R0 at the mean populations to Fig S4_draft
 source(here("All_Files_For_Publication/Analysis", "Analysis_5 Plot R0 changes at peak and mean populations.R"))
 
 ###############################################################
-# Figure S8 Vary each parameter to see the affect on R0
+# Figure S5 Vary each parameter to see the affect on R0
 All.param.plot.dat <- data.frame(R0 = c(), param = c())
 for (i in 1:length(R0params)){
   R0params_vary <- R0params
@@ -254,9 +257,9 @@ ind3 <- tail(which(All.param.plot.dat$param == "alphaAE"),1)
 ind4 <- tail(which(All.param.plot.dat$param == "biteC"),1)
 
   
-  #x$x <- factor(x$x, levels=unique(x$x))
+
 clim_vec <- unique(All.param.plot.dat$param[1:ind1])
-sheep_vec <- unique(All.param.plot.dat$param[(ind1+1):ind2])#ind2-ind1])
+sheep_vec <- unique(All.param.plot.dat$param[(ind1+1):ind2])
 Aedes_vec <- unique(All.param.plot.dat$param[(ind2+1):(ind3)])
 Culex_vec <- unique(All.param.plot.dat$param[(ind3+1):(ind4)])
 
@@ -269,7 +272,7 @@ All.param.plot.dat <- All.param.plot.dat%>%
 #set factors
 All.param.plot.dat$param <- factor(All.param.plot.dat$param, levels = rev(as.character(unique(All.param.plot.dat$param))))
 
-#Plot Fig S8
+#Plot Fig S5
 All.param.plot <- ggplot(All.param.plot.dat) +
   geom_boxplot(aes(x = param, y = R0, colour = TaxaGroup)) + 
   scale_x_discrete(labels=expression(paste(italic("Culex"), " bite rate"), paste("Transmission ", italic("Culex"), "-to-ruminants"), 
@@ -299,10 +302,9 @@ All.param.plot <- ggplot(All.param.plot.dat) +
 
 All.param.plot <- ggarrange(All.param.plot)
 
-ggexport(All.param.plot, filename = "Publication_Figures/Fig S8 R0 Senstivity to all Parameters.pdf", 
+ggexport(All.param.plot, filename = "Publication_Figures/Fig S5 R0 Senstivity to all Parameters.pdf", 
          width = 5, height = 7)
-#ggexport(All.param.plot, filename = "Publication_Figures/Fig S8 R0 Senstivity to all Parameters.png", 
-#         width = 779, height = 597)
+
 
 ###############################################################
 #Calculate the R0 values

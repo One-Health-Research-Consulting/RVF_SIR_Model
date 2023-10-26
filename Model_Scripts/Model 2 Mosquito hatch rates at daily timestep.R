@@ -44,14 +44,20 @@ source(here("All_Files_For_Publication/Model_Scripts", "Model 1 - RVFV Selected 
                         TH=dev.params.set["THa"], 
                         HH=dev.params.set["HHa"])
   
-  #Cules
+  #Culex
   All_Precip <- dev_CLP(dat = All_Precip, 
                         rh025 = dev.params.set["rh025c"], 
                         HA= dev.params.set["HAc"], 
                         TH= dev.params.set["THc"], 
                         HH= dev.params.set["HHc"])
   
-
+#Add vaccination pattern - none, daily, burst
+  All_Precip <- All_Precip%>%
+    mutate(No_vax = 0,
+           Daily_vax = 1,
+           Burst_vax = 0)
+  
+  
 #Use approxfun to dictate if there is hatching on a daily timestep for use in the differential equations
 #Hatching for Aedes 
 sigimpAMean <- approxfun(All_Precip$SimDay, All_Precip$hatchingATMean, rule = 2)
@@ -63,3 +69,21 @@ sigimpCMean <- approxfun(All_Precip$SimDay, All_Precip$hatchingCPropTMean, rule 
 sigimp_dev_ALP <- approxfun(All_Precip$SimDay, All_Precip$Dev_ALP, rule = 2)
 sigimp_dev_CLP <- approxfun(All_Precip$SimDay, All_Precip$Dev_CLP, rule = 2)
 
+#Set vax pattern
+if(Vaccinate == FALSE){
+  sigimp_vax  <- approxfun(All_Precip$SimDay, All_Precip$No_vax, rule = 2)
+}else{
+  if(vax.burst == FALSE){
+    sigimp_vax  <- approxfun(All_Precip$SimDay, All_Precip$Daily_vax, rule = 2)
+  }else{
+    for(y in vax.year){
+      for(i in 1:nrow(All_Precip)){
+        if(All_Precip$MosqYear[i] == y){
+          if(All_Precip$MosqDay[i] >= 304 & All_Precip$MosqDay[i] <= 310)
+            All_Precip$Burst_vax[i] <- 1
+        }
+      }
+    }
+    sigimp_vax  <- approxfun(All_Precip$SimDay, All_Precip$Burst_vax, rule = 2)
+  }
+}

@@ -1,7 +1,7 @@
 #' ---
 #' title: "RVFV SIRS Model Sheep Aedes and Culex"
 #' author: "Mindy Rostal"
-#' date: "March 28, 2022"
+#' date: "October 22, 2023"
 #' output: html_document
 #' ---
 #' 
@@ -21,21 +21,56 @@ library(ggpubr)
 library(stringr)
 
 #Set Scenarios  - User decides at the start
-Vaccinate <- FALSE #Change to true is you want to run a simulation where you vaccinate the sheep and select a vaccination %
-  vax.proportion <- .27#Proportion of the flock user wants to simulate vaccination in
-  vax.25_higher <- FALSE #Run simulation with a host vaccination rate that is 25% higher
-  vax.25_lower <- FALSE #Run simulation with a host vaccination rate that is 25% higher
-
 No.q <- FALSE #No transovarial transmission
 Only.q <- FALSE #No horizontal transmission
 muC.25_higher <- FALSE #Run simulation with a Culex mortality rate that is 25% higher
 muC.25_lower <- FALSE #Run simulation with a Culex mortality rate that is 25% lower
+lo.eggs <- FALSE #Run simulation that changes the initial population of infected Aedes eggs
+
+Vaccinate <- FALSE #Change to true is you want to run a simulation where you vaccinate the sheep and select a vaccination %
+vax.proportion <- .18 #Proportion of the flock user wants to remain vaccinated at a constant rate
+vax.25_higher <- FALSE #Run simulation with a host vaccination rate that is 3 x higher
+vax.25_lower <- FALSE
+#Run simulation with a host vaccination rate that is 25% higher
+vax.burst <- FALSE #Change to true if you want to do a burst vaccination during the winter season of a given MosqYear, select a time frame (early, middle, late)
+if(vax.burst == TRUE){
+  Early <- FALSE
+  EarlyWithOutbreak <- FALSE
+  Late <- FALSE
+  LateWithOutbreak <- FALSE
+  One <- FALSE 
+  vax.proportion <- 0.99##Proportion of the flock user wants to vaccinate in a burst effort (7 days in July of selected MosqYear; R can't handle 100% of the herd - or 1.0 proportion)
+}
+
 
 #Always False:
 SA <- FALSE #This should always be FALSE: If you want to run a sensitivity analysis, you need to use a different simulation file 
 Var_Select <- FALSE  #This should always be FALSE: If you want to run a sensitivity analysis, you need to use a different simulation file 
 
 set.seed(6242015)#This is to ensure the approxfun function always outputs the same mosquito hatching patterns
+
+##################
+#Need to set these before runing the sourced files below to set up the vaccination burst years
+if(vax.burst == TRUE){
+  if(Early == TRUE){
+    vax.year <- c(1985,1986,1987, 1988)#Provide the MosqYear (starting in September and ending in August of the following year)
+  }else{
+    if(EarlyWithOutbreak == TRUE){
+      vax.year <- c(1987, 1988, 1989)#Provide the MosqYear (starting in September and ending in August of the following year)
+    }else{
+      if(One == TRUE){
+        vax.year <- c(1985)#Provide the MosqYear (starting in September and ending in August of the following year)
+      }else{
+        if(LateWithOutbreak == TRUE){
+          vax.year <- c(2009, 2010, 2011)#Provide the MosqYear (starting in September and ending in August of the following year)
+        }else{
+          vax.year <- c(2006, 2007, 2008, 2009)#Provide the MosqYear (starting in September and ending in August of the following year)
+          
+        }
+      }
+    }
+  }
+}
 
 #Source code
 #Source functions
@@ -53,25 +88,35 @@ source(here("All_Files_For_Publication/Functions", "Function 5 Calculate R0 dfs 
 
 #Set parameters for various scenarios if they are selected
 if(Vaccinate == TRUE){
-  #Calculation: p = vax/(vax+muL+g); p(vax +muL + g) = vax;  pvax + p(muL + g) = vax; p(muL + g) = (1-p)vax; vax = p*(muL+g)/(1-p) 
+  #Calculation of daily rate: p = vax/(vax+muL+g); p(vax +muL + g) = vax;  pvax + p(muL + g) = vax; p(muL + g) = (1-p)vax; vax = p*(muL+g)/(1-p) 
   if(vax.25_higher == FALSE & vax.25_lower == FALSE){ 
-  param_vec["vax.prop"] <- vax.proportion
+    param_vec["vax.prop"] <- vax.proportion
   }
   
   if(vax.25_higher == TRUE){
-    param_vec["vax.prop"] <- vax.proportion * 1.250
+    param_vec["vax.prop"] <- vax.proportion * 3 # actually 54% vaccinated, which is much higher than just 25% higher
   }
   
   if(vax.25_lower == TRUE){
     param_vec["vax.prop"] <- vax.proportion * 0.750
   }
-  vax <- param_vec[["vax.prop"]]*(param_vec[["muL"]] + param_vec[["g"]])/ (1-param_vec[["vax.prop"]]) #vax = p*(muL+g)/(1-p)
-  param_vec["vax"] <- vax
+  if(vax.burst == FALSE){
+    vax <- param_vec[["vax.prop"]]*(param_vec[["muL"]] + param_vec[["g"]])/ (1-param_vec[["vax.prop"]]) #vax = p*(muL+g)/(1-p)
+    param_vec["vax"] <- vax
+    burst <- FALSE
+  }else{
+    vax <- param_vec[["vax.prop"]]*(param_vec[["muL"]] + param_vec[["g"]])/ (1-param_vec[["vax.prop"]]) #vax = p*(muL+g)/(1-p)
+    vax <- vax*365/7 #Gives the daily rate needed to vaccinate the identified portion during the one week winter period
+    param_vec["vax"] <- vax
+    burst <- TRUE
+  }
+}else{
+  burst <- FALSE
 }
 
 #No transovarial transmission
 if(No.q == TRUE){
-  param_vec["q"] <- 0
+  param_vec["q"] <- 0.0
 }
 
 #No horizontal transmission
@@ -79,7 +124,12 @@ if(Only.q == TRUE){
   param_vec["Tcsl"] <- 0
   param_vec["Tslc"] <- 0
   param_vec["Tasl"] <- 0
-  }
+}
+
+#low initial Aedes egg starting population
+if(lo.eggs == TRUE){
+  initial.populations["IAE"] <- (initial.populations["SAE"] + initial.populations["IAE"]) * 0.0003 #main model initial pop is pop.sizeAE * 0.003
+}
 
 #Culex mortality rate
 if(muC.25_higher == TRUE){
@@ -96,6 +146,7 @@ end.time <- tail(All_Precip$SimDay, 1) #3000#
 timestep <- 1
 times <- seq(from=start.time, to=end.time, by=timestep)
 
+##################
 #' Run the model
 #' =============
 start.run.time <- Sys.time()
@@ -110,8 +161,10 @@ matrix.populations <- ode(y = initial.populations,
                           sigC = sigimpCMean, 
                           sigdevA = sigimp_dev_ALP,
                           sigdevC = sigimp_dev_CLP,
+                          sigvax = sigimp_vax,
+                          vax.b = burst,
                           end.t = end.time
-                          )
+)
 
 End.run.time <- Sys.time()
 print(End.run.time - start.run.time)
@@ -135,7 +188,7 @@ final.populations <- Define.MosqYr(final.populations, All_Precip)
 #Set outbreak parameter to mark 2010 outbreak on the timeline
 outbreak2010 <- which(final.populations$Year == 2010 & final.populations$MosqDay == 163) #February 10, 2010
 
-
+##################
 ###Plots to check results quickly, to plot all together use the multiplot analysis file
 #Set ggplot theme
 thesis_theme <- theme_classic() +
@@ -224,7 +277,7 @@ minApop_MosqYR <- final.populations%>%
   mutate(across(MinSA:MinIA, .fns = ~replace(., . <1 , 0)))
 
 #For use in the R0 analyses 
-  #Calculate the mean dev_ALP, dev_CLP, mu_CLP and mu_ALP only from days when these factors are non-zero
+#Calculate the mean dev_ALP, dev_CLP, mu_CLP and mu_ALP only from days when these factors are non-zero
 ALP_rates <- final.populations%>%
   filter(SALP >=1 | IALP >=1)
 CLP_rates <- final.populations%>%
@@ -236,7 +289,7 @@ mmu_ALP <- mean(ALP_rates$muALP)
 mdev_CLP <- mean(CLP_rates$dev_CLP) 
 mmu_CLP <- mean(CLP_rates$muCLP) 
 
-  #Calculate the mean population sizes
+#Calculate the mean population sizes
 final.populations <- final.populations%>%
   mutate(NSL = NS + NL)%>%
   mutate(All_AEggs = SAE + IAE)
@@ -287,11 +340,11 @@ HV_ratio <- HV_ratio%>%
   summarise(minNA_SL_Ratio = min(NA_SL_Ratio),
             minNC_SL_Ratio = min(NC_SL_Ratio),
             minMosq_SL_Ratio = min(Mosq_SL_Ratio))
-  
+
 mean_max_Host_Mosq_Ratio = round("^"(mean(HV_ratio$minMosq_SL_Ratio),-1),0)
 min_max_Host_Mosq_Ratio = round("^"(min(HV_ratio$minMosq_SL_Ratio),-1),0)
 max_max_Host_Mosq_Ratio = round("^"(max(HV_ratio$minMosq_SL_Ratio),-1),0)
-      
+
 #Quick check to sure the model is working (no negative populations)
 pop_check <- select(final.populations,  -MosqDay, -MosqYear, -Month)
 ifelse(any(pop_check< -.99), "ERROR!!!!", "Proceed")
@@ -311,9 +364,15 @@ Outbreaks <- Outbreaks%>%
 #Outbreak size and incidence
 out <- Outbreaks[2:35,]#Remove first and last year
 meanI <- mean(out$Endemic)
+
+infecteds <- out%>%
+  filter(!Endemic > (800*.25))
+
+meanI_no_outbrks <- mean(infecteds$Endemic)
 meanLength <- mean(out$Length)
 
 mean.inc.per.100 <- meanI/m_NSL*100
+mean.inc.per.100.no.outbrk <- meanI_no_outbrks/m_NSL*100
 meanSeroP <- Get.Mean.SeroP.MosqY(final.populations)
 
 
@@ -352,12 +411,20 @@ nmes.rat.tab <- c("Factor", "mean (range)")
 
 names(Ratio_Tab) <- nmes.rat.tab
 
-if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_lower == FALSE & vax.25_higher == FALSE){
+if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_lower == FALSE & vax.25_higher == FALSE & lo.eggs == FALSE){
   if(No.q == FALSE & Only.q == FALSE & Vaccinate == FALSE){
-write.csv(Ratio_Tab, "./Publication_Figures/Table S6 infected proportions host-vector ratios and seroprevalence_publication.csv", row.names = FALSE)
+    write.csv(Ratio_Tab, "./Publication_Figures/Table S6 infected proportions host-vector ratios and seroprevalence_publication.csv", row.names = FALSE)
   }
 }
 
+##########
+#mean temp
+mean_temps <- All_Precip%>%
+  group_by(Year)%>%
+  summarise(mean_annual_temp = mean(DayMeanTemp, na.rm = TRUE))
+mean(mean_temps$mean_annual_temp)
+
+##########
 #calculate vax.prop from vax
 vxp <- (unlist(param_vec["vax"])/(unlist(param_vec["muL"])+ unlist(param_vec["g"]) + unlist(param_vec["vax"])))
 
@@ -367,15 +434,33 @@ if(No.q == TRUE){
   write.csv(final.populations, "All_Files_For_Publication/Data_for_sensitivity_analysis/Data from most recent sim with no q.csv", row.names = FALSE)
 }
 
-  ###################################
-  #Add Effective R0 to final.populations
-  R_pops <- select(final.populations, SS, SL, SA, SC, MosqYear)
-  
-  Reff.list <- apply(R_pops, 1, function(x) R_eff(x,  params = R0params, get.fun1 = calc_R0))
+if(vax.burst == TRUE){
+  if(Early == TRUE){
+    write.csv(final.populations, "All_Files_For_Publication/Data_for_sensitivity_analysis/Data from most recent sim with burst vax early with no outbreak - 1985 1986 1987 and 1988.csv", row.names = FALSE)
+  }else{
+    if(EarlyWithOutbreak == TRUE){
+      write.csv(final.populations, "All_Files_For_Publication/Data_for_sensitivity_analysis/Data from most recent sim with burst vax early with outbreak - 1987 1988 and 1989.csv", row.names = FALSE)
+    }else{
+      if(LateWithOutbreak == TRUE){
+        write.csv(final.populations, "All_Files_For_Publication/Data_for_sensitivity_analysis/Data from most recent sim with burst vax late with outbreak - 2009 2010 and 2011.csv", row.names = FALSE)
+      }else{
+        write.csv(final.populations, "All_Files_For_Publication/Data_for_sensitivity_analysis/Data from most recent sim with burst vax late with no outbreak - 2006 2007 2008 and 2009.csv", row.names = FALSE)
+      }
+    }
+  }
+}
 
-  final.populations$Reff <- Reff.list  
 
-  print(paste("The ending seroprevalence is ", round(End.Seroprevalence, 2), sep = ""))
-  print(paste0("The mean incidence rate per 100 sheep-years is ", round(mean.inc.per.100,1), "."))
-    
-  
+###################################
+#Add Effective R0 to final.populations
+R_pops <- select(final.populations, SS, SL, SA, SC, MosqYear)
+
+Reff.list <- apply(R_pops, 1, function(x) R_eff(x,  params = R0params, get.fun1 = calc_R0))
+
+final.populations$Reff <- Reff.list  
+
+print(paste("The ending seroprevalence is ", round(End.Seroprevalence, 2), sep = ""))
+print(paste0("The mean incidence rate per 100 sheep-years is ", round(mean.inc.per.100,1), "."))
+print(paste0("Excluding outbreak years (>250 infections), the mean incidence rate per 100 sheep-years is ", round(mean.inc.per.100.no.outbrk,1), "."))
+
+

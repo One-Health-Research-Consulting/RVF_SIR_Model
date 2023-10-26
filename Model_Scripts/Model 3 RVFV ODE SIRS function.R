@@ -17,7 +17,7 @@ library(codetools)
 #' Function ODE.RVFV.deterministic.SIRS
 #' ======================
 
-ODE.RVFV.deterministic.SIRS <- function(t, pop_vec, param_vec, sigEndA, sigC, sigdevA, sigdevC,  end.t, ...){
+ODE.RVFV.deterministic.SIRS <- function(t, pop_vec, param_vec, sigEndA, sigC, sigdevA, sigdevC, sigvax, vax.b, end.t, ...){
   with(as.list(c(param_vec, pop_vec)), {#function returns a list 
     
     #Populations
@@ -45,6 +45,15 @@ ODE.RVFV.deterministic.SIRS <- function(t, pop_vec, param_vec, sigEndA, sigC, si
     dev_ALP<- sigdevC(t)
     muALP <- dev_ALP*((1-phiA)/phiA)
     muCLP <- dev_CLP*((1-phiC)/phiC)
+    
+    #Daily vaccination rates, only vaccinate adult sheep in burst situation
+    if(vax.b == TRUE){
+    vax_scheme.s <- sigvax(t) 
+    vax_scheme.l <- sigvax(t)
+    }else{
+      vax_scheme.s <- 0
+      vax_scheme.l <- sigvax(t)
+    }
      
     #Define transmission terms
     # Transmission to sheep/lambs from infected Aedes: 
@@ -62,25 +71,26 @@ ODE.RVFV.deterministic.SIRS <- function(t, pop_vec, param_vec, sigEndA, sigC, si
 
 #' ODE Equations
     #Adult sheep
-    dSS_dt <-   g * SL - soldS * SS - TransmissionSLC * SS /  (NS + NL) * IC - TransmissionSLA * SS * IA /  (NS + NL) - muS * SS
+    dSS_dt <-   g * SL - soldS * SS - TransmissionSLC * SS /  (NS + NL) * IC - TransmissionSLA * SS * IA /  (NS + NL) - muS * SS - vax * SS * vax_scheme.s
     
     dIS_dt <-   g * IL - soldS * IS + TransmissionSLC * SS /  (NS + NL) * IC + TransmissionSLA * SS * IA /  (NS + NL) - muS * IS  - sigma_sl * IS  - rhoS * IS
     
     dRS_dt <-   g * RL - soldS * RS - muS * RS + sigma_sl * IS
     
-    dVS_dt <-   g * VL - soldS * VS - muS * VS
+    dVS_dt <-   vax * SS * vax_scheme.s + g * VL - soldS * VS - muS * VS
     
     #Lambs
-    dSL_dt <-   bL *  (1 - (NS / NLmax)) * SS  + omega_MA * AL + buyL - g * SL - TransmissionSLC * SL /  (NS + NL) * IC - TransmissionSLA * SL * IA /  (NS + NL) - muL * SL - vax * SL#
+    dSL_dt <-   bL *  (1 - (NS / NLmax)) * SS  + omega_MA * AL + buyL - g * SL - TransmissionSLC * SL /  (NS + NL) * IC - TransmissionSLA * SL * IA /  (NS + NL) - muL * SL - vax * SL * vax_scheme.l#
     
     dIL_dt <-   TransmissionSLC * SL /  (NS + NL) * IC + TransmissionSLA * SL * IA /  (NS + NL) - g * IL - muL * IL - sigma_sl * IL - rhoL * IL
 
     dRL_dt <-   sigma_sl * IL - g * RL - muL * RL
 
     #Maternal Immunity
-    dAL_dt <- + bL* (1 - (NS / NLmax)) * (RS+((1-Abort)*IS)) - omega_MA * AL - muL * AL#
+    dAL_dt <- + bL* (1 - (NS / NLmax)) * (RS + ((1-Abort)*IS) + VS) - omega_MA * AL - muL * AL#
     
-    dVL_dt <- vax * SL - g * VL - muL * VL
+    #Vaccination
+    dVL_dt <- vax * SL * vax_scheme.l - g * VL - muL * VL
     
     #To prevent erroneous mosquito infections from fractions of an infected sheep/lamb, if IL and/or IS is <1 the it should be considered as 0
         ISmosq <- ifelse(IS < 1, 0, IS)

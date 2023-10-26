@@ -174,6 +174,27 @@ Get.Extinct.Day <- function(df){
   }
 }
 
+#'  How long until the virus goes extinct (days)
+Get.Extinct.IAE.Day <- function(df, min.pop){
+  iae = df$IAE
+  if(any(is.na(iae)) ){
+    return(paste("IAE was NA"))
+  }else{
+    a = (df$IAE >=1) 
+    a.true = (a == TRUE)
+    LastDayAny = ifelse(any(a.true), tail(which(a.true), 1), 0)
+    #Seems that the pop ~ <144000 cannot infect sheep
+    b = (df$IAE >= min.pop)
+    b.true = (b == TRUE)
+    LastDay_14400 = ifelse(any(b.true), tail(which(b.true), 1), 0)
+    
+    LastDays <- c(LastDayAny, LastDay_14400)
+    
+    return(LastDays)
+  }
+}
+
+
 #'* Maximum size of an outbreak (by season) 
 Get.Max.Outbreak.Size.MosqYear <- function(df, sigma){
   is = df$IS

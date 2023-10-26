@@ -20,13 +20,10 @@ library(ggpattern)
 library(ggrepel)
 library(emojifont)
 library(magick)
-# Required code to enable showtext font rendering!
-#showtext_auto()
-#font_add('fa-reg', 'fonts/Font Awesome 6 Free-Regular-400.otf')
-#font_add('fa-brands', 'fonts/Font Awesome 6 Brands-Regular-400.otf')
-#font_add('fa-solid', 'fonts/Font Awesome 6 Free-Solid-900.otf')
-#font_add('fa-sharp', 'fonts/Font Awesome 6 Free-Solid-900.otf')
-#font_add('fa-star', 'fonts/Font Awesome 6 Free-Solid-900.otf')
+library(ggbrace) #devtools::install_github("NicolasH2/ggbrace")
+library(ggpattern)
+library(tidyr)
+
 
 #Set multiplot to TRUE to combine simulation plots and create most figures (e.g. Figure 1)
 Multiplot <- TRUE
@@ -37,13 +34,10 @@ source(here("All_Files_For_Publication/Functions", "Function 3 Plot simulations 
 #Set ggplot theme
 plot_theme <- theme_classic() +
   theme(axis.text = element_text(size = 5.5, colour = "black")) +
- #theme(axis.text = element_text(size = 10, colour = "black")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
   theme(axis.title = element_text(size = 10)) + 
-  #theme(axis.title = element_text(size = rel(1.5))) + 
   theme(legend.text = element_text(size = 5)) + 
   theme(legend.title = element_text(size = 7)) + 
-  #theme(legend.text = element_text(size = 10)) + 
   theme(plot.title = element_text(size=16))
 
 ########################################################
@@ -164,9 +158,9 @@ Reffect.plot <- ggplot(final.populations, aes(x=time, y = Reff)) +
 
 
 ########################################################
-#Make plots for Fig 1, S3, portion of Fig S9 
+#Make plots for Fig 1, S3, portion of Fig S10 
 #Runs if no scenarios were selected
-if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_higher ==  FALSE & vax.25_lower == FALSE){
+if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_higher ==  FALSE & vax.25_lower == FALSE & vax.burst == FALSE & lo.eggs == FALSE){
     if(No.q == FALSE & Only.q == FALSE & Vaccinate == FALSE){
       
       #Figure 1
@@ -180,14 +174,15 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
       #ggexport(Fig1[1], filename = fil.name, width=593, height=915, ncol = 1,nrow = 6)
       
       #Figure S3 Plot annual difference between infected culex and infected Aedes peaks (max(IC) - max(IA)) by number of infected hosts
+  
       PeakIMosq_Plot <- ggplot(PeakInfectedMosq, aes(x = Ratio_iCu_to_iAe, y = Endemic), label = MosqYear +1 )+ #Add 1 to the Mosq year to get the actual year for the spring of the mosquito season
         geom_point()+ 
         lims(x=c(0,7))+
         #geom_text(aes(label=ifelse(Ratio_iCu_to_iAe>1.9, MosqYear +1 , "")), position = position_jitter(width=ifelse(PeakInfectedMosq$MosqYear== 2009,1,0),
          #                                                                                             height=ifelse(PeakInfectedMosq$MosqYear== 2009,1,0)))
-        geom_text(aes(label=ifelse(Ratio_iCu_to_iAe>2, MosqYear +1 , "")), hjust=-.35,vjust=.35) +
+        geom_text(aes(label=ifelse(Ratio_iCu_to_iAe>2, MosqYear +1 , "")), hjust = -0.35,vjust = 0.35) +
         geom_text(aes(label=ifelse(MosqYear == 2008, MosqYear +1 , "")), hjust=-.35,vjust=1) +
-        #geom_text_repel(aes(label=ifelse(Ratio_iCu_to_iAe>1.9, MosqYear +1 , "")), hjust=-.35,vjust=.35)+
+        #geom_text_repel(aes(label=ifelse(Ratio_iCu_to_iAe>2, MosqYear +1 , "")))+#, hjust=-.35,vjust=.35)+
         labs( x = expression(paste("Ratio of Infected ", italic("Culex"), " to Infected ", italic("Aedes"), " Populations")), y = "Infected Animals")+ 
         plot_theme + 
         theme(plot.margin=unit(c(.5,.5,.5,.5),"cm"))
@@ -201,7 +196,7 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
       #         width=593, height=230, ncol = 1, nrow = 1)
       
       
-      #For Fig S9 - plot of the simulation Culex mortality rate
+      #For Fig S9- plot of the simulation Culex mortality rate
       fil.name.figS9b <- "Publication_Figures/Fig S9b Full Simulation Culex Death rate for publication.pdf"
         SLplot_noLeg <- SLplot + theme(legend.position = "none")
         MosqIAll_noLeg <- MosqIAll + theme(legend.position = "none")
@@ -219,23 +214,20 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
                         ncol = 1, nrow = 4)
       
       ggexport(FigS9b[1], filename = fil.name.figS9b, width=5, height=5)
-      #ggexport(FigS9b[1], filename = fil.name.figS9b, width=630, height=803, ncol = 1,nrow = 4)
+      
     }
     
   #Combine FigS9 with the two FigS9s already made (+/-50% biteC)
   if(file.exists("./Publication_Figures/Fig S9A Full Simulation Culex Death Rate Lower by 25 Percent for publication.pdf") & file.exists("Publication_Figures/Fig S9b Full Simulation Culex Death rate for publication.pdf") & file.exists("./Publication_Figures/Fig S9C Full Simulation Culex Death Rate Higher by 25 Percent for publication.pdf")){
-  #rl <- lapply(list("./Publication_Figures/Fig S9A Full Simulation Culex Death Rate Lower by 25 Percent for publication.pdf", "Publication_Figures/Fig S9b Full Simulation Culex Death rate for publication.pdf",  "./Publication_Figures/Fig S9C Full Simulation Culex Death Rate Higher by 25 Percent for publication.pdf"), png::readPNG)
   rl <- lapply(list("./Publication_Figures/Fig S9A Full Simulation Culex Death Rate Lower by 25 Percent for publication.pdf", "Publication_Figures/Fig S9b Full Simulation Culex Death rate for publication.pdf",  "./Publication_Figures/Fig S9C Full Simulation Culex Death Rate Higher by 25 Percent for publication.pdf"), magick::image_read_pdf)
   gl <- lapply(rl, grid::rasterGrob)
   ml <- marrangeGrob(gl, nrow = 1, ncol = 3, top=NULL, labels = c("A", "B", "C"))
   ml
   ggsave("./Publication_Figures/Fig S9 Combined Sims with various death rates.pdf", ml)
-  #ggsave("./Publication_Figures/Fig S9 Combined Sims with various death rates.pdf", ml)
-  #do.call(gridExtra::grid.arrange, gl, nrow = 1, ncol = 3)
   }
   
 }else{
-  #Figure 9a for a 25% lower Culex mortality rate
+  #Figure S9a for a 25% lower Culex mortality rate
   if(muC.25_lower == TRUE & Multiplot == TRUE){
     fil.name.bite.lo <- "./Publication_Figures/Fig S9A Full Simulation Culex Death Rate Lower by 25 Percent for publication.pdf"
     
@@ -251,7 +243,7 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
                        ncol = 1, nrow = 4)
     
     ggexport(FigS9A[1], filename = fil.name.bite.lo, width=5, height=5)
-    #ggexport(FigS9A[1], filename = fil.name.bite.lo, width=630, height=803, ncol = 1,nrow = 4)
+    
   }else{
     #Figure S9c plot the 25% higher Culex mortality rate
     if( muC.25_higher == TRUE & Multiplot == TRUE){
@@ -261,7 +253,7 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
       #SLplot_noLeg <- SLplot 
      # MosqIAll_noLeg <- MosqIAll 
       MosqIAEplot_noLeg <- MosqIAEplot + 
-        ylim(0,160000)  +
+        ylim(0,225000)  +
         theme(legend.key = element_rect(fill = "white", color = "white"), legend.text = element_text(color = "white"), legend.title = element_text(color = "white")) +
         guides(color = guide_legend(override.aes = list(color = NA)))
     
@@ -271,7 +263,7 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
                          ncol = 1, nrow = 4)
       
       ggexport(FigS9C[1], filename = fil.name.muC.hi, width=5, height=5)
-      #ggexport(FigS9C[1], filename = fil.name.muC.hi, width=630, height=803, ncol = 1,nrow = 4)
+      
     }else{
         print(MosqAplot)
         print(MosqIAEplot)
@@ -281,12 +273,12 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
     }
   }
 }
-
-#Make plots for Fig 2 R0 seroprev and persistence, S10 R0 for changing muC and q and S5 Seroprevalence and persistance by Variables
+########################
+#Make plots for Fig 2 R0 seroprev and persistence, S8 R0 for changing q and S7 as one or two parameters change
 #This figure is only made if the main model was run with no scenarios.
-if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_higher ==  FALSE & vax.25_lower == FALSE){
+if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_higher ==  FALSE & vax.25_lower == FALSE & lo.eggs == FALSE){
   if(No.q == FALSE & Only.q == FALSE & Vaccinate == FALSE){
-    
+ ######################   
     #Figure 2
     #R0 vs bite rate and q
     AeC_q_vs_biteA_R0 <- read.csv(here("All_Files_For_Publication/Data_for_sensitivity_analysis", "R0 Seroprevalence plot q vs biteA  for 34 years 2023_07_13 For Publication.csv"))
@@ -295,6 +287,13 @@ if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_h
     #
     persist_q<- persist%>%
       group_by(q) %>% arrange(biteA) %>% filter(row_number ()==1)%>% mutate(first_persist = 1)
+    
+    
+    persist_q_after_bite0.25 <- persist%>%
+      filter( biteA >0.25)%>% #the curve up to bite A = 0.25 is captured by persist_q, after that it stays constant at q = 0.1
+      filter( q == 0.1)
+    
+    persist_q <- rbind(persist_q, persist_q_after_bite0.25)
     
     persist.short <- filter(AeC_q_vs_biteA_R0, Persist_year == "yes")
     #
@@ -324,7 +323,7 @@ if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_h
     dat.R0 <- filter(dat.R0, y <0.96 & y >0.7444736)
     
     #Get long term persistence
-    line2 <- data.frame(matrix(nrow = 10, ncol = 3))
+    line2 <- data.frame(matrix(nrow = 30, ncol = 3))
     names(line2) <- c("y", "x", "data")
     line2[,1:2] <- persist_q[,1:2]
     line2$data <- "Persist"
@@ -350,10 +349,11 @@ if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_h
     AeC_q_vs_biteA_R0$q[AeC_q_vs_biteA_R0$q == 0.99] <- 1
     
     #Set up grid to indicate where the text should go
-    R0_text <- c("R0 = 1", "Seasonal \nR0 = 1", "34-year Persistence")
-    label_coord_x <- c(0.1, 0.18, 0.22 )
-    label_coord_y <- c(0.175, .85, 0.35)
-    text_df <- data.frame(x = R0_text,  label_coord_x,label_coord_y)
+    R0_text <- c("R0 < 1", "R0 > 1","Region of persistence \nwithin observed \nseroprevalence \nrange", "Seasonal \nR0 < 1", "Seasonal \nR0 > 1", "Decadal \npersistence", "No \ndecadal \npersistence")
+    label_coord_x <- c(0.025, 0.15, 0.1, 0.03, 0.18, 0.17, 0.05 )
+    label_coord_y <- c(0.06, 0.06, 0.9, 0.6, 0.6, 0.45, 0.35 )
+    text_color <- c("darkgreen", "darkgreen", "orange", "darkblue", "darkblue", "black", "black")
+    text_df <- data.frame(x = R0_text,  label_coord_x, label_coord_y, text_color)
     
     my_x_title.Abite <- expression(paste(italic("Aedes"), " Bite Rate"))
   
@@ -365,7 +365,7 @@ if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_h
            fill = "Mean Seroprevalence") +
       #Fill contours
       scale_fill_manual(labels = c("0-10%", "10-20%", "20-30%", "30-40%", "40-50%", "50-60%", "60-70%", "70-80%", "80-90%"),
-                        values = c("#440154FF", "#472D7BFF", "#3B528BFF", "#2C728EFF", "#21908CFF", "#27AD81FF", "#5DC863FF", "#AADC32FF", "#FDE725FF"))  +
+                        values = c("#D5D0FC", "#472D7BFF", "#3B528BFF", "#2C728EFF", "#21908CFF", "#27AD81FF", "#5DC863FF", "#AADC32FF", "#FDE725FF"))  + #Original first color: "#440154FF"
       ggnewscale::new_scale_fill()+      
       #Red shaded area indicating targer seroprevalence
       geom_contour_filled(aes( z = Mean_Annual_Seroprevalence), alpha = 0.9, fill = "darkred", breaks = c(0.05, 0.4))+
@@ -379,14 +379,26 @@ if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_h
         data = dat1, aes(x = x, y = y), fill = 'orange',  colour = 'orange', pattern_fill = "black")+#,, pattern = "circle",
         #pattern_spacing = 0.05, pattern_density = 0.4) + 
       #R0 = 1
-      geom_contour(aes(z = mean_popn_R0), colour = "darkgreen", breaks = 1) +
+      geom_contour(aes(z = mean_popn_R0), colour = "cornflowerblue", breaks = 1) +
       #seasonal R0 (q = 0) = 1
-      geom_contour(aes(z = R0_when_q0), colour = "darkblue", breaks = 1) +
+      geom_contour(aes(z = R0_when_q0), colour = "deeppink2", breaks = 1) +
       #Persistence line
-      geom_point(data = persist_q, aes(x = biteA, y = q), shape = 1, size = .5) + 
-      geom_line(data = persist_q, aes(x = biteA, y = q))+ 
+      geom_point(data = persist_q, aes(x = biteA, y = q), shape = 1, size = .5, colour = "chartreuse4") + 
+      geom_line(data = persist_q, aes(x = biteA, y = q), colour = "chartreuse4")+ 
       #Text
-      geom_text(data = text_df, aes(x= label_coord_x, y = label_coord_y, label = R0_text)) + 
+      geom_text(data = text_df, aes(x= label_coord_x, y = label_coord_y, label = R0_text, colour = text_color, hjust = 0)) + 
+      scale_colour_manual(values=c(  "black" = "chartreuse4", "darkblue" = "deeppink2", "darkgreen" = "cornflowerblue",  "orange" = "darkorange"), guide = "none") +
+      #Annotate target seroprevalence
+      geom_brace(aes(x=c(0.23,0.25), y=c(0.14, 0), label = "Target seroprevalence \n (5-40%)"), inherit.data=F, rotate = 90, labelsize=3) + 
+      #Annotate orange area
+      annotate("segment", xend = 0.075, x = 0.105, yend = 0.8, y = 0.9, colour = "darkorange", size = 0.7, arrow=arrow(length = unit(0.3, "cm"))) +
+      annotate("segment", xend = 0.17, x = 0.14, yend = 0.6, y = 0.6, colour = "deeppink2", size = 0.7, arrow=arrow(length = unit(0.3, "cm"))) +
+      annotate("segment", xend = 0.11, x = 0.14, yend = 0.6, y = 0.6, colour = "deeppink2", size = 0.7, arrow=arrow(length = unit(0.3, "cm"))) +
+      annotate("segment", xend = 0.16, x = 0.13, yend = 0.06, y = 0.06, colour = "cornflowerblue", size = 0.7, arrow=arrow(length = unit(0.3, "cm"))) +
+      annotate("segment", xend = 0.10, x = 0.13, yend = 0.06, y = 0.06, colour = "cornflowerblue", size = 0.7, arrow=arrow(length = unit(0.3, "cm"))) +
+      annotate("segment", xend = 0.16, x = 0.13, yend = 0.43, y = 0.4, colour = "chartreuse4", size = 0.7, arrow=arrow(length = unit(0.3, "cm"))) +
+      annotate("segment", xend = 0.10, x = 0.13, yend = 0.37, y = 0.4, colour = "chartreuse4", size = 0.7, arrow=arrow(length = unit(0.3, "cm"))) +
+      
       plot_theme+
       theme(axis.text = element_text(size = 10),
             axis.title = element_text(size = 12),
@@ -395,85 +407,60 @@ if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_h
     
     Fig2.Seroprev.contour.plot
     
-    #For Original optimized parameters
-    #Fig2.Seroprev.contour.plot <- ggplot(data = AeC_q_vs_biteA_R0, aes(x = biteA, y = q))+
-    #  geom_contour_filled(aes(z = Mean_Annual_Seroprevalence), alpha = 0.5) +
-    #  labs(x = my_x_title.Abite,
-    #       y = "Transovarial Transmission \nFraction",
-    #       fill = "Mean Seroprevalence") +
-    #  scale_fill_manual(labels = c("0-10%", "10-20%", "20-30%", "30-40%", "40-50%", "50-60%", "60-70%", "70-80%", "80-90%"),
-    #                    values = c("#440154FF", "#472D7BFF", "#3B528BFF", "#2C728EFF", "#21908CFF", "#27AD81FF", "#5DC863FF", "#AADC32FF", "#FDE725FF"))  +
-    #  ggnewscale::new_scale_fill()+      
-    #  geom_contour_filled(aes( z = Mean_Annual_Seroprevalence), alpha = 0.9, fill = "darkred", breaks = c(0.05, 0.4))+
-    #  geom_contour(aes(x = biteA, y = q,  z = Mean_Annual_Seroprevalence), colour = "white", alpha = 0.5)+
-    #  coord_fixed(ratio = 1/2) +
-    #  scale_x_continuous(expand = c(0,0)) +
-    #  scale_y_continuous(expand = c(0,0)) +
-    #  geom_polygon_pattern(
-    #    data = dat1, aes(x = x, y = y), fill = 'orange', pattern_fill = "black", colour = 'orange', pattern = "circle",
-    #    pattern_spacing = 0.05, pattern_density = 0.4) + 
-    #  geom_polygon_pattern(
-    #    data = dat2, aes(x = x, y = y), fill = 'orange', pattern_fill = "black", colour = 'orange', pattern = "circle",
-    #    pattern_spacing = 0.05, pattern_density = 0.4) +
-    #  geom_contour(aes(z = mean_popn_R0), colour = "darkgreen", breaks = 1) + #R0 = 1
-    #  geom_contour(aes(z = R0_when_q0), colour = "darkblue", breaks = 1) + #seasonal R0 (q = 0) = 1
-    #  geom_point(data = persist_q, aes(x = biteA, y = q), shape = 1, size = .5) +
-    #  geom_line(data = persist_q, aes(x = biteA, y = q))+
-    #  geom_text(data = text_df, aes(x= label_coord_x, y = label_coord_y, label = R0_text)) + 
-    #  plot_theme
-  
     Fig2 <- ggarrange(Fig2.Seroprev.contour.plot, draw = FALSE,
                       ncol = 1, nrow = 1)
     fil.namefig2.pdf <- "./Publication_Figures/Fig 2 Seroprevalence contour while changing biteA and q with R0.pdf"
-    fil.namefig2.tiff <- "./Publication_Figures/Fig 2 Seroprevalence contour while changing biteA and q with R0.tiff"
-    
-    ggexport(Fig2[1], filename = fil.namefig2.pdf, width=7.38, height= 6.60)
-    #ggexport(Fig2[1], filename = fil.namefig2.tiff, width=708, height= 634)
-    
      
-    #  Fig2 <- ggarrange(R0.seroprev.plot, R0.seroprev.plot.q0, draw = FALSE,
-    #                  labels = c("A", "B"),
-    #                  ncol = 1, nrow = 2,
-    #                  common.legend = TRUE, legend = "right")
-    #fil.namefig2 <- "./Publication_Figures/Fig 2 R0 and seroprevalence while changing biteA and q.png"
-    #ggexport(Fig2[1], filename = fil.namefig2, width=630, height=503)
+    ggexport(Fig2, filename = fil.namefig2.pdf, width=7.38, height= 6.60)
+     
+######
+    #Fig S8
+    #Change to factor
+    AeC_q_vs_biteA_R0$q <- as.factor(as.character(AeC_q_vs_biteA_R0$q))
     
- #   #Fig S10 
- #   AeC_q_vs_muC_R0 <- read.csv(here("All_Files_For_Publication/Data for sensitivity analyses", "R0 Seroprevalence plot q vs muC Culex mortality rate for 34 years 2022_04_04 For Publication.csv"))
- #   
- #   #Change to factor
- #   AeC_q_vs_muC_R0$q <- as.factor(as.character(AeC_q_vs_muC_R0$q))
- #   
- #   AeC_q_vs_muC_R0 <- AeC_q_vs_muC_R0%>%
- #     mutate(Persisted = if_else(Persistence > 12165, "Yes", "No"))%>%
- #     filter(!q== 0.75)#Too close to our value of 0.7, only need one.
- #   
- #   plot.R0.muC.q <- ggplot(AeC_q_vs_muC_R0, aes_string(x = "mean_popn_R0", y = "Mean_Annual_Seroprevalence", color = "q"))+
- #     geom_line(aes(linetype = Persist_year))+
- #     geom_point(aes(shape = Persist_long), size = 3)+
- #     geom_vline(xintercept = 1, color = "dark blue")+
- #     annotate("rect", xmin = -Inf, xmax = Inf, ymin = 0.05, ymax = 0.4, 
- #              alpha = .3)+
- #     xlim(0.65,11)+ 
- #     scale_color_discrete(name = "Transovarial Transmission", breaks = unique(AeC_q_vs_muC_R0$q), labels = unique(AeC_q_vs_muC_R0$q))+
- #     scale_shape_manual(name = "34-Year Persistance", values=c(4, 1), labels = c("No", "Yes"))+
- #     scale_linetype_manual(name = "Seasonal Persistence", values = c( "dashed","solid"), labels = c("Seasonal extinction without transovarial transmission", "Seasonal persistence without transovarial transmission"))  + 
- #     labs(x = expression(paste("R" [0])), y = "Mean Annual \nSeroprevalence")+
- #     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
- #           panel.background = element_blank(), axis.line = element_line(colour = "black"), 
- #           axis.title = element_text(colour = "black", size=12), 
- #           axis.text = element_text(colour = "black", size = 10),
- #           legend.position = "right")
- #   
- #   
- #   FigS10 <- ggarrange(plot.R0.muC.q, draw = FALSE,
- #                     ncol = 1, nrow = 1)
- #   
- #   fil.namefigS10 <- "./Publication_Figures/Fig S10 R0 and seroprevalence while changing muC and q.png"
- #   ggexport(FigS10[1], filename = fil.namefigS10, width=630, height=403)
+    R0.seroprev.plot <- ggplot(AeC_q_vs_biteA_R0, aes_string(x = "mean_popn_R0", y = "Mean_Annual_Seroprevalence", color = "q"))+
+      geom_line(aes(linetype = Persist_year))+
+      geom_point(aes(shape = Persist_long), size = 1.5)+
+      geom_vline(xintercept = 1, color = "dark blue")+
+      annotate("rect", xmin = -Inf, xmax = Inf, ymin = 0.05, ymax = 0.4, 
+               alpha = .3)+
+      xlim(0.65,2.5)+ 
+      scale_color_discrete(name = "Transovarial Transmission", breaks = unique(AeC_q_vs_biteA_R0$q), labels = unique(AeC_q_vs_biteA_R0$q))+
+      scale_shape_manual(name = "34-Year Persistance", values=c(4, 1), labels = c("No", "Yes"))+
+      scale_linetype_manual(name = "Seasonal Persistence", values = c( "dashed","solid"), labels = c("Seasonal extinction without \ntransovarial transmission", "Seasonal persistence without \ntransovarial transmission"))  + 
+      labs(x = expression(paste("R" [0])), y = "Mean Annual \nSeroprevalence")+
+      theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+            panel.background = element_blank(), axis.line = element_line(colour = "black"), 
+            axis.title = element_text(colour = "black", size=12), 
+            axis.text = element_text(colour = "black", size = 10),
+            legend.position = "right")
+    #
+    R0.seroprev.plot.q0 <- ggplot(AeC_q_vs_biteA_R0, aes(x = R0_when_q0, y = Mean_Annual_Seroprevalence, color = q))+
+      geom_line(aes(linetype = Persist_year))+
+      geom_point(aes(shape = Persist_long), size = 1.5)+
+      scale_shape_manual(name = "34-Year Persistance", values=c(4, 1), labels = c("No", "Yes"))+
+      geom_vline(xintercept = 1, color = "dark blue")+
+      annotate("rect", xmin = -Inf, xmax = Inf, ymin = 0.05, ymax = 0.4, 
+               alpha = .3)+
+      xlim(0.65,2.5)+ 
+      scale_color_discrete(name = "Transovarial Transmission", breaks = unique(AeC_q_vs_biteA_R0$q), labels = unique(AeC_q_vs_biteA_R0$q))+
+      scale_linetype_manual(name = "Seasonal Persistence", values = c( "dashed","solid"), labels = c("Seasonal extinction without transovarial transmission", "Seasonal persistence without transovarial transmission"))  + 
+      labs(x = expression(paste("Seasonal R" [0])), y = "Mean Annual \nSeroprevalence")+
+      theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+            panel.background = element_blank(), axis.line = element_line(colour = "black"), 
+            axis.title = element_text(colour = "black", size=12), 
+            axis.text = element_text(colour = "black", size = 10),
+            legend.position = "right")
+    
+      FigS8 <- ggarrange(R0.seroprev.plot, R0.seroprev.plot.q0, draw = FALSE,
+                      labels = c("A", "B"),
+                      ncol = 1, nrow = 2,
+                      common.legend = TRUE, legend = "right")
+    fil.namefigS8 <- "./Publication_Figures/Fig S8 R0 and seroprevalence while changing biteA and q.pdf"
+    ggexport(FigS8[1], filename = fil.namefigS8, width=6, height=5)    
     
 ###################    
-    #Figure S5
+    #Figure S7
     #Load data for seroprevalence and extinction single variable plots (A & B)
     AeC_q <- read.csv(here("All_Files_For_Publication/Data_for_sensitivity_analysis", "q vs Mean Seroprevalence and Extinction Day.csv"))
     AeC_Tsla <- read.csv(here("All_Files_For_Publication/Data_for_sensitivity_analysis", "Tsla vs Mean Seroprevalence and Extinction Day.csv"))
@@ -490,7 +477,7 @@ if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_h
     Plot.Extinction <- ggplot(All_single, aes(x=Parameter_Value, y = Year, color = Parameter_Tested))+
       geom_line()+
       geom_point()+
-      scale_color_brewer(palette="Dark2", name = "Parameter", labels = expression(paste("Extrinsic Incubation"), paste("Transmission ", italic("Aedes"), "-to-Ruminants"), paste("Transmission Ruminants-to-", italic("Aedes")), paste("Transovarial Transmission")))+
+      scale_color_brewer(palette="Dark2", name = "Parameter", labels = expression(paste("Extrinsic Incubation (per Day)"), paste("Transmission ", italic("Aedes"), "-to-Ruminant Fraction"), paste("Transmission Ruminant-to-", italic("Aedes"), " Fraction"), paste("Transovarial Transmission Fraction")))+
       labs(x = "Parameter Value", y ="Years of Persistence")+
       plot_theme +
       theme(legend.text.align = 0,
@@ -500,7 +487,7 @@ if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_h
     Plot.SeroP <- ggplot(All_single, aes(x=Parameter_Value, y = Mean_Seroprevalence, color = Parameter_Tested))+
       geom_line()+
       geom_point()+
-      scale_color_brewer(palette="Dark2", name = "Parameter", labels = expression(paste("Extrinsic Incubation"), paste(italic("Aedes"), " Bite Rate"), paste("Transmission ", italic("Aedes"), "-to-Ruminants"), paste("Transmission Ruminants-to-", italic("Aedes")), paste("Transovarial Transmission")))+
+      scale_color_brewer(palette="Dark2", name = "Parameter", labels = expression(paste("Extrinsic Incubation (per Day)"), paste("Transmission ", italic("Aedes"), "-to-Ruminant Fraction"), paste("Transmission Ruminant-to-", italic("Aedes"), " Fraction"), paste("Transovarial Transmission Fraction")))+
       labs(x = "Parameter Value", y ="Mean Seroprevalence")+
       plot_theme+
       theme(legend.position = "none",
@@ -515,21 +502,21 @@ if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_h
     AeC_q_vs_tasl_Persist$q <- as.factor(as.character(AeC_q_vs_tasl_Persist$q))
     
     #Plot
-    plot.5Sc <- ParamByParamPlot(df1 = AeC_q_vs_biteA, colx = "biteA", coly = "Mean_Annual_Seroprevalence", color1 = "q", no.leg = TRUE, R0 = FALSE)
-    plot.5Sd <- ParamByParamPlot(df1 = AeC_q_vs_tasl_Persist, colx = "Tasl", coly = "Day_of_Extinction", "q", no.leg = FALSE, R0 = FALSE)
+    plot.7Sc <- ParamByParamPlot(df1 = AeC_q_vs_biteA, colx = "biteA", coly = "Mean_Annual_Seroprevalence", color1 = "q", no.leg = TRUE, R0 = FALSE)
+    plot.7Sd <- ParamByParamPlot(df1 = AeC_q_vs_tasl_Persist, colx = "Tasl", coly = "Day_of_Extinction", "q", no.leg = FALSE, R0 = FALSE)
     
     
-    plot.5Sd <- plot.5Sd+
+    plot.7Sd <- plot.7Sd+
       theme(plot.margin=unit(c(0,0,0,0.5),"cm"),
             legend.key.size = unit(.2, "cm"))
     #Combine plots in S5
     
-    FigS5 <- ggarrange(Plot.SeroP, Plot.Extinction, plot.5Sc, plot.5Sd, ncol = 2, nrow = 2,
+    FigS7 <- ggarrange(Plot.SeroP, Plot.Extinction, plot.7Sc, plot.7Sd, ncol = 2, nrow = 2,
                       labels = c("A", "B", "C", "D"), align = "h", 
                       heights = c(300,300),  widths = c(1.5,2.5))
-    fil.nameS5 <- "./Publication_Figures/Fig S5 Combined plots of single and dual variable effect on seroprevalence and persistance for publication.pdf"
+    fil.nameS7 <- "./Publication_Figures/Fig S7 Combined plots of single and dual variable effect on seroprevalence and persistance for publication.pdf"
     
-    ggexport(FigS5, filename = fil.nameS5, width=6 , height=5)
+    ggexport(FigS7, filename = fil.nameS7, width=6 , height=5)
     #ggexport(FigS5, filename = fil.nameS5, width=907 , height=834)
     
   }
@@ -539,70 +526,99 @@ if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_h
 
 ######################################################
 #Plot scenarios
-#Figure 3 and S10 - vaccination scenarios and S4 restricted transovarial and horizontal transmission scenarios
+#Figure 4, S12 and S12- vaccination scenarios and S4 restricted transovarial and horizontal transmission scenarios
 if(Vaccinate == TRUE){
-  if(vax.25_higher == FALSE & vax.25_lower == FALSE){ 
-    AeC_q_vs_vax <-  read.csv(here("All_Files_For_Publication/Data_for_sensitivity_analysis", "Persistence plot q vs vax  for 34 years 2023_07_13 For Publication.csv"))
-    #AeC_vax_vs_biteA <- read.csv(here("All_Files_For_Publication/Data_for_sensitivity_analysis", "Persistence plot biteA vs vax Aedes and Culex for 34 years 2020_12_13 For Publication.csv"))
-    #AeC_vax_vs_biteA$biteC <- "biteC"
-    AeC_q_vs_vax$q <- as.factor(as.character(AeC_q_vs_vax$q))
+  if(vax.25_higher == FALSE & vax.25_lower == FALSE & vax.burst == FALSE){ 
+    #Save SLplot and MosqIAll plots separately so easier to compile
     
-    plot.3c <- ParamByParamPlot(AeC_q_vs_vax, "vax", "Day_of_Extinction", "q", no.leg = FALSE, R0 = FALSE)
-    plot.3c <- plot.3c +
-      labs(y = "Years of \nPersistence") +
-      theme(plot.margin=unit(c(0,.5,0,.5),"cm"),
-                                                legend.key.size = unit(.15, "cm"))
+    fil.name4a <- "Publication_Figures/Fig 4 A Full Simulation SL.pdf"
+    FigVaxSima <- ggarrange(SLplot,
+                           labels = c("A"),
+                           ncol = 1, nrow = 1)
+    ggexport(FigVaxSima, filename = fil.name4a, width=5, height=2) #FigVaxSim[1]???
     
-    MosqIAEplot_blankLeg <- MosqIAEplot +
-      theme(legend.key = element_rect(fill = "white", color = "white"), legend.text = element_text(color = "white"), legend.title = element_text(color = "white")) +
-  guides(color = guide_legend(override.aes = list(color = NA)))
+    fil.name4b <- "Publication_Figures/Fig 4B Full Simulation IM.pdf"
+    FigVaxSimb <- ggarrange( MosqIAll,
+                           labels = c( "B"),
+                           ncol = 1, nrow = 1)
+    ggexport(FigVaxSimb, filename = fil.name4b, width=5, height=2) #FigVaxSim[1]???
     
-    Fig3 <- ggarrange(SLplot, 
-                      MosqIAEplot_blankLeg,
-                      ggarrange(plot.3c, ncol = 1, nrow = 1,
-                                labels = c("C", NA), align = "h", 
-                                heights = c(300)),
-                      labels = c("A", "B", NA), nrow = 3, 
-                      heights = c(300, 300, 300))
     
-    fil.name3 <- "./Publication_Figures/Fig 3 Vaccination simulation and sensitivity to transovarial transmission.pdf"
+    #Fig 4C diff in livestock infection persistence and Aedes egg infection persistence
+     Vax_ipop_difs <-  read.csv(here("All_Files_For_Publication/Data_for_sensitivity_analysis", "Percent vax vs Persistence in host and vector.csv"))
+    Vax_ipop_difs_yr <- Vax_ipop_difs%>%
+      mutate(Extinction_Yr_in_Host = round(Extinction_Day_in_Host/365,0))%>%
+      mutate(Extinction_Yr_in_Eggs = round(Extinction_Day_in_Eggs/365,0))%>%
+      pivot_longer(starts_with("Extinction_Yr"), names_to = "Species", values_to = "Years")%>%
+      mutate(Last_Yr_IAE_Over_14400 = round(Last_Day_IAE_Over_14400/365,0))%>%
+      mutate(Last_Yr_IAE_Over_14400 = replace(Last_Yr_IAE_Over_14400, Species == "Extinction_Yr_in_Host", 0))%>%
+      mutate(q_sp = paste(Species, q, sep = "_"))%>%
+      mutate(Last_Yr_IAE_Over_14400 = if_else(Last_Yr_IAE_Over_14400 == 0 & str_detect(Species, "Host"), Years, Last_Yr_IAE_Over_14400))%>%
+      mutate(q = if_else(q == 0.75, "Low", "High"))
+    #mutate(Proportion_Vaccinated = Proportion_Vaccinated *100)
     
-    #ggexport(Fig3, filename = fil.name3, width=1000 , height=933)
-    ggexport(Fig3, filename = fil.name3, width=5 , height=6)
+    #unq_yr_vals <- unique(Vax_ipop_difs_yr$Last_Yr_IAE_Over_14400)
+    
+    #unq_yr_vals <- unq_yr_vals[!is.na(unq_yr_vals)]
+    
+    #no_yr <- NA
+    #list.pat <- c("Extinction_Yr_in_Eggs" = "stripe", "Extinction_Yr_in_Host" = "none")
+    
+    plot_vax_ipersist <- ggplot(Vax_ipop_difs_yr, aes(x = Proportion_Vaccinated)) +
+      #geom_bar(aes( y = Last_Yr_IAE_Over_14400, fill = q_sp), stat = "identity", position = "dodge") +
+      geom_bar_pattern(aes(y = Last_Yr_IAE_Over_14400, pattern = q, fill = Species), 
+                       stat = "identity",
+                       position = "dodge",
+                       color = "black", 
+                       show.legend = TRUE,
+                       pattern_angle = 45,
+                       pattern_density = 0.1,
+                       pattern_spacing = 0.025,
+                       pattern_key_scale_factor = 0.6) +
+      scale_x_continuous(labels = scales::percent) +
+      scale_pattern_manual(values = c("Low" = "stripe", "High" = "none"), labels = sort(unique(Vax_ipop_difs_yr$q)), name = "Transovarial transmission \n fraction") +
+      #scale_pattern_manual(values = c("Extinction_Yr_in_Eggs" = "stripe", "Extinction_Yr_in_Host" = "none"), labels = c("Suffcient", "Insufficent"), name = "Vector Population Capable \n of Starting Outbreak in \nSusceptible Hosts") +
+      scale_fill_brewer(palette="Set2", name = "Extinction Year", labels = expression(paste( italic("Aedes"), " Eggs"), paste("Host"))) +
+      labs(x = "Percent Vaccinated", y = "Year of Extinction") +
+      theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+            panel.background = element_blank(), axis.line = element_line(colour = "black"), 
+            axis.title = element_text(colour = "black", size=18), 
+            axis.text = element_text(colour = "black", size = 14)) + 
+      guides(pattern = guide_legend(override.aes = list(fill = "white")),
+             fill = guide_legend(override.aes = list(pattern = "none"))) 
+    
+   
+    fil.name4c <- "Publication_Figures/Fig 4 C diff Infected Pops.pdf"
+    
+    plot_vax_ipersist <- ggarrange( plot_vax_ipersist,
+                             labels = c( "C"),
+                             ncol = 1, nrow = 1)
+    
+    ggexport(plot_vax_ipersist, filename = fil.name4c, width=7, height=3, ncol = 1,nrow = 1) 
+    
+    #Combine Fig 4s already made
+    rl2 <- lapply(list( "./Publication_Figures/Fig 4 A Full Simulation SL.pdf", "Publication_Figures/Fig 4B Full Simulation IM.pdf", "Publication_Figures/Fig 4 C diff Infected Pops.pdf",  "./Publication_Figures/Fig 4d Burst vaccination simulation in years 1985.pdf"), magick::image_read_pdf)     
+    gl2 <- lapply(rl2, grid::rasterGrob)
+    ml2 <- marrangeGrob(gl2, nrow = 4, ncol = 1, top=NULL)
+    ggsave("./Publication_Figures/Fig 4 Vaccination figure.pdf", ml2, width=5, height=8, units = "in" )
+    
+   
 
 #################   
     #Figure S10b
     fil.nameS10part <- "./Publication_Figures/Fig S10b Vaccination simulation as simulated.pdf"
     
     #Remove the legends for 10b
-    SLplot <- SLplot  + theme(legend.position = "none") #+
-      #theme(axis.text = element_text(size = 14, colour = "black")) +
-      #theme(axis.title = element_text(size = 20)) 
+    SLplot <- SLplot  +
+      theme(legend.position = "none") #+
+ 
     MosqIAEplot <- MosqIAEplot + 
       theme(legend.position = "none")#,
-            #axis.text = element_text(size = 14, colour = "black"),
-           # axis.title = element_text(size = 20)) 
+    
   }
   
   if(vax.25_higher == TRUE){
-    #Figure S10C
-    #SLplot <- SLplot #+ 
-      #theme(axis.text = element_text(size = 14, colour = "black"), 
-       #     axis.title = element_text(size = 20),
-       #     legend.text=element_text(size=14), 
-       #     legend.title=element_text(size=14),
-       #     legend.spacing.y = unit(0.5, 'cm'), #increases the amount of space between legend elements
-       #     plot.margin = margin(1,1,1.5,1.2, "cm"))  +
-      ## important additional element to increasing the amount of space between legend elements
-      #guides(color = guide_legend(byrow = TRUE))
-    
-    
-    #MosqIAEplot <- MosqIAEplot #+
-      #theme(axis.text = element_text(size = 14, colour = "black"),
-      #      axis.title = element_text(size = 20),
-      #      legend.key = element_rect(fill = "white", color = "white"), legend.text = element_text(color = "white"), legend.title = element_text(color = "white")) +
-      #      guides(color = guide_legend(override.aes = list(color = NA)))
-    
+    #
     fil.nameS10part <- "./Publication_Figures/Fig S10c Vaccination simulation 25 perct higher.pdf"
   }
   
@@ -610,16 +626,14 @@ if(Vaccinate == TRUE){
     #FigS10A
     SLplot <- SLplot + 
       theme(legend.position = "none")#,
-            #axis.text = element_text(size = 14, colour = "black"),
-            #axis.title = element_text(size = 20)) 
-    
-    MosqIAEplot <- MosqIAEplot + theme(legend.position = "none")# +
-      #theme(axis.text = element_text(size = 14, colour = "black")) +
-      #theme(axis.title = element_text(size = 20)) 
-    
+
+    MosqIAEplot <- MosqIAEplot + 
+      theme(legend.position = "none")# +
+
     fil.nameS10part <- "./Publication_Figures/Fig S10a Vaccination simulation 25 perct lower.pdf"
   }
   
+  if(vax.burst == FALSE){
   #Arrange the plots to save for any vaccination scenario
   FigS10part <- ggarrange(SLplot, 
                          MosqIAEplot,
@@ -627,33 +641,82 @@ if(Vaccinate == TRUE){
   
   #Save files
   ggexport(FigS10part, filename = fil.nameS10part, width=5 , height=4)
-  #ggexport(FigS10part, filename = fil.nameS10part, width=907 , height=933)
+  }
   
-  if(vax.25_higher == FALSE & vax.25_lower == FALSE){  
-    #Combine Fig S10B with the two Fig S10 already made (+/-50% vax)
-    #rl2 <- lapply(list("./Publication_Figures/Fig S10a Vaccination simulation 25 perct lower.pdf", "./Publication_Figures/Fig S10b Vaccination simulation as simulated.pdf",  "./Publication_Figures/Fig S10c Vaccination simulation 25 perct higher.pdf"), png::readPNG)
+  if(vax.25_higher == FALSE & vax.25_lower == FALSE & vax.burst == FALSE){  
+    #Combine Fig S12B with the two Fig S12s already made (+/-50% vax)
     rl2 <- lapply(list("./Publication_Figures/Fig S10a Vaccination simulation 25 perct lower.pdf", "./Publication_Figures/Fig S10b Vaccination simulation as simulated.pdf",  "./Publication_Figures/Fig S10c Vaccination simulation 25 perct higher.pdf"), magick::image_read_pdf)
     gl2 <- lapply(rl2, grid::rasterGrob)
     ml2 <- marrangeGrob(gl2, nrow = 1, ncol = 3, top=NULL)
     ggsave("./Publication_Figures/Fig S10 Combined Sims with various vaccination rates.pdf", ml2, width=6.5, height=2.3, units = "in" )
+
+#########
+    #Combine Fig S11s from saved data files
+    vax.burst.early.no.out <- read.csv("All_Files_For_Publication/Data_for_sensitivity_analysis/Data from most recent sim with burst vax early with no outbreak - 1985 1986 1987 and 1988.csv")
+    vax.burst.early.out <-    read.csv("All_Files_For_Publication/Data_for_sensitivity_analysis/Data from most recent sim with burst vax early with outbreak - 1987 1988 and 1989.csv")
+    vax.burst.late.no.out <-  read.csv("All_Files_For_Publication/Data_for_sensitivity_analysis/Data from most recent sim with burst vax late with no outbreak - 2006 2007 2008 and 2009.csv")
+    vax.burst.late.out  <-    read.csv( "All_Files_For_Publication/Data_for_sensitivity_analysis/Data from most recent sim with burst vax late with outbreak - 2009 2010 and 2011.csv")
+      
+    #Plot burst figures 
+        #FigS11A
+      FigS11_1_a <- SL_plotter(vax.burst.early.no.out, legnd = FALSE)
+      FigS11_1_b <- IAE_plotter(vax.burst.early.no.out, legnd = FALSE)
+        
+      FigS11_3_a <- SL_plotter(vax.burst.early.out, legnd = FALSE)
+      FigS11_3_b <- IAE_plotter(vax.burst.early.out, legnd = FALSE)
+        
+      FigS11_2_a <- SL_plotter(vax.burst.late.no.out, legnd = TRUE)
+      FigS11_2_b<- IAE_plotter(vax.burst.late.no.out, legnd = FALSE)
+    
+      FigS11_4_a <- SL_plotter(vax.burst.late.out, legnd = TRUE)
+      FigS11_4_b<- IAE_plotter(vax.burst.late.out, legnd = FALSE)
+      
+      FigS11 <- ggarrange(FigS11_1_a,  FigS11_2_a, FigS11_1_b, FigS11_2_b, FigS11_3_a, FigS11_4_a, FigS11_3_b,    FigS11_4_b, 
+                              labels = c("1A", "2A", "B", "B", "3A", "4A", "B", "B"), nrow = 4, ncol = 2)
+      
+      ggexport(FigS11, filename = "./Publication_Figures/Fig S11 Combined Sims with various burst vaccination years.pdf", width=6.5 , height=6, units = "in") #4.6
+      
+    
+      }
+
+if(vax.burst == TRUE){
+    if(One == TRUE){#Then goes to fig 4
+      #Fig4d
+      SLplot <- SLplot +
+        theme(axis.text = element_text(size = 5))
+   
+      let <- "d"
+      
+      Fig4part <- ggarrange(SLplot, 
+                              labels = c("D"), nrow = 1, heights = c( 300))
+      
+      #Save files
+      yrs <- paste(vax.year, collapse = " ")
+      fil.name4part <- paste("./Publication_Figures/Fig 4", let, " Burst vaccination simulation in years ", yrs, ".pdf", sep = "" )
+      ggexport(Fig4part, filename = fil.name4part, width=5 , height=2)
+    }     
+      
+
+    
+  
+    #Arrange the plots to save for any vaccination scenario
+   #FigS13part <- ggarrange(SLplot, 
+   #                        MosqIAEplot,
+   #                        labels = c("A", "B"), nrow = 2, heights = c(300, 300))
+   #
+   ##Save files
+   #yrs <- paste(vax.year, collapse = " ")
+   #fil.nameS13part <- paste("./Publication_Figures/Fig S13", let, " Burst vaccination simulation in years ", yrs, ".pdf", sep = "" )
+   #ggexport(FigS13part, filename = fil.nameS13part, width=5 , height=4)
+    }
   }
-}
+
 
 ###################
-#Fig S4 scenarios excluding transovarial or horizontal transmission
-#if(No.q == TRUE ){
-  #No Transovarial transmission
-  #FigS4ab<- ggarrange(SLplot, MosqIAEplot,
-  #                    labels = c("A", "B"), nrow = 2, heights = c(300, 300))
-  
-  #fil.nameS4ab <- "./Publication_Figures/Fig S4A and B Plot of No Transovarial transmission.pdf"
-  
-  #ggexport(FigS4ab, filename = fil.nameS4ab, width=630, height=600)
-#} 
-
+#Figure S6
 if(Only.q == TRUE ){
   #No horizontal transmission
-  #Plot together with no.q
+  #Plot together with no.q - no vertical transmission
   final.pop.no.q <- read.csv("All_Files_For_Publication/Data_for_sensitivity_analysis/Data from most recent sim with no q.csv")
   SLplot_no_q <-ggplot(final.pop.no.q, aes(x=time)) + 
     geom_line(aes(y = VS, colour = "VS")) +
@@ -677,9 +740,7 @@ if(Only.q == TRUE ){
     geom_line(aes(y = IAE, colour = "IAE")) + 
     labs(x = "Year", y = my_y_title.iae) +
     scale_x_continuous(labels = unique(final.populations$Year), breaks = seq(from = 2, to = end.time, by = 365)) +
-    #scale_colour_manual(name = "Population", values =c("IAE" = "red")) +
-    plot_theme + 
-    #guides(color = "transparent")
+    plot_theme +
     theme(plot.margin=unit(c(.0,.5,0,.5),"cm"),
            legend.key = element_rect(fill = "white", color = "white"), legend.text = element_text(color = "white"), legend.title = element_text(color = "white")) +
            guides(color = guide_legend(override.aes = list(color = NA)))
@@ -697,27 +758,21 @@ if(Only.q == TRUE ){
     theme(plot.margin=unit(c(0,.5,0,.5),"cm"),
           legend.key.size = unit(.15, "cm"))#
   
-  FigS4<- ggarrange(SLplot_no_q, MosqIAEplot_no_q, SLplot, MosqIAEplot, MosqIAll,
+  FigS6<- ggarrange(SLplot_no_q, MosqIAEplot_no_q, SLplot, MosqIAEplot, MosqIAll,
                      labels = c("A", "B", "C", "D", "E"), nrow = 5, heights = c(500, 500, 500, 500, 500))
   
-  fil.nameS4 <- "./Publication_Figures/Fig S4 Combined Sims with no q and no horizontal transmission.pdf"
-  #fil.nameS4c <- "./Publication_Figures/Fig S4b Aedes and Culex - Plot of No Horizontal transmission.png"
+  fil.nameS6 <- "./Publication_Figures/Fig S6 Combined Sims with no q and no horizontal transmission.pdf"
   
-  #ggexport(FigS4, filename = fil.nameS4, width=630, height=1000)
-  ggexport(FigS4, filename = fil.nameS4, width=5, height=6)
-  #Figure out how to give more space to Fig S4B and less to Fig S4A
-  #rl2 <- lapply(list("./Publication_Figures/Fig S4A and B Plot of No Transovarial transmission.png", "./Publication_Figures/Fig S4b Aedes and Culex - Plot of No Horizontal transmission.png"), png::readPNG)
-  #gl2 <- lapply(rl2, grid::rasterGrob)
-  #ml2 <- marrangeGrob(gl2, nrow = 2, ncol = 1, top=NULL)
-  #ggsave("./Publication_Figures/Fig S4 Combined Sims with no q and no horizontal transmission.png", ml2, width=3 , height=4, unit = "in")
-}
+  
+  ggexport(FigS6, filename = fil.nameS6, width=5, height=6)
+  }
 
 ###################################################################
 #Additional supplemental plots
 
 ###########################
-#Figs S2 and S6
-if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_higher ==  FALSE & vax.25_lower == FALSE){
+#Figs S2 and S4
+if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_higher ==  FALSE & vax.25_lower == FALSE & lo.eggs == FALSE){
   if(No.q == FALSE & Only.q == FALSE & Vaccinate == FALSE){
     
     #Rainfall - supplemental
@@ -768,7 +823,7 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
     #ggexport(FigS2, filename = fil.name.rain, width=630, height=600, ncol = 1,nrow = 1)
 #        ggexport(FigS2, filename = fil.name.rain, width=630, height=460, ncol = 1,nrow = 1)
   
-  #Effective R0 plot S6 - enlarged
+  #Effective R0 plot S14 - enlarged
     # Select a random year for this plot and the mosquito plot
     Myear<- final.populations%>%#Remove years with partial data
       filter(!MosqYear == "1982")%>%
@@ -781,39 +836,10 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
     #Select a random year and use the following two to visualize three years
     Myear.select <- sample_n(Myear, 1, replace = FALSE)
     
-    myY.select <- Myear.select$MosqYear
-    Myears.select <- c(myY.select, myY.select+1, myY.select+2)
-    
-    #Pull out the population data from the random years from the simulation data frame
-    Ran.Years <- final.populations%>%
-      filter(MosqYear %in% Myears.select)
-    
-    #Add in the simulation time
-    Ran.Years$simtime <-  seq(1, 365+365+365, by = 1)
-    
-    #Breaks and lables 
-    break.labels.Re <- unique(Ran.Years$Year)
-    break.labels.Re <- break.labels.Re[2:4] #Remove first MosqYear time
-    break.seq <- seq(from = 123, to = nrow(Ran.Years), by = 365)
-    
-    Reffect.Enlarge <- ggplot(Ran.Years, aes(x = simtime, y = Reff))+
-      geom_line()+ 
-      labs( x = "Year", y = "Effective R") +     
-      ylim(NA,2)+
-      scale_x_continuous(labels = break.labels.Re, breaks = break.seq) +
-      plot_theme
-    
-    S6.Reffect.Plot <- ggarrange(Reffect.Enlarge)
-    
-    fil.name.S6Reff <- "./Publication_Figures/Fig S6 Effective R0 over three years.pdf"
-    
-    ggexport(S6.Reffect.Plot, filename = fil.name.S6Reff, width=5, height=1.5)
-    #ggexport(S6.Reffect.Plot, filename = fil.name.S6Reff, width=630, height=202, ncol = 1,nrow = 1)
-    
 #See R0 analysis code for R0 sensitivity analysis and variable by variable sensitivity ()
     
     
-    #Randomly selected mosquito population plots - Fig S11  
+    #Randomly selected mosquito population plots - Fig S12
     set.seed(6242015)
     
     
@@ -829,41 +855,30 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
     #Breaks and lables 
     break.labels <- unique(Ran.Year$Month_Date)
     
-    my_y_title.S11a <- expression(atop(italic("Aedes"), paste(" Population Size")))
-    S11.Ae.Plot <-ggplot(Ran.Year, aes(simtime)) + 
+    my_y_title.S12a <- expression(atop(italic("Aedes"), paste(" Population Size")))
+    S12.Ae.Plot <-ggplot(Ran.Year, aes(simtime)) + 
       geom_line(aes(y = NAedes)) + 
-      labs( x = "Month", y = my_y_title.S11a) +      
+      labs( x = "Month", y = my_y_title.S12a) +      
       scale_x_continuous(labels = break.labels, breaks = c( 30, 61, 91, 122, 153, 181, 212, 242, 273, 303, 334, 365)) +
       plot_theme
     
     #################
     #Culex
 
-    my_y_title.S11c <- expression(atop(italic("Culex"), paste(" Population Size")))
-    S11.Cu.Plot <-ggplot(Ran.Year, aes(simtime)) + 
+    my_y_title.S12c <- expression(atop(italic("Culex"), paste(" Population Size")))
+    S12.Cu.Plot <-ggplot(Ran.Year, aes(simtime)) + 
       geom_line(aes(y = NC)) + 
-      labs( x = "Month", y = my_y_title.S11c) +      
+      labs( x = "Month", y = my_y_title.S12c) +      
       scale_x_continuous(labels = break.labels, breaks = c( 30, 61, 91, 122, 153, 181, 212, 242, 273, 303, 334, 365)) +
       plot_theme
     
-    S11.MosqPop.Plot <- ggarrange(S11.Ae.Plot, S11.Cu.Plot, draw = FALSE,
+    S12.MosqPop.Plot <- ggarrange(S12.Ae.Plot, S12.Cu.Plot, draw = FALSE,
                                  labels = c("A", "B"),
                                  ncol = 1, nrow = 2)
     
-    fil.name.AeCu <- "./Publication_Figures/Fig S11 Aedes and Culex pops over one year for publication.pdf"
+    fil.name.AeCu <- "./Publication_Figures/Fig S12 Aedes and Culex pops over one year for publication.pdf"
     
-    ggexport(S11.MosqPop.Plot[1], filename = fil.name.AeCu, width=5, height=4)
-    #ggexport(S11.MosqPop.Plot[1], filename = fil.name.AeCu, width=630, height=550, ncol = 1,nrow = 4)
-    
-    #ggexport(S11.MosqPop.Plot[1], filename = fil.name.AeCu, width=630, height=402, ncol = 1,nrow = 4)
-  
-
-    
-      
-
-
-    
+    ggexport(S12.MosqPop.Plot[1], filename = fil.name.AeCu, width=5, height=4)
  
-    
-    }
+        }
 }

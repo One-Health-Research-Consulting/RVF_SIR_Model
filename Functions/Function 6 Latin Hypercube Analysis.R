@@ -61,6 +61,13 @@ HypercubeSA <- function(param_matrix, empty.dat, empty.dat.precip, precip.dat, p
   empty.dat.precip <- empty.dat.precip%>%
     mutate(AedesEpiHatchMeanT = FALSE)#
   
+  
+  #Add vaccination pattern - none, daily, burst
+  empty.dat.precip <- empty.dat.precip%>%
+    mutate(No_vax = 0,
+           Daily_vax = 1,
+           Burst_vax = 0)
+  
   #ODE model
   #Set up aproxfun data
   #Hatching for Aedes
@@ -75,6 +82,9 @@ HypercubeSA <- function(param_matrix, empty.dat, empty.dat.precip, precip.dat, p
   print(2.4)
   sigimp_dev_CLP <- approxfun(empty.dat.precip$SimDay, empty.dat.precip$Dev_CLP, rule = 2, method = "linear")
   
+  #No burst vaccination should be done for latin hypercube analyses
+  sigimp_vax  <- approxfun(All_Precip$SimDay, All_Precip$No_vax, rule = 2)
+  
   #Run simulation
   print(3)
   start.run.time <- Sys.time()
@@ -87,6 +97,8 @@ HypercubeSA <- function(param_matrix, empty.dat, empty.dat.precip, precip.dat, p
                                                   sigC = sigimpCMean, 
                                                   sigdevA = sigimp_dev_ALP,
                                                   sigdevC = sigimp_dev_CLP, 
+                                                  sigvax = sigimp_vax,
+                                                  vax.b = burst,
                                                   method = "ode45",
                                                   end.t = end.time
                                                   ))
