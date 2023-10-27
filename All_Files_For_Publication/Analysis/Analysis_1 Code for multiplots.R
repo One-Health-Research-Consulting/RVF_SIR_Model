@@ -350,7 +350,7 @@ if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_h
     
     #Set up grid to indicate where the text should go
     R0_text <- c("R0 < 1", "R0 > 1","Region of persistence \nwithin observed \nseroprevalence \nrange", "Seasonal \nR0 < 1", "Seasonal \nR0 > 1", "Decadal \npersistence", "No \ndecadal \npersistence")
-    label_coord_x <- c(0.025, 0.15, 0.1, 0.03, 0.18, 0.17, 0.05 )
+    label_coord_x <- c(0.05, 0.17, 0.1, 0.03, 0.18, 0.17, 0.05 )
     label_coord_y <- c(0.06, 0.06, 0.9, 0.6, 0.6, 0.45, 0.35 )
     text_color <- c("darkgreen", "darkgreen", "orange", "darkblue", "darkblue", "black", "black")
     text_df <- data.frame(x = R0_text,  label_coord_x, label_coord_y, text_color)
