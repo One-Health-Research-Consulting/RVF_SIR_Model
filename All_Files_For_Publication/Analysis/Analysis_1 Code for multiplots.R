@@ -46,6 +46,7 @@ plot_theme <- theme_classic() +
 
 #Make ggplots to combine
 #' _Aedes_ Mosquitoes
+
 MosqAplot <-ggplot(final.populations, aes(time)) + 
   geom_line(aes(y = SA, colour = "SA")) + 
   geom_line(aes(y = IA, colour = "IA")) +
@@ -54,7 +55,8 @@ MosqAplot <-ggplot(final.populations, aes(time)) +
   scale_colour_manual(name = "Population", values =c("SA" = "black","IA"= "red")) +
   plot_theme+
   theme(plot.margin=unit(c(0,.5,0,.5),"cm"),
-        legend.key.size = unit(.15, "cm"))
+        legend.key.size = unit(.15, "cm"),
+        axis.title.y = element_text(margin = margin(t = 0, r = 19, b = 0, l = 0)))
 
 #' infected _Aedes_ eggs
 my_y_title.iae <- expression(atop("Infected", paste(italic("Aedes"), " Eggs")))
@@ -66,7 +68,9 @@ MosqIAEplot <- ggplot(final.populations, aes(time)) +
   scale_colour_manual(name = "Population", values =c("IAE" = "red")) +
   plot_theme+
   theme(plot.margin=unit(c(.0,.5,0,.5),"cm"),
-        legend.key = element_rect(fill = "white", color = "white"), legend.text = element_text(color = "white"), legend.title = element_text(color = "white")) +
+        legend.key = element_rect(fill = "white", color = "white"), 
+        legend.text = element_text(color = "white"), 
+        legend.title = element_text(color = "white")) +
   guides(color = guide_legend(override.aes = list(color = NA)))
 
 #' _Culex_ Mosquito Population
@@ -78,21 +82,26 @@ MosqCplot <- ggplot(final.populations, aes(time)) +
   scale_colour_manual(name = "Population", values =c("SC" = "black","IC"= "red")) +
   plot_theme+
   theme(plot.margin=unit(c(0,.5,0,.5),"cm"),
-        legend.key.size = unit(.15, "cm"))
+        legend.key.size = unit(.15, "cm"),
+        axis.title.y = element_text(margin = margin(t = 0, r = 19, b = 0, l = 0)))
 
 #' Total Infected Mosquitoes
+my_y_title.iall <- expression(atop("Infected", paste(italic(" "), " Mosquitoes")))
 MosqIAll <-ggplot(final.populations, aes(time)) + 
   geom_line(aes(y = IA, colour = "IA")) + 
   geom_line(aes(y = IC, colour = "IC")) +
   geom_vline(xintercept = 9915, color = "dark blue")+#This is 3-1-2010
-  labs( x = "Year", y = "Infected \nMosquitoes")+ 
+  labs( x = "Year", y = my_y_title.iall) + #"Infected \nMosquitoes")+ 
   scale_x_continuous(labels = unique(final.populations$Year), breaks = seq(from = 2, to = end.time, by = 365)) +
-  scale_colour_manual(name = "Population", values =c("IA" = "red","IC"= "pink")) +
+  scale_colour_manual(name = "Mosquito Population", values =c("IA" = "red","IC"= "pink")) +
   plot_theme+
   theme(plot.margin=unit(c(0,.5,0,.5),"cm"),
-       legend.key.size = unit(.15, "cm"))
+       legend.key.size = unit(.15, "cm"),
+       axis.title.y = element_text(margin = margin(t = 0, r = 8.5, b = 0, l = 0)))
 
 #'Sheep and Lambs
+my_y_title.sl_space <- expression(atop("Sheep", paste(italic(" "), "and Lambs")))
+
 SLplot <-ggplot(final.populations, aes(x=time)) + 
   geom_line(aes(y = VS, colour = "VS")) +
   geom_line(aes(y = VL, colour = "VL")) +
@@ -104,15 +113,16 @@ SLplot <-ggplot(final.populations, aes(x=time)) +
   geom_line(aes(y = IS, colour = "IS")) +
   geom_line(aes(y = IL, colour = "IL")) +
   geom_vline(xintercept = 9915, color = "dark blue")+#This is 2-15-2010
-  labs( x = "Year", y = "Sheep and \nLambs") +#, color = "Population") + 
+  labs( x = "Year", y = my_y_title.sl_space) + #"Sheep and \nLambs") +#, color = "Population") + 
   scale_x_continuous(labels = unique(final.populations$Year), breaks = seq(from = 1, to = end.time, by = 365)) +
-  scale_colour_manual( name = "Population", values =c("SS" = "black","IS"= "red", "RS" = "green", "VS" = "blue", "SL" = "gray","IL"= "pink", "RL" = "light green", "VL" = "light blue", "AL" = "violet")) +
+  scale_colour_manual(name = "Host Population", values =c("SS" = "black","IS"= "red", "RS" = "green", "VS" = "blue", "SL" = "gray","IL"= "pink", "RL" = "light green", "VL" = "light blue", "AL" = "violet")) +
   plot_theme+
   #theme(legend.spacing.y = unit(0.01, 'cm'))  +
   ## important additional element
   #guides(fill = guide_legend(byrow = TRUE))
-  theme(plot.margin=unit(c(0,.5,0,.5),"cm"),
-       legend.key.size = unit(.15, "cm"))#decrease space between the legend items
+  theme(plot.margin=unit(c(0.5,.5,0,.5),"cm"),
+       legend.key.size = unit(.15, "cm"), 
+       axis.title.y = element_text(margin = margin(t = 0, r = 10.5, b = 0, l = 0)))#decrease space between the legend items
   
 #Plot Acutal outbreaks 1983-2017 from Pienaar et al
 #Highveld/FS and central NC
@@ -146,15 +156,16 @@ SLplot_historical <- SLplot+
   theme(plot.margin=unit(c(.5,.5,0,.5),"cm"))
 
 #Plot effective R0
+my_y_title.Re <- expression(atop("Effective", paste(italic(" "), "R")))
 Reffect.plot <- ggplot(final.populations, aes(x=time, y = Reff)) +
   geom_line(aes(color = "cheese")) +
-  labs( x = "Year", y = "\nEffective R")+ 
+  labs( x = "Year", y = my_y_title.Re) + #"\nEffective R")+ 
   scale_x_continuous(labels = unique(final.populations$Year), breaks = seq(from = 2, to = end, by = 365)) +
   plot_theme +
   scale_color_manual(name = "che", values = c("cheese" = "black"))+ 
-  theme(plot.margin=unit(c(.5,.5,.5,.5),"cm")) + 
-  theme(legend.key = element_rect(fill = "white", color = "white"), legend.text = element_text(color = "white"), legend.title = element_text(color = "white")) +
-  guides(color = guide_legend(override.aes = list(color = NA)))
+  theme(plot.margin=unit(c(.5,.5,.5,.5),"cm"), 
+        axis.title.y = element_text(margin = margin(t = 0, r = 12.5, b = 0, l = 0)))#+
+  #guides(color = guide_legend(override.aes = list(color = NA)))
 
 
 ########################################################
@@ -164,6 +175,11 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
     if(No.q == FALSE & Only.q == FALSE & Vaccinate == FALSE){
       
       #Figure 1
+      Reffect.plot <- Reffect.plot +
+        theme(legend.key = element_rect(fill = "white", color = "white"), 
+        legend.text = element_text(color = "white"), legend.title = element_text(color = "white"), 
+        axis.title.y = element_text(margin = margin(t = 0, r = 12.5, b = 0, l = 0))) +
+        guides(color = guide_legend(override.aes = list(color = NA)))
       
       fil.name <- "Publication_Figures/Fig 1 Full Simulation SL IM IAE_Aedes SA-IA SC-IC and Re.pdf"
       Fig1 <- ggarrange(SLplot_historical, MosqIAll, MosqIAEplot, MosqAplot, MosqCplot,  Reffect.plot, draw = FALSE,
@@ -198,15 +214,19 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
       
       #For Fig S9- plot of the simulation Culex mortality rate
       fil.name.figS9b <- "Publication_Figures/Fig S9b Full Simulation Culex Death rate for publication.pdf"
-        SLplot_noLeg <- SLplot + theme(legend.position = "none")
-        MosqIAll_noLeg <- MosqIAll + theme(legend.position = "none")
+        SLplot_noLeg <- SLplot + theme(legend.position = "none", 
+                                       axis.title.y = element_text(margin = margin(t = 0, r = 14, b = 0, l = 0)))
+        MosqIAll_noLeg <- MosqIAll + theme(legend.position = "none", 
+                                           axis.title.y = element_text(margin = margin(t = 0, r = 12, b = 0, l = 0)))
         MosqIAEplot_noLeg <- MosqIAEplot + 
           ylim(0,160000) +
+          geom_hline(yintercept = 14400, color = "gray")+
           theme(legend.position = "none")
         
         Reffect.plot <- Reffect.plot + 
                         #ylim(0,6)+
-                        theme(legend.position = "none")
+                        theme(legend.position = "none", 
+                              axis.title.y = element_text(margin = margin(t = 0, r = 15.5, b = 0, l = 0)))
         
         
       FigS9b <- ggarrange(SLplot_noLeg, MosqIAll_noLeg, MosqIAEplot_noLeg, Reffect.plot, draw = FALSE,
@@ -231,12 +251,20 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
   if(muC.25_lower == TRUE & Multiplot == TRUE){
     fil.name.bite.lo <- "./Publication_Figures/Fig S9A Full Simulation Culex Death Rate Lower by 25 Percent for publication.pdf"
     
-    SLplot_noLeg <- SLplot + theme(legend.position = "none")
-    MosqIAll_noLeg <- MosqIAll + theme(legend.position = "none")
+    SLplot_noLeg <- SLplot + 
+      theme(legend.position = "none", 
+            axis.title.y = element_text(margin = margin(t = 0, r = 13.75, b = 0, l = 0)))#decrease space betw)
+    MosqIAll_noLeg <- MosqIAll +
+      theme(legend.position = "none", 
+            axis.title.y = element_text(margin = margin(t = 0, r = 8.25, b = 0, l = 0)))
     MosqIAEplot_noLeg <- MosqIAEplot + 
       ylim(0,160000) +
+      geom_hline(yintercept = 14400, color = "gray") +
       theme(legend.position = "none")
-    Reffect.plot <- Reffect.plot #+ ylim(0,6)
+    Reffect.plot <- Reffect.plot + 
+      theme(axis.title.y = element_text(margin = margin(t = 0, r = 15.5, b = 0, l = 0)))  +
+      theme(legend.position = "none")
+      #ylim(0,6)
     
     FigS9A <- ggarrange(SLplot_noLeg, MosqIAll_noLeg,  MosqIAEplot_noLeg, Reffect.plot, draw = FALSE,
                        labels = c("A", "B", "C", "D"),
@@ -244,21 +272,49 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Multiplot == TRUE & vax.25_h
     
     ggexport(FigS9A[1], filename = fil.name.bite.lo, width=5, height=5)
     
+    #Export just the MosqIAll legend
+    MosqIAll_botLeg <- MosqIAll +
+      theme(legend.position = "bottom", 
+        axis.title.y = element_text(margin = margin(t = 0, r = 8.25, b = 0, l = 0)))
+    
+    FigS9A_mosqLeg <- ggarrange( MosqIAll_botLeg, draw = FALSE,
+                        ncol = 1, nrow = 1)
+    
+    ggexport(FigS9A_mosqLeg[1], filename = "Publication_Figures/Infected mosquito legend only.pdf", width=5, height=1.5)
+    
+    #Export just the Host legend
+    SLplot_botLeg <- SLplot +
+      theme(legend.position = "bottom")
+    
+    FigS9A_SLplotLeg <- ggarrange( SLplot_botLeg, draw = FALSE,
+                                 ncol = 1, nrow = 1)
+    
+    ggexport(FigS9A_SLplotLeg[1], filename = "Publication_Figures/Full Host legend only.pdf", width=5, height=1.5)
+    
   }else{
     #Figure S9c plot the 25% higher Culex mortality rate
     if( muC.25_higher == TRUE & Multiplot == TRUE){
       
       fil.name.muC.hi <- "./Publication_Figures/Fig S9C Full Simulation Culex Death Rate Higher by 25 Percent for publication.pdf"
       
-      #SLplot_noLeg <- SLplot 
-     # MosqIAll_noLeg <- MosqIAll 
+      SLplot_topLeg <- SLplot  + 
+        theme(legend.position = "none", 
+              axis.title.y = element_text(margin = margin(t = 0, r = 14.5, b = 0, l = 0)))
+      MosqIAll_noLeg <- MosqIAll +
+        theme(legend.position = "none", 
+              axis.title.y = element_text(margin = margin(t = 0, r = 12, b = 0, l = 0)))
       MosqIAEplot_noLeg <- MosqIAEplot + 
         ylim(0,225000)  +
-        theme(legend.key = element_rect(fill = "white", color = "white"), legend.text = element_text(color = "white"), legend.title = element_text(color = "white")) +
-        guides(color = guide_legend(override.aes = list(color = NA)))
-    
+        geom_hline(yintercept = 14400, color = "gray") +
+        theme(legend.position = "none")
+        #theme(legend.key = element_rect(fill = "white", color = "white"), legend.text = element_text(color = "white"), legend.title = element_text(color = "white")) +
+        #guides(color = guide_legend(override.aes = list(color = NA)))
+      Reffect.plot <- Reffect.plot + 
+        theme(axis.title.y = element_text(margin = margin(t = 0, r = 12, b = 0, l = 0))) +
+        theme(legend.position = "none")
       
-      FigS9C <- ggarrange(SLplot, MosqIAll,  MosqIAEplot_noLeg, Reffect.plot, draw = FALSE,
+      
+      FigS9C <- ggarrange(SLplot_topLeg, MosqIAll_noLeg,  MosqIAEplot_noLeg, Reffect.plot, draw = FALSE,
                          labels = c("A", "B", "C", "D"),
                          ncol = 1, nrow = 4)
       
@@ -481,8 +537,9 @@ if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_h
       labs(x = "Parameter Value", y ="Years of Persistence")+
       plot_theme +
       theme(legend.text.align = 0,
-            plot.margin=unit(c(0,.5,0,.5),"cm"),
-            legend.key.size = unit(.2, "cm"))
+            plot.margin=unit(c(0,3.9,0,0.5),"cm"),
+            legend.key.size = unit(.2, "cm"))+
+      theme(legend.position = c(1.3, 0.5))
     
     Plot.SeroP <- ggplot(All_single, aes(x=Parameter_Value, y = Mean_Seroprevalence, color = Parameter_Tested))+
       geom_line()+
@@ -506,14 +563,18 @@ if(Multiplot == TRUE & muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_h
     plot.7Sd <- ParamByParamPlot(df1 = AeC_q_vs_tasl_Persist, colx = "Tasl", coly = "Day_of_Extinction", "q", no.leg = FALSE, R0 = FALSE)
     
     
+    plot.7Sc <- plot.7Sc + 
+      theme(plot.margin=unit(c(0,0,0,0.5),"cm"))
+    
     plot.7Sd <- plot.7Sd+
-      theme(plot.margin=unit(c(0,0,0,0.5),"cm"),
+      theme(plot.margin=unit(c(0,0.7,0,0.5),"cm"),
             legend.key.size = unit(.2, "cm"))
     #Combine plots in S5
     
     FigS7 <- ggarrange(Plot.SeroP, Plot.Extinction, plot.7Sc, plot.7Sd, ncol = 2, nrow = 2,
                       labels = c("A", "B", "C", "D"), align = "h", 
                       heights = c(300,300),  widths = c(1.5,2.5))
+    
     fil.nameS7 <- "./Publication_Figures/Fig S7 Combined plots of single and dual variable effect on seroprevalence and persistance for publication.pdf"
     
     ggexport(FigS7, filename = fil.nameS7, width=6 , height=5)
@@ -531,21 +592,41 @@ if(Vaccinate == TRUE){
   if(vax.25_higher == FALSE & vax.25_lower == FALSE & vax.burst == FALSE){ 
     #Save SLplot and MosqIAll plots separately so easier to compile
     
-    fil.name4a <- "Publication_Figures/Fig 4 A Full Simulation SL.pdf"
+    fil.name4a <- "Publication_Figures/Fig 4A Full Simulation SL.pdf"
+    
+    SLplot <- SLplot +
+      theme(#legend.position = "none",
+            axis.title.y = element_text(margin = margin(t = 0, r = 14.5, b = 0, l = 0)))
+    
     FigVaxSima <- ggarrange(SLplot,
                            labels = c("A"),
                            ncol = 1, nrow = 1)
     ggexport(FigVaxSima, filename = fil.name4a, width=5, height=2) #FigVaxSim[1]???
     
     fil.name4b <- "Publication_Figures/Fig 4B Full Simulation IM.pdf"
-    FigVaxSimb <- ggarrange( MosqIAll,
+    
+    
+    MosqIAll_noLeg <- MosqIAll +
+      guides(color=guide_legend(title="Host Population", override.aes = list(color = "white"))) +
+      theme( plot.margin=unit(c(0.5,.5,0,.5),"cm"),
+             legend.key = element_rect(fill = "white", color = "white"), 
+             legend.text = element_text(color = "white"), 
+             legend.title = element_text(color = "white"), 
+             axis.title.y = element_text(margin = margin(t = 0, r = 13, b = 0, l = 0))#)+#,
+      #       #legend.box= unit(0.5, 'cm')
+      ) #+
+      #guides(color = guide_legend(override.aes = list(color = "white"))) 
+    
+    FigVaxSimb <- ggarrange( MosqIAll_noLeg,
                            labels = c( "B"),
                            ncol = 1, nrow = 1)
+    
     ggexport(FigVaxSimb, filename = fil.name4b, width=5, height=2) #FigVaxSim[1]???
     
+   
     
     #Fig 4C diff in livestock infection persistence and Aedes egg infection persistence
-     Vax_ipop_difs <-  read.csv(here("All_Files_For_Publication/Data_for_sensitivity_analysis", "Percent vax vs Persistence in host and vector.csv"))
+    Vax_ipop_difs <-  read.csv(here("All_Files_For_Publication/Data_for_sensitivity_analysis", "Percent vax vs Persistence in host and vector.csv"))
     Vax_ipop_difs_yr <- Vax_ipop_difs%>%
       mutate(Extinction_Yr_in_Host = round(Extinction_Day_in_Host/365,0))%>%
       mutate(Extinction_Yr_in_Eggs = round(Extinction_Day_in_Eggs/365,0))%>%
@@ -563,7 +644,7 @@ if(Vaccinate == TRUE){
     
     #no_yr <- NA
     #list.pat <- c("Extinction_Yr_in_Eggs" = "stripe", "Extinction_Yr_in_Host" = "none")
-    
+    my_y_title.vax4c <- expression(atop("Year of", paste(italic(" "), "Extinction")))
     plot_vax_ipersist <- ggplot(Vax_ipop_difs_yr, aes(x = Proportion_Vaccinated)) +
       #geom_bar(aes( y = Last_Yr_IAE_Over_14400, fill = q_sp), stat = "identity", position = "dodge") +
       geom_bar_pattern(aes(y = Last_Yr_IAE_Over_14400, pattern = q, fill = Species), 
@@ -576,31 +657,43 @@ if(Vaccinate == TRUE){
                        pattern_spacing = 0.025,
                        pattern_key_scale_factor = 0.6) +
       scale_x_continuous(labels = scales::percent) +
-      scale_pattern_manual(values = c("Low" = "stripe", "High" = "none"), labels = sort(unique(Vax_ipop_difs_yr$q)), name = "Transovarial transmission \n fraction") +
+      scale_pattern_manual(values = c("Low" = "stripe", "High" = "none"), labels = sort(unique(Vax_ipop_difs_yr$q)), name = "Transovarial \ntransmission fraction") +
       #scale_pattern_manual(values = c("Extinction_Yr_in_Eggs" = "stripe", "Extinction_Yr_in_Host" = "none"), labels = c("Suffcient", "Insufficent"), name = "Vector Population Capable \n of Starting Outbreak in \nSusceptible Hosts") +
       scale_fill_brewer(palette="Set2", name = "Extinction Year", labels = expression(paste( italic("Aedes"), " Eggs"), paste("Host"))) +
-      labs(x = "Percent Vaccinated", y = "Year of Extinction") +
+      labs(x = "Percent Vaccinated", y = my_y_title.vax4c) +#"Year of \nExtinction") +
       theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
             panel.background = element_blank(), axis.line = element_line(colour = "black"), 
-            axis.title = element_text(colour = "black", size=18), 
-            axis.text = element_text(colour = "black", size = 14)) + 
+            axis.title = element_text(colour = "black", size=14), 
+            axis.text = element_text(colour = "black", size = 7),
+            legend.text = element_text(size = 5), 
+            legend.title = element_text(size = 7),
+            legend.key.size = unit(0.5, "cm"),
+            axis.title.y = element_text(margin = margin(t = 0, r = 34, b = 0, l = 0))) + 
       guides(pattern = guide_legend(override.aes = list(fill = "white")),
              fill = guide_legend(override.aes = list(pattern = "none"))) 
-    
+  
+  # plot_theme <- theme_classic() +
+  #   theme(axis.text = element_text(size = 5.5, colour = "black")) +
+  #   theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  #   theme(axis.title = element_text(size = 10)) + 
+  #   theme(legend.text = element_text(size = 5)) + 
+  #   theme(legend.title = element_text(size = 7)) + 
+  #   theme(plot.title = element_text(size=16))
    
-    fil.name4c <- "Publication_Figures/Fig 4 C diff Infected Pops.pdf"
+    fil.name4c <- "Publication_Figures/Fig 4C diff Infected Pops.pdf"
     
-    plot_vax_ipersist <- ggarrange( plot_vax_ipersist,
+    plot_vax_ipersist_C <- ggarrange( plot_vax_ipersist,
                              labels = c( "C"),
-                             ncol = 1, nrow = 1)
+                             ncol = 1, nrow = 1, font.label=list( size=21))
     
-    ggexport(plot_vax_ipersist, filename = fil.name4c, width=7, height=3, ncol = 1,nrow = 1) 
+    ggexport(plot_vax_ipersist_C, filename = fil.name4c, width=7, height=3,
+             ncol = 1,nrow = 1) #w=7,  h= 3
     
     #Combine Fig 4s already made
-    rl2 <- lapply(list( "./Publication_Figures/Fig 4 A Full Simulation SL.pdf", "Publication_Figures/Fig 4B Full Simulation IM.pdf", "Publication_Figures/Fig 4 C diff Infected Pops.pdf",  "./Publication_Figures/Fig 4d Burst vaccination simulation in years 1985.pdf"), magick::image_read_pdf)     
+    rl2 <- lapply(list( "./Publication_Figures/Fig 4A Full Simulation SL.pdf", "Publication_Figures/Fig 4B Full Simulation IM.pdf", "Publication_Figures/Fig 4C diff Infected Pops.pdf",  "./Publication_Figures/Fig 4d Burst vaccination simulation in years 1985.pdf"), magick::image_read_pdf)     
     gl2 <- lapply(rl2, grid::rasterGrob)
     ml2 <- marrangeGrob(gl2, nrow = 4, ncol = 1, top=NULL)
-    ggsave("./Publication_Figures/Fig 4 Vaccination figure.pdf", ml2, width=5, height=8, units = "in" )
+    ggsave("./Publication_Figures/Fig 4 Vaccination figure.pdf", ml2, width=5, height=6, units = "in" )
     
    
 
@@ -610,25 +703,36 @@ if(Vaccinate == TRUE){
     
     #Remove the legends for 10b
     SLplot <- SLplot  +
-      theme(legend.position = "none") #+
+      theme(legend.position = "none",
+            axis.title.y = element_text(margin = margin(t = 0, r = 14.5, b = 0, l = 0))) #+
  
     MosqIAEplot <- MosqIAEplot + 
-      theme(legend.position = "none")#,
+      theme(legend.position = "none") +
+      geom_hline(yintercept = 14400, color = "gray") 
     
   }
   
   if(vax.25_higher == TRUE){
     #
     fil.nameS10part <- "./Publication_Figures/Fig S10c Vaccination simulation 25 perct higher.pdf"
+    SLplot <- SLplot  +
+      theme(legend.position = "none",
+            axis.title.y = element_text(margin = margin(t = 0, r = 11, b = 0, l = 0))) #+
+    
+    MosqIAEplot <- MosqIAEplot + 
+      theme(legend.position = "none") +
+      geom_hline(yintercept = 14400, color = "gray") 
   }
   
   if(vax.25_lower == TRUE){
     #FigS10A
-    SLplot <- SLplot + 
-      theme(legend.position = "none")#,
-
+    SLplot <- SLplot  +
+      theme(legend.position = "none",
+            axis.title.y = element_text(margin = margin(t = 0, r = 11, b = 0, l = 0))) #+
+    
     MosqIAEplot <- MosqIAEplot + 
-      theme(legend.position = "none")# +
+      theme(legend.position = "none") +
+      geom_hline(yintercept = 14400, color = "gray") 
 
     fil.nameS10part <- "./Publication_Figures/Fig S10a Vaccination simulation 25 perct lower.pdf"
   }
@@ -665,10 +769,10 @@ if(Vaccinate == TRUE){
       FigS11_3_a <- SL_plotter(vax.burst.early.out, legnd = FALSE)
       FigS11_3_b <- IAE_plotter(vax.burst.early.out, legnd = FALSE)
         
-      FigS11_2_a <- SL_plotter(vax.burst.late.no.out, legnd = TRUE)
+      FigS11_2_a <- SL_plotter(vax.burst.late.no.out, legnd = FALSE)
       FigS11_2_b<- IAE_plotter(vax.burst.late.no.out, legnd = FALSE)
     
-      FigS11_4_a <- SL_plotter(vax.burst.late.out, legnd = TRUE)
+      FigS11_4_a <- SL_plotter(vax.burst.late.out, legnd = FALSE)
       FigS11_4_b<- IAE_plotter(vax.burst.late.out, legnd = FALSE)
       
       FigS11 <- ggarrange(FigS11_1_a,  FigS11_2_a, FigS11_1_b, FigS11_2_b, FigS11_3_a, FigS11_4_a, FigS11_3_b,    FigS11_4_b, 
@@ -681,9 +785,11 @@ if(Vaccinate == TRUE){
 
 if(vax.burst == TRUE){
     if(One == TRUE){#Then goes to fig 4
-      #Fig4d
+      #Fig 4d
       SLplot <- SLplot +
-        theme(axis.text = element_text(size = 5))
+        theme(axis.title.y = element_text(margin = margin(t = 0, r = 15, b = 0, l = 0)))
+              #axis.text = element_text(size = 5),
+              #axis.title.y = element_text(margin = margin(t = 0, r = 10.5, b = 0, l = 0)))
    
       let <- "d"
       
@@ -692,6 +798,8 @@ if(vax.burst == TRUE){
       
       #Save files
       yrs <- paste(vax.year, collapse = " ")
+      
+      
       fil.name4part <- paste("./Publication_Figures/Fig 4", let, " Burst vaccination simulation in years ", yrs, ".pdf", sep = "" )
       ggexport(Fig4part, filename = fil.name4part, width=5 , height=2)
     }     
@@ -714,10 +822,11 @@ if(vax.burst == TRUE){
 
 ###################
 #Figure S6
-if(Only.q == TRUE ){
+if(Only.q == TRUE ){ 
   #No horizontal transmission
   #Plot together with no.q - no vertical transmission
   final.pop.no.q <- read.csv("All_Files_For_Publication/Data_for_sensitivity_analysis/Data from most recent sim with no q.csv")
+  my_y_title.sl_space_no_q <- expression(atop("Sheep", paste(italic(" "), "and Lambs")))
   SLplot_no_q <-ggplot(final.pop.no.q, aes(x=time)) + 
     geom_line(aes(y = VS, colour = "VS")) +
     geom_line(aes(y = VL, colour = "VL")) +
@@ -729,34 +838,47 @@ if(Only.q == TRUE ){
     geom_line(aes(y = IS, colour = "IS")) +
     geom_line(aes(y = IL, colour = "IL")) +
     geom_vline(xintercept = 9915, color = "dark blue")+#This is 2-15-2010
-    labs( x = "Year", y = "Sheep and \nLambs") +#, color = "Population") + 
+    labs( x = "Year", y = my_y_title.sl_space_no_q) + #"Sheep and \nLambs") +#, color = "Population") + 
     scale_x_continuous(labels = unique(final.populations$Year), breaks = seq(from = 1, to = end.time, by = 365)) +
     scale_colour_manual( name = "Population", values =c("SS" = "black","IS"= "red", "RS" = "green", "VS" = "blue", "SL" = "gray","IL"= "pink", "RL" = "light green", "VL" = "light blue", "AL" = "violet")) +
     plot_theme+
     theme(plot.margin=unit(c(0,.5,0,.5),"cm"),
-          legend.key.size = unit(.15, "cm"))#decrease space between the legend items
+          legend.key.size = unit(.15, "cm"),
+          axis.title.y = element_text(margin = margin(t = 0, r = 10.5, b = 0, l = 0)))#decrease space between the legend items
   
   MosqIAEplot_no_q <- ggplot(final.pop.no.q, aes(time)) + 
     geom_line(aes(y = IAE, colour = "IAE")) + 
     labs(x = "Year", y = my_y_title.iae) +
     scale_x_continuous(labels = unique(final.populations$Year), breaks = seq(from = 2, to = end.time, by = 365)) +
+    geom_hline(yintercept = 14400, color = "gray")+
     plot_theme +
     theme(plot.margin=unit(c(.0,.5,0,.5),"cm"),
-           legend.key = element_rect(fill = "white", color = "white"), legend.text = element_text(color = "white"), legend.title = element_text(color = "white")) +
-           guides(color = guide_legend(override.aes = list(color = NA)))
+          legend.key = element_rect(fill = "white", color = "white"), 
+          legend.text = element_text(color = "white"), 
+          legend.title = element_text(color = "white")) +
+    guides(color = guide_legend(override.aes = list(color = NA)))
+
+  #Only horiztonal transmission
   
   SLplot <- SLplot +
+    labs( x = "Year", y = my_y_title.sl_space_no_q) + #"Sheep and \nLambs") +#, color = "Population") + 
     theme(plot.margin=unit(c(0,.5,0,.5),"cm"),
-          legend.key.size = unit(.15, "cm"))#decrease space between the legend items
+          legend.key.size = unit(.15, "cm"),
+          axis.title.y = element_text(margin = margin(t = 0, r = 10.5, b = 0, l = 0)))#decrease space between the legend items
   
   MosqIAEplot <- MosqIAEplot +
+    geom_hline(yintercept = 14400, color = "gray")+
     theme(legend.key = element_rect(fill = "white", color = "white"), legend.text = element_text(color = "white"), legend.title = element_text(color = "white")) +
     guides(color = guide_legend(override.aes = list(color = NA)))+
-    theme(plot.margin=unit(c(0,.5,0,.5),"cm"))
+    theme(plot.margin=unit(c(0,.5,0,.5),"cm")) +
+    geom_hline(yintercept = 14400, color = "gray")
   
+  my_y_title.iall <- expression(atop("Infected", paste(italic(" "), " Mosquitoes")))
   MosqIAll <- MosqIAll +
+    labs( x = "Year", y = my_y_title.iall) + #"Infected \nMosquitoes")+ 
     theme(plot.margin=unit(c(0,.5,0,.5),"cm"),
-          legend.key.size = unit(.15, "cm"))#
+          legend.key.size = unit(.15, "cm"),
+          axis.title.y = element_text(margin = margin(t = 0, r = 8.5, b = 0, l = 0)))#
   
   FigS6<- ggarrange(SLplot_no_q, MosqIAEplot_no_q, SLplot, MosqIAEplot, MosqIAll,
                      labels = c("A", "B", "C", "D", "E"), nrow = 5, heights = c(500, 500, 500, 500, 500))

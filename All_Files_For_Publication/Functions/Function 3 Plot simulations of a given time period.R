@@ -289,7 +289,11 @@ SL_plotter <- function(df, legnd){
     theme(axis.title = element_text(size = 10)) + 
     theme(legend.text = element_text(size = 5)) + 
     theme(legend.title = element_text(size = 7)) + 
-    theme(plot.title = element_text(size=16))
+    theme(plot.title = element_text(size=16)) #+
+    
+    MosqIAEplot <- MosqIAEplot + 
+      theme(legend.position = "none") +
+      geom_hline(yintercept = 14400, color = "gray") 
   
 
   end.time <- nrow(df)
@@ -310,10 +314,14 @@ SL_plotter <- function(df, legnd){
     scale_colour_manual( name = "Population", values =c("SS" = "black","IS"= "red", "RS" = "green", "VS" = "blue", "SL" = "gray","IL"= "pink", "RL" = "light green", "VL" = "light blue", "AL" = "violet")) +
     plot_theme+
     theme(plot.margin=unit(c(0,.5,0,.5),"cm"),
-          legend.key.size = unit(.15, "cm"))#decrease space between the legend items
+          legend.key.size = unit(.15, "cm"),
+          axis.title.y = element_text(margin = margin(t = 0, r = 14.5, b = 0, l = 0)))#decrease space between the legend items
   
   if(legnd == FALSE){
     SLplot_fun <- SLplot_fun +
+      #theme(legend.key = element_rect(fill = "white", color = "white"), legend.text = element_text(color = "white"), legend.title = element_text(color = "white")) +
+     # guides(color = guide_legend(override.aes = list(color = NA)))
+    
       theme(legend.position = "none")
   }
 return(SLplot_fun)
@@ -338,14 +346,19 @@ IAE_plotter <- function(df, legnd){
     geom_line(aes(y = IAE, colour = "IAE")) + 
     labs(x = "Year", y = my_y_title.iae) +
     scale_x_continuous(labels = unique(df$Year), breaks = seq(from = 2, to = end.time, by = 365)) +
-    scale_colour_manual(name = "Population", values =c("IAE" = "red")) +
+    scale_colour_manual(name = "Population", values =c("IAE" = "red"))  +
+    geom_hline(yintercept = 14400, color = "gray") +
     plot_theme+
-    theme(plot.margin=unit(c(.0,.5,0,.5),"cm"),
-          legend.key = element_rect(fill = "white", color = "white"), legend.text = element_text(color = "white"), legend.title = element_text(color = "white")) +
-    guides(color = guide_legend(override.aes = list(color = NA)))
-  
+    theme(plot.margin=unit(c(.0,.5,0,.5),"cm"))#,
+          #legend.key = element_rect(fill = "white", color = "white"), legend.text = element_text(color = "white"), legend.title = element_text(color = "white")) +
+    #guides(color = guide_legend(override.aes = list(color = NA)))
+
   if(legnd == FALSE){
-    MosqIAEplot_fun <- MosqIAEplot_fun +
+    MosqIAEplot_fun <- MosqIAEplot_fun  +
+      geom_hline(yintercept = 14400, color = "gray")  +
+      #theme(legend.key = element_rect(fill = "white", color = "white"), legend.text = element_text(color = "white"), legend.title = element_text(color = "white")) +
+      #guides(color = guide_legend(override.aes = list(color = NA))) 
+    #+
       theme(legend.position = "none")
   }
   
