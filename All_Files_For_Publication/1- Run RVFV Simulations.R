@@ -69,11 +69,7 @@ if(Vaccinate == TRUE){
   if(vax.25_lower == TRUE){
     param_vec["vax.prop"] <- vax.proportion * 0.750
   }
-  if(vax.burst == FALSE){
-    vax <- param_vec[["vax.prop"]]*(param_vec[["muL"]] + param_vec[["g"]])/ (1-param_vec[["vax.prop"]]) #vax = p*(muL+g)/(1-p)
-    param_vec["vax"] <- vax
-    burst <- FALSE
-  }
+
 }
 
 #No transovarial transmission
@@ -398,22 +394,6 @@ vxp <- (unlist(param_vec["vax"])/(unlist(param_vec["muL"])+ unlist(param_vec["g"
 #For scenarios save data so figures can be plotted together
 if(No.q == TRUE){
   write.csv(final.populations, "All_Files_For_Publication/Data_for_sensitivity_analysis/Data from most recent sim with no q.csv", row.names = FALSE)
-}
-
-if(vax.burst == TRUE){
-  if(Early == TRUE){
-    write.csv(final.populations, "All_Files_For_Publication/Data_for_sensitivity_analysis/Data from most recent sim with burst vax early with no outbreak - 1985 1986 1987 and 1988.csv", row.names = FALSE)
-  }else{
-    if(EarlyWithOutbreak == TRUE){
-      write.csv(final.populations, "All_Files_For_Publication/Data_for_sensitivity_analysis/Data from most recent sim with burst vax early with outbreak - 1987 1988 and 1989.csv", row.names = FALSE)
-    }else{
-      if(LateWithOutbreak == TRUE){
-        write.csv(final.populations, "All_Files_For_Publication/Data_for_sensitivity_analysis/Data from most recent sim with burst vax late with outbreak - 2009 2010 and 2011.csv", row.names = FALSE)
-      }else{
-        write.csv(final.populations, "All_Files_For_Publication/Data_for_sensitivity_analysis/Data from most recent sim with burst vax late with no outbreak - 2006 2007 2008 and 2009.csv", row.names = FALSE)
-      }
-    }
-  }
 }
 
 

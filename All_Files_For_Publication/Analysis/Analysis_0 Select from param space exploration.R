@@ -142,7 +142,7 @@ for(i in 1:nrow(filtered_data2)){
   param_vec["biteC"] <- filtered_data2[i,"biteC"]
   param_vec["q"] <- filtered_data2[i,"q"]
   #Run model
-  source2(file = "./All_Files_For_Publication/1- Run RVFV Simulations.R", start = 156, end = 251)
+  source2(file = "./All_Files_For_Publication/1- Run RVFV Simulations.R", start = 156, end = 250)
   #Save to list
   final.pops.list[[i]] <- final.populations
   #final.pops.list[[1]] <- final.populations

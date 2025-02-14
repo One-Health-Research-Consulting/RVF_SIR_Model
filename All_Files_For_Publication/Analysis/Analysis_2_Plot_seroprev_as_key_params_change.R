@@ -34,8 +34,6 @@ Q_IAE_Persistence <- FALSE     # Transovarial Transmission vs the initial infect
 SA <- FALSE #This should always be FALSE: If you want to run a sensitivity analysis, you need to use a different simulation file 
 Var_Select <- FALSE #This should always be FALSE: If you want to run a sensitivity analysis, you need to use a different simulation file 
 Vaccinate <- FALSE #Change to true if you want to run a simulation where you vaccinate the lambs and select a vaccination %
-vax.burst <- FALSE #Change to true if you want to run a simulation where you vaccinate the adult sheep and lambs to a set vaccination % within 1 week per year (2nd week of July), 100% vaccination is not possible
-burst <- FALSE #Change to true if vax.burst is TRUE
 No.q <- FALSE #No transovarial transmission
 Only.q <- FALSE #No horizontal transmission
 
@@ -228,8 +226,6 @@ for(param1.2 in discrete_vec){
                               sigC = sigimpCMean, 
                               sigdevA = sigimp_dev_ALP,
                               sigdevC = sigimp_dev_CLP,
-                              #sigvax = sigimp_vax,
-                              vax.b = burst,
                               end.t = end.time
     )
     

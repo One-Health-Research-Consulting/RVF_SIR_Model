@@ -211,7 +211,7 @@ Reffect.plot <- ggplot(final.populations, aes(x=time, y = Reff)) +
 ########################################################
 #Make plots for Fig 1, S3, portion of Fig S10 
 #Runs if no scenarios were selected
-if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_higher ==  FALSE & vax.25_lower == FALSE & vax.burst == FALSE & lo.eggs == FALSE & no.amp.vecs == FALSE & No.q == FALSE & Only.q == FALSE & Vaccinate == FALSE){
+if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_higher ==  FALSE & vax.25_lower == FALSE & lo.eggs == FALSE & no.amp.vecs == FALSE & No.q == FALSE & Only.q == FALSE & Vaccinate == FALSE){
 
     
     #Figure 1 - remove all legends then make a legend for the bottom of the page
@@ -674,7 +674,7 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_higher ==  FALSE & va
 #Plot scenarios
 #Figure 4, S12 and S12- vaccination scenarios
 if(Vaccinate == TRUE & no.amp.vecs == FALSE & No.q == FALSE & Only.q == FALSE & lo.eggs == FALSE & muC.25_lower == FALSE & muC.25_higher == FALSE){
-  if(vax.25_higher == FALSE & vax.25_lower == FALSE & vax.burst == FALSE){ 
+  if(vax.25_higher == FALSE & vax.25_lower == FALSE ){ 
     #Save SLplot and MosqIAll plots separately so easier to compile
     #Fig4a
     SLplot_vax1 <- SLplot_vax + 
@@ -798,7 +798,7 @@ if(Vaccinate == TRUE & no.amp.vecs == FALSE & No.q == FALSE & Only.q == FALSE & 
     
   }
   
-    if(vax.25_higher == TRUE | vax.25_lower == TRUE & vax.burst == FALSE){ 
+    if(vax.25_higher == TRUE | vax.25_lower == TRUE ){ 
   
   if(vax.25_higher == TRUE){
     #
@@ -828,7 +828,7 @@ if(Vaccinate == TRUE & no.amp.vecs == FALSE & No.q == FALSE & Only.q == FALSE & 
       
 }
   
-  if(vax.25_higher == FALSE & vax.25_lower == FALSE & vax.burst == FALSE){  
+  if(vax.25_higher == FALSE & vax.25_lower == FALSE ){  
     #Combine Fig S10B with the two Fig S10s already made
     rl2 <- lapply(list("./Publication_Figures/Fig S10a Vaccination simulation 25 perct lower_no legend.pdf", "./Publication_Figures/Fig S10b Vaccination simulation as simulated_no_legend.pdf",  "./Publication_Figures/Fig S10c Vaccination simulation 25 perct higher_no_legend.pdf"), magick::image_read_pdf)
     gl2 <- lapply(rl2, grid::rasterGrob)

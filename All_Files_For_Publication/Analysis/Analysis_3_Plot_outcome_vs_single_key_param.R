@@ -25,8 +25,6 @@ Var_Select <- FALSE #This should always be FALSE: If you want to run a sensitivi
 Vaccinate <- FALSE #Change to true is you want to run a simulation where you vaccinate the sheep and select a vaccination %
 No.q <- FALSE #No transovarial transmission
 Only.q <- FALSE #No horizontal transmission
-vax.burst <- FALSE #Change to true if you want to run a simulation where you vaccinate the adult sheep and lambs to a set vaccination % within 1 week per year (2nd week of July), 100% vaccination is not possible
-burst <- FALSE #Change to true if vax.burst is TRUE
 
 if(Check_Vax == TRUE){
   Vaccinate <- TRUE #Need this true to get sigvax to do the daily vaccination rate - otherwise it will be 0 even if you put in a vax.prop value
@@ -120,8 +118,6 @@ matrix.populations <- ode(y = initial.populations,
                           sigC = sigimpCMean, 
                           sigdevA = sigimp_dev_ALP,
                           sigdevC = sigimp_dev_CLP,
-                          #sigvax = sigimp_vax,
-                          vax.b = burst,
                           end.t = end.time
 )
 
@@ -189,8 +185,6 @@ j <- j+1
                               sigC = sigimpCMean, 
                               sigdevA = sigimp_dev_ALP,
                               sigdevC = sigimp_dev_CLP,
-                              sigvax = sigimp_vax,
-                              vax.b = burst,
                               end.t = end.time
     )
     
