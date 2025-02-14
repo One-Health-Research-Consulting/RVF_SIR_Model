@@ -26,22 +26,12 @@ Only.q <- FALSE #No horizontal transmission
 muC.25_higher <- FALSE #Run simulation with a Culex mortality rate that is 25% higher
 muC.25_lower <- FALSE #Run simulation with a Culex mortality rate that is 25% lower
 lo.eggs <- FALSE #Run simulation that changes the initial population of infected Aedes eggs
+no.amp.vecs <- FALSE # Run simulation that does not allow Culex to transmit the virus
 
 Vaccinate <- FALSE #Change to true is you want to run a simulation where you vaccinate the sheep and select a vaccination %
 vax.proportion <- .18 #Proportion of the flock user wants to remain vaccinated at a constant rate
 vax.25_higher <- FALSE #Run simulation with a host vaccination rate that is 3 x higher
 vax.25_lower <- FALSE
-#Run simulation with a host vaccination rate that is 25% higher
-vax.burst <- FALSE #Change to true if you want to do a burst vaccination during the winter season of a given MosqYear, select a time frame (early, middle, late)
-if(vax.burst == TRUE){
-  Early <- FALSE
-  EarlyWithOutbreak <- FALSE
-  Late <- FALSE
-  LateWithOutbreak <- FALSE
-  One <- FALSE 
-  vax.proportion <- 0.99##Proportion of the flock user wants to vaccinate in a burst effort (7 days in July of selected MosqYear; R can't handle 100% of the herd - or 1.0 proportion)
-}
-
 
 #Always False:
 SA <- FALSE #This should always be FALSE: If you want to run a sensitivity analysis, you need to use a different simulation file 
@@ -50,27 +40,6 @@ Var_Select <- FALSE  #This should always be FALSE: If you want to run a sensitiv
 set.seed(6242015)#This is to ensure the approxfun function always outputs the same mosquito hatching patterns
 
 ##################
-#Need to set these before runing the sourced files below to set up the vaccination burst years
-if(vax.burst == TRUE){
-  if(Early == TRUE){
-    vax.year <- c(1985,1986,1987, 1988)#Provide the MosqYear (starting in September and ending in August of the following year)
-  }else{
-    if(EarlyWithOutbreak == TRUE){
-      vax.year <- c(1987, 1988, 1989)#Provide the MosqYear (starting in September and ending in August of the following year)
-    }else{
-      if(One == TRUE){
-        vax.year <- c(1985)#Provide the MosqYear (starting in September and ending in August of the following year)
-      }else{
-        if(LateWithOutbreak == TRUE){
-          vax.year <- c(2009, 2010, 2011)#Provide the MosqYear (starting in September and ending in August of the following year)
-        }else{
-          vax.year <- c(2006, 2007, 2008, 2009)#Provide the MosqYear (starting in September and ending in August of the following year)
-          
-        }
-      }
-    }
-  }
-}
 
 #Source code
 #Source functions
@@ -104,14 +73,7 @@ if(Vaccinate == TRUE){
     vax <- param_vec[["vax.prop"]]*(param_vec[["muL"]] + param_vec[["g"]])/ (1-param_vec[["vax.prop"]]) #vax = p*(muL+g)/(1-p)
     param_vec["vax"] <- vax
     burst <- FALSE
-  }else{
-    vax <- param_vec[["vax.prop"]]*(param_vec[["muL"]] + param_vec[["g"]])/ (1-param_vec[["vax.prop"]]) #vax = p*(muL+g)/(1-p)
-    vax <- vax*365/7 #Gives the daily rate needed to vaccinate the identified portion during the one week winter period
-    param_vec["vax"] <- vax
-    burst <- TRUE
   }
-}else{
-  burst <- FALSE
 }
 
 #No transovarial transmission
@@ -119,11 +81,17 @@ if(No.q == TRUE){
   param_vec["q"] <- 0.0
 }
 
-#No horizontal transmission
+#No horizontal transmission among any vectors
 if(Only.q == TRUE){
   param_vec["Tcsl"] <- 0
   param_vec["Tslc"] <- 0
   param_vec["Tasl"] <- 0
+}
+
+#No Culex transmission - only Aedes, which have vertical and horizontal
+if(no.amp.vecs == TRUE){
+  param_vec["Tcsl"] <- 0
+  param_vec["Tslc"] <- 0
 }
 
 #low initial Aedes egg starting population
@@ -161,8 +129,6 @@ matrix.populations <- ode(y = initial.populations,
                           sigC = sigimpCMean, 
                           sigdevA = sigimp_dev_ALP,
                           sigdevC = sigimp_dev_CLP,
-                          sigvax = sigimp_vax,
-                          vax.b = burst,
                           end.t = end.time
 )
 
@@ -244,6 +210,10 @@ MosqIAll <-ggplot(final.populations, aes(time)) +
 MosqIAll
 
 #Get outbreak dataframe
+final.populations <- final.populations%>%
+  mutate(NSL = NS + NL)%>%
+  mutate(All_AEggs = SAE + IAE)
+
 Outbreaks <- Get.Outbreak.Dataframe(final.populations, param_vec$sigma_sl)
 
 #Get peak infected populations
@@ -290,10 +260,6 @@ mdev_CLP <- mean(CLP_rates$dev_CLP)
 mmu_CLP <- mean(CLP_rates$muCLP) 
 
 #Calculate the mean population sizes
-final.populations <- final.populations%>%
-  mutate(NSL = NS + NL)%>%
-  mutate(All_AEggs = SAE + IAE)
-
 m_NS <- mean(final.populations$NS, na.rm = TRUE)
 m_NL <- mean(final.populations$NL, na.rm = TRUE)
 m_NSL <- mean(final.populations$NSL, na.rm = TRUE)
@@ -462,5 +428,6 @@ final.populations$Reff <- Reff.list
 print(paste("The ending seroprevalence is ", round(End.Seroprevalence, 2), sep = ""))
 print(paste0("The mean incidence rate per 100 sheep-years is ", round(mean.inc.per.100,1), "."))
 print(paste0("Excluding outbreak years (>250 infections), the mean incidence rate per 100 sheep-years is ", round(mean.inc.per.100.no.outbrk,1), "."))
+
 
 

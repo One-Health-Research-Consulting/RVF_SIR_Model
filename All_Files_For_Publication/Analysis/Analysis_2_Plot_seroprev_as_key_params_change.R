@@ -20,11 +20,12 @@ library(RColorBrewer)
 library(egg)
 library(ggplot2)
 library(ggpubr)
+library(ggtext)
 
 #Set variables do you want to compare and using which output
-Q_biteA_Seroprev.mean <- FALSE #Transovarial Transmission vs Aedes bite rate evaluating seroprevalence
+Q_biteA_Seroprev.mean <- TRUE #Transovarial Transmission vs Aedes bite rate evaluating seroprevalence
   R0_plot <- TRUE              #Also examine the effect on R0 and both persistence and seroprevalence - works with Q_biteA_Seroprev.mean == TRUE
-Q_muC_Seroprev.mean <- TRUE  #Transovarial Transmission vs Culex mortality rate evaluating seroprevalence; Not for plot, but for single line in results
+Q_muC_Seroprev.mean <- FALSE  #Transovarial Transmission vs Culex mortality rate evaluating seroprevalence; Not for plot, but for single line in results
 Vax_Q_Persistence <- FALSE    #Transovarial Transmission vs vaccination rate evaluating persistence
 Q_Tasl_Persistence <- FALSE   #Transovarial Transmission vs host-to-Aedes transmission rate evaluating persistence
 Q_IAE_Persistence <- FALSE     # Transovarial Transmission vs the initial infected egg population
@@ -57,7 +58,6 @@ source(here("All_Files_For_Publication/Functions", "Function 4 Calculate R0.R"))
 #Set up each analysis
 #Set scales - see how seroprevelance changes with different combinations of q and bite rates
 q_vec_R01 <- c(0, .1, .2, .3, .4, .5, .6, param_vec$q, .8, .9, .99)#q vector
-#qmuC_vec_R01 <- c(0, .1, .2, .3, .4, .5, .6, param_vec$q, 0.75, 0.755, 0.76, 0.78, .8, .9, .99)#q vector
 q_vec <- c(0, 0.25, 0.5, param_vec$q, 0.75, 0.99)#q vector
 biteA_vec <- seq(from = .05, to = 1, by = .025) #biteA vector
 biteA_vec_R01 <- seq(from = .01, to = 0.45, by = .01)#Smaller range and increments to examine R0 around 1
@@ -228,7 +228,7 @@ for(param1.2 in discrete_vec){
                               sigC = sigimpCMean, 
                               sigdevA = sigimp_dev_ALP,
                               sigdevC = sigimp_dev_CLP,
-                              sigvax = sigimp_vax,
+                              #sigvax = sigimp_vax,
                               vax.b = burst,
                               end.t = end.time
     )

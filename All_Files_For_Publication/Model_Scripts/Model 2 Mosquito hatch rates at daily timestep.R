@@ -69,21 +69,3 @@ sigimpCMean <- approxfun(All_Precip$SimDay, All_Precip$hatchingCPropTMean, rule 
 sigimp_dev_ALP <- approxfun(All_Precip$SimDay, All_Precip$Dev_ALP, rule = 2)
 sigimp_dev_CLP <- approxfun(All_Precip$SimDay, All_Precip$Dev_CLP, rule = 2)
 
-#Set vax pattern
-if(Vaccinate == FALSE){
-  sigimp_vax  <- approxfun(All_Precip$SimDay, All_Precip$No_vax, rule = 2)
-}else{
-  if(vax.burst == FALSE){
-    sigimp_vax  <- approxfun(All_Precip$SimDay, All_Precip$Daily_vax, rule = 2)
-  }else{
-    for(y in vax.year){
-      for(i in 1:nrow(All_Precip)){
-        if(All_Precip$MosqYear[i] == y){
-          if(All_Precip$MosqDay[i] >= 304 & All_Precip$MosqDay[i] <= 310)
-            All_Precip$Burst_vax[i] <- 1
-        }
-      }
-    }
-    sigimp_vax  <- approxfun(All_Precip$SimDay, All_Precip$Burst_vax, rule = 2)
-  }
-}

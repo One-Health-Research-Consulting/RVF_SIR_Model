@@ -20,13 +20,12 @@ ParamByParamPlot <- function(df1, colx, coly, color1, no.leg, R0){
   
   if(color1 == "q"){
     df1[[color1]] <- as.factor(df1[[color1]])
-    legend.name <- "Transovarial  \nTransmission Fraction"
+    legend.name <- "Transovarial \nTransmission Fraction"
     if(R0 == TRUE){
     color_vec <- c(viridis::viridis(n = 11))
     }else{
       color_vec <- c(viridis::viridis(n = 6))
     }
-    #color_vec <- c("salmon", "sandybrown", "mediumseagreen", "turquoise", "lightslateblue", "orchid1")
   }
   if(color1 == "vax"){
     legend.name = "Percent Vaccinated"
@@ -36,7 +35,7 @@ ParamByParamPlot <- function(df1, colx, coly, color1, no.leg, R0){
     df1[color1] <- as.factor(as.character(df1[, color1]))
   }  
   if(color1 == "epsilon"){
-    legend.name = "Days of Extrinsic \n Incubation"
+    legend.name = "Days of Extrinsic \nIncubation"
     df1 <- df1%>%
       mutate(dat1 = rev(epsilon), DaysInc = round("^"(epsilon, -1),0))
     color1 <- "DaysInc"
@@ -48,7 +47,7 @@ ParamByParamPlot <- function(df1, colx, coly, color1, no.leg, R0){
     
     if(color1 == "biteA"){
       df1.names <- colnames(df1)
-        legend.name <- "Aedes Bite Rate (per Day)"
+      legend.name <- "Daily *Aedes* Bite Rate"
     discrete_vec2 <- as.factor(as.character(unique(df1[[color1]])))
     df1[color1] <- as.factor(as.character(df1[, color1]))
     color_vec <- c("salmon", "sandybrown", "mediumseagreen", "turquoise", "lightslateblue", "orchid1")
@@ -57,7 +56,7 @@ ParamByParamPlot <- function(df1, colx, coly, color1, no.leg, R0){
   #X axis numbers and names
   if(colx == "biteA"){
       df1.names <- colnames(df1)
-      x.lab.name <- expression(paste(italic("Aedes"), " Bite Rate (per Day)"))
+      x.lab.name <- "Daily *Aedes* Bite Rate"
   }
   
   
@@ -66,7 +65,7 @@ ParamByParamPlot <- function(df1, colx, coly, color1, no.leg, R0){
     df1[[colx]] <-  unique(1-exp(-df1[[colx]]*365))
   }
   if(colx == "Tasl"){
-    x.lab.name = expression(paste("Host-to-", italic("Aedes"), " Transmission Fraction"))
+    x.lab.name = "Host-to-*Aedes* Transmission Fraction"
   }
   
   #Y axis numbers and names
@@ -85,7 +84,6 @@ ParamByParamPlot <- function(df1, colx, coly, color1, no.leg, R0){
   if(colx == "vax"){
     df1[[color1]] <- as.factor(df1[[color1]])
 
-    #Fig <- ggplot(df1, aes_string(x = "PropVax", y = coly, color = color1))+
      Fig <- ggplot(df1, aes(x = PropVax, y = .data[[coly]], color = .data[[color1]]))+
       geom_line()+
       geom_point()+
@@ -99,8 +97,6 @@ ParamByParamPlot <- function(df1, colx, coly, color1, no.leg, R0){
     geom_point() +
     labs(x = x.lab.name, y = y.lab.name)+
     scale_colour_manual(name  = legend.name, breaks= discrete_vec, labels=discrete_vec2, values = color_vec)+
-    #scale_color_viridis(discrete = TRUE, option = color_vec,name  = legend.name, breaks= discrete_vec, labels=discrete_vec2)+
-    #scale_colour_manual(name  = legend.name, breaks= discrete_vec, labels=discrete_vec2, values = color_vec)+
     thesis_theme
   }
   return(Fig)
@@ -125,7 +121,6 @@ plot.between.years <- function(df1, yr1, yr2){
 MosqAplot <-ggplot(filt, aes(time)) + 
   geom_line(aes(y = SA, colour = "SA")) + 
   geom_line(aes(y = IA, colour = "IA")) +
-  #geom_line(aes(y = NAedes, colour = "NAedes")) +
   labs( x = "Time", y = "Aedes Population", color = "Legend Title\n") +      
   scale_x_continuous(name = "Year", breaks = seq(time1, time2, by = 365), labels = unique(filt$Year)) +
   scale_colour_manual("", values =c("SA" = "black","IA"= "red")) +
@@ -289,11 +284,7 @@ SL_plotter <- function(df, legnd){
     theme(axis.title = element_text(size = 10)) + 
     theme(legend.text = element_text(size = 5)) + 
     theme(legend.title = element_text(size = 7)) + 
-    theme(plot.title = element_text(size=16)) #+
-    
-    MosqIAEplot <- MosqIAEplot + 
-      theme(legend.position = "none") +
-      geom_hline(yintercept = 14400, color = "gray") 
+    theme(plot.title = element_text(size=16))
   
 
   end.time <- nrow(df)
@@ -314,14 +305,10 @@ SL_plotter <- function(df, legnd){
     scale_colour_manual( name = "Population", values =c("SS" = "black","IS"= "red", "RS" = "green", "VS" = "blue", "SL" = "gray","IL"= "pink", "RL" = "light green", "VL" = "light blue", "AL" = "violet")) +
     plot_theme+
     theme(plot.margin=unit(c(0,.5,0,.5),"cm"),
-          legend.key.size = unit(.15, "cm"),
-          axis.title.y = element_text(margin = margin(t = 0, r = 14.5, b = 0, l = 0)))#decrease space between the legend items
+          legend.key.size = unit(.15, "cm"))#decrease space between the legend items
   
   if(legnd == FALSE){
     SLplot_fun <- SLplot_fun +
-      #theme(legend.key = element_rect(fill = "white", color = "white"), legend.text = element_text(color = "white"), legend.title = element_text(color = "white")) +
-     # guides(color = guide_legend(override.aes = list(color = NA)))
-    
       theme(legend.position = "none")
   }
 return(SLplot_fun)
@@ -338,27 +325,20 @@ IAE_plotter <- function(df, legnd){
     theme(plot.title = element_text(size=16))
   
   #' infected _Aedes_ eggs
-  my_y_title.iae <- expression(atop("Infected", paste(italic("Aedes"), " Eggs")))
-  #' 
   end.time <- nrow(df)
   #
   MosqIAEplot_fun <- ggplot(df, aes(time)) + 
     geom_line(aes(y = IAE, colour = "IAE")) + 
-    labs(x = "Year", y = my_y_title.iae) +
+    labs(x = "Year", y = "Infected *Aedes* Eggs") +
     scale_x_continuous(labels = unique(df$Year), breaks = seq(from = 2, to = end.time, by = 365)) +
-    scale_colour_manual(name = "Population", values =c("IAE" = "red"))  +
-    geom_hline(yintercept = 14400, color = "gray") +
+    scale_colour_manual(name = "Population", values =c("IAE" = "red")) +
     plot_theme+
-    theme(plot.margin=unit(c(.0,.5,0,.5),"cm"))#,
-          #legend.key = element_rect(fill = "white", color = "white"), legend.text = element_text(color = "white"), legend.title = element_text(color = "white")) +
-    #guides(color = guide_legend(override.aes = list(color = NA)))
-
+    theme(plot.margin=unit(c(.0,.5,0,.5),"cm"),
+          legend.key = element_rect(fill = "white", color = "white"), legend.text = element_text(color = "white"), legend.title = element_text(color = "white")) +
+    guides(color = guide_legend(override.aes = list(color = NA)))
+  
   if(legnd == FALSE){
-    MosqIAEplot_fun <- MosqIAEplot_fun  +
-      geom_hline(yintercept = 14400, color = "gray")  +
-      #theme(legend.key = element_rect(fill = "white", color = "white"), legend.text = element_text(color = "white"), legend.title = element_text(color = "white")) +
-      #guides(color = guide_legend(override.aes = list(color = NA))) 
-    #+
+    MosqIAEplot_fun <- MosqIAEplot_fun +
       theme(legend.position = "none")
   }
   

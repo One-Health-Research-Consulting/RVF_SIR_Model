@@ -97,8 +97,6 @@ HypercubeSA <- function(param_matrix, empty.dat, empty.dat.precip, precip.dat, p
                                                   sigC = sigimpCMean, 
                                                   sigdevA = sigimp_dev_ALP,
                                                   sigdevC = sigimp_dev_CLP, 
-                                                  sigvax = sigimp_vax,
-                                                  vax.b = burst,
                                                   method = "ode45",
                                                   end.t = end.time
                                                   ))

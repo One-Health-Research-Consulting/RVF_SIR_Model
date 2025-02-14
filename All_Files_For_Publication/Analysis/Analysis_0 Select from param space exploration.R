@@ -14,12 +14,11 @@ library(png)
 
 #Set ggplot theme
 plot_theme <- theme_classic() +
-  theme(axis.text = element_text(size = 5.5, colour = "black"),
-        axis.text.x = element_text(angle = 90, hjust = 1),
-        axis.title = element_text(size = 10),
-        legend.text = element_text(size = 5),
-        legend.title = element_text(size = 7),
-        plot.title = element_text(size=16))
+  theme(plot.margin=unit(c(1,0.5,0,1),"cm"),
+        axis.title = element_markdown(size = 12, family = "sans"),
+        axis.text = element_markdown(size = 9, family = 'sans'),
+        axis.text.x = element_markdown(angle = 90, hjust = 1),
+        )
 
 #Obtain list of file names of datafiles we want to read in
 files <- list.files("./All_Files_For_Publication/Data_for_sensitivity_analysis/results_20221024", pattern="*.Rdata", full.names=TRUE)
@@ -79,13 +78,13 @@ head(data2)
 ################################################################################
 #Filter data for criteria
 #Criteria used for the selected parameters (my_criteria):
-    #Mean Seroprevalence between 5-40%
+    #Mean Seroprevalence between 3-44%
     #Persistence for at least 34 years
     #At least 1 spike detected (they all have at least 2 detected)
     #ratioE is between 0.9-1.1 (so the Aedes eggs remain pretty constant over the period)
     #ratioP is between 0.9-1.1 (so the mean seroprevalence remains pretty constant over the period)
 nrow(data2)
-filtered_data <- data2 %>% filter(MAS < 0.4 & MAS > 0.05, 
+filtered_data <- data2 %>% filter(MAS < 0.40 & MAS > 0.01, 
                                   ED > 34, 
                                   ratioE > 0.9 & ratioE < 1.1, 
                                   ratioP > 0.9 & ratioP < 1.1, 
@@ -94,7 +93,7 @@ nrow(filtered_data)
 
 #Or do this with a function
 my_criteria <- function(ED, MAS, ratioE, ratioP, SD){
-  MAS < 0.4 & MAS > 0.05 &
+  MAS < 0.40 & MAS > 0.01 &
     ED > 34 &
     ratioE > 0.9 & ratioE < 1.1 & 
     ratioP > 0.9 & ratioP < 1.1 &
@@ -110,7 +109,7 @@ nrow(filtered_data2)
     #At least 1 spike detected
 
 my_criteriaMin <- function(ED, MAS, SD){
-  MAS < 0.4 & MAS > 0.05 &
+  MAS < 0.40 & MAS > 0.01 &
     ED > 34 &
     SD > 1.0
 }
@@ -132,7 +131,7 @@ final.pops.list <- list()
 
 #Run through the 6 scenarios
 for(i in 1:nrow(filtered_data2)){
-  
+#for(i in c(6)){
   #Source through line 91 - after loading the parameters
   source2(file = "./All_Files_For_Publication/1- Run RVFV Simulations.R", start = 1, end = 155) #load param_vec
   #Change selected params
@@ -143,16 +142,15 @@ for(i in 1:nrow(filtered_data2)){
   param_vec["biteC"] <- filtered_data2[i,"biteC"]
   param_vec["q"] <- filtered_data2[i,"q"]
   #Run model
-  source2(file = "./All_Files_For_Publication/1- Run RVFV Simulations.R", start = 156, end = 248)
+  source2(file = "./All_Files_For_Publication/1- Run RVFV Simulations.R", start = 156, end = 251)
   #Save to list
   final.pops.list[[i]] <- final.populations
+  #final.pops.list[[1]] <- final.populations
   
   SheepScen_plot <- SLplot  + plot_theme +
-    theme(plot.margin=unit(c(0,.5,0,.5),"cm"),
-          legend.key.size = unit(.15, "cm"))
+    theme(legend.position = "none")
   MosqScen_plot <- MosqIAll + plot_theme +
-    theme(plot.margin=unit(c(0,.5,0,.5),"cm"),
-          legend.key.size = unit(.15, "cm"))
+    theme(legend.position = "none")
   
   #Name figure
   assign(sprintf("Sh_Scenario_%d", i), SheepScen_plot)
@@ -169,6 +167,7 @@ for(i in 1:nrow(filtered_data2)){
 fil.name <- "Publication_Figures/Fig S13 Examples of parameters that were not selected for the final model.pdf"
 FigS13 <- ggarrange(Sh_Scenario_2, Sh_Scenario_1, Sh_Scenario_6, draw = FALSE,
                   labels = c("A", "B", "C"),
+                  align = "v", 
                   ncol = 1, nrow = 3)
 
 ggexport(FigS13[1], filename = fil.name, width=5, height=5)

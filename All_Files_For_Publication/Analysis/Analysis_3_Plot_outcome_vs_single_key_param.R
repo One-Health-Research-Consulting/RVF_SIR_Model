@@ -15,9 +15,9 @@ library(ggpattern)
 #Set parameters
 Check_Q <- FALSE
 Check_Tasl <- FALSE
-Check_Tsla <- FALSE
+Check_Tsla <- TRUE
 Check_epsilon <- FALSE
-Check_Vax <- TRUE
+Check_Vax <- FALSE
 
 #Always False:
 SA <- FALSE #Sensitivity analysis, needs a different simulation file 
@@ -102,11 +102,8 @@ start.run.time <- Sys.time()
 
 print(start.run.time)
 
-#if(Check_Vax == FALSE){
+
 tab <- data.frame()
-#}else{
-#  tab <- list()
-#}
 
 j <- 1
 if(Check_Vax == FALSE){
@@ -123,7 +120,7 @@ matrix.populations <- ode(y = initial.populations,
                           sigC = sigimpCMean, 
                           sigdevA = sigimp_dev_ALP,
                           sigdevC = sigimp_dev_CLP,
-                          sigvax = sigimp_vax,
+                          #sigvax = sigimp_vax,
                           vax.b = burst,
                           end.t = end.time
 )
@@ -298,10 +295,7 @@ Fig <- ggarrange(plot.SeroP, plot.Extinct, draw = FALSE,#
       mutate(Last_Yr_IAE_Over_14400 = if_else(Last_Yr_IAE_Over_14400 == 0 & str_detect(Species, "Host"), Years, Last_Yr_IAE_Over_14400))%>%
       mutate(q = if_else(q == 0.75, "Low", "High"))
     
-    #tab.yr$q <- as.factor(as.character(tab.yr$q))
-    
     plot_vax_ipersist <- ggplot(tab.yr, aes(x = Proportion_Vaccinated)) +
-      #geom_bar(aes( y = Last_Yr_IAE_Over_14400, fill = q_sp), stat = "identity", position = "dodge") +
       geom_bar_pattern(aes(y = Last_Yr_IAE_Over_14400, pattern = q, fill = Species), 
                        stat = "identity",
                        position = "dodge",
@@ -313,7 +307,6 @@ Fig <- ggarrange(plot.SeroP, plot.Extinct, draw = FALSE,#
                        pattern_key_scale_factor = 0.6) +
       scale_x_continuous(labels = scales::percent) +
       scale_pattern_manual(values = c("Low" = "stripe", "High" = "none"), labels = sort(unique(tab.yr$q)), name = "Transovarial transmission \n fraction") +
-      #scale_pattern_manual(values = c("Extinction_Yr_in_Eggs" = "stripe", "Extinction_Yr_in_Host" = "none"), labels = c("Suffcient", "Insufficent"), name = "Vector Population Capable \n of Starting Outbreak in \nSusceptible Hosts") +
       scale_fill_brewer(palette="Set2", name = "Extinction Year", labels = expression(paste( italic("Aedes"), " Eggs"), paste("Host"))) +
       labs(x = "Percent Vaccinated", y = "Year of Extinction") +
       theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
@@ -321,13 +314,10 @@ Fig <- ggarrange(plot.SeroP, plot.Extinct, draw = FALSE,#
             axis.title = element_text(colour = "black", size=18), 
             axis.text = element_text(colour = "black", size = 14)) + 
       guides(pattern = guide_legend(override.aes = list(fill = "white")),
-             fill = guide_legend(override.aes = list(pattern = "none"))) #+
-    #theme(legend.key.size = unit(2, 'cm'))
-    
+             fill = guide_legend(override.aes = list(pattern = "none"))) 
     plot_vax_ipersist
     
-  Fig <- ggarrange(plot_vax_ipersist, draw = FALSE,#
-                   #labels = c("A", "B"), #
+  Fig <- ggarrange(plot_vax_ipersist, draw = FALSE,
                    ncol = 1, nrow = 1)
   }
 }

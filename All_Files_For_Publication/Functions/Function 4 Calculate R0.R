@@ -8,6 +8,7 @@
 #Libraries 
 library(dplyr)
 library(ggplot2)
+library(ggtext)
 
 theme_louise <- function () { 
   theme_grey(base_size=14, base_family="Avenir") 

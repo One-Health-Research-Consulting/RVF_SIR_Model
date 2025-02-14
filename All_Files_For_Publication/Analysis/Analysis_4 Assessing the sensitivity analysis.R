@@ -20,7 +20,7 @@ library(tidyr)
 
 
 #'Load data produced from the 2_RVF_LHC_Sensitivity_Analysis.R file
-load(here("./All_Files_For_Publication/Data_for_sensitivity_analysis/", "SA_trans_Publication2023_07_10.Rdata"))
+load(here("./All_Files_For_Publication/Data_for_sensitivity_analysis/", "SA_trans_Publication2025_02_10.Rdata"))
 
 #Set ggplot theme
 plot_theme <- theme_classic() +
@@ -73,10 +73,6 @@ ggplot(ParamSp, aes(x = Mean.Annual.Seroprevalence, y = Extinct.yr) ) +
   labs(x = "Mean Seroprevalence (%)",
      y = "Years of Persistence",
      fill = "Number of \nSimulations")
-
-#ggplot(data = yes, aes(x = Mean.Annual.Seroprevalence, y = Extinct.yr))+geom_point(colour = "red")
-
-#,colour = "red" )
 
 
 ##########################################
@@ -217,17 +213,9 @@ SA <- SA%>%
     
     PCCplot2 <- PCCplot %>%
       pivot_longer(cols = Lower:Upper, names_to = "level",  values_to = "value")%>%
-     #mutate(CI = paste("[", round(MinCI, 3), ", ", round(MaxCI,3), "]", sep = ""))%>%
-     #mutate(Sig = if_else(between(0, MinCI, MaxCI), "no", "*"))%>%
-     #mutate(CI = if_else(Sig == "*", paste(CI, "*", sep = ""), CI))%>%
-     #mutate(Estimate = round(Estimate, 3))%>%
       select(OutputFactor, variable, level, value)
-    #if(i == 1){
     Torn_Table <- rbind(Torn_Table, PCCplot)  
     Torn_Table2 <- rbind(Torn_Table2, PCCplot2)
-   # }else{
-   #   Torn_Table <- cbind(Torn_Table, PCCplot)
-   # }  
   }
   
   #Torn_Table$variable <- factor( Torn_Table$variable, levels = c("q", "biteA", "muA", "Tsla", "sigma_sl", "Tasl", "epsilon", "biteC", "muC", "rhoS", "rhoL", "Tcsl", "Tslc", "muAE"))
@@ -253,10 +241,6 @@ SA <- SA%>%
   y_x_title.muC   <- expression(paste(italic("Culex"), " Mortality Rate"))
   
   #Facet labels
- #Facet_labeller <- function(variable,value){
- #  return(facet.lab[value])
- #}
- #
  facet.lab <- c("Extinction.Day" = "Persistence", "Mean.Annual.Seroprevalence" = "Mean Seroprevalence \nAcross All Years", "Get.Prop.Infected.Eggs_last_day" = "Proportion of Infected Eggs \nat End of Simulation", "Get.Mean.Outbreak.lengths.MosqYear" = "Mean Outbreak Length",  "Get.Mean.Outbreak.Size.MosqYear" = "Mean Outbreak Size", "Max.Outbreak.Size.MosqYear" = "Maximum Single \nOutbreak Size")
   
   
@@ -298,9 +282,7 @@ SA <- SA%>%
           upper = Upper,
           y = mean,
           x = variable),  color = "darkblue", fill = NA, fatten = 0) +
-        #geom_segment(data=Torn_Table, aes(x=variable, xend=variable, y=mean, yend=mean), colour="red", linewidth=2, inherit.aes = F) +
     facet_wrap(~OutputFactor, labeller = labeller(OutputFactor = facet.lab), ncol = 3) +
-    #facet_grid( ~ OutputFactor) +
     labs(x = "Parameter", y = "Estimate") +
     coord_flip() +
     plot_theme +
@@ -314,8 +296,6 @@ SA <- SA%>%
   Fig3 <- ggarrange(Fig3Tornado, draw = FALSE,
                     ncol = 1, nrow = 1)
   
-  #Fig3.short <- ggarrange(Fig3Tornado, draw = FALSE,
-  #                        ncol = 1, nrow = 1)
   fil.namefig3.pdf <- "./Publication_Figures/Fig 3 Tornado Plot of sensitivity analysis results.pdf"
  
   

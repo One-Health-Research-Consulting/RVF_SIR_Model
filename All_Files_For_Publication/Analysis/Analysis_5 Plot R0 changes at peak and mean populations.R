@@ -50,12 +50,12 @@ plot.Tasl_mean <- plot.Tasl+
   geom_point(data = mean_pts,aes(x = X, y = R0_A), col = "coral4", size = 2) +
   geom_point(data = mean_pts, aes(x = X, y = R0_C), col = "coral4", size = 2) +
   geom_hline(aes(yintercept = 1.0), col = "dark grey", linetype = "dashed") +
-  scale_color_manual(name = "Mosquito System", values = c("1B" = "slateblue2", "2A" = "Indianred2", "3C" ="darkslategray3", "coral4" = "coral4", "gray" = "gray" ), 
-                     labels = expression(paste(italic("Aedes"), " and ", italic("Culex")),  paste(italic("Aedes"), " Only"), paste(italic("Culex"), " Only"), paste("Mean Mosquito Populations"), paste("Mean Peak Mosquito Populations"))) +
-  labs(x = expression(paste(italic("Aedes"), "-to-Host Transmission Fraction")), y = expression(paste("R" [0]))) + #
+  scale_color_manual(name = "Mosquito System", values = c("1B" = "slateblue2", "2A" = "Indianred2", "3C" ="darkslategray3" ), 
+                     labels = c("*Aedes* and *Culex*",  "*Aedes* Only", 
+                                "*Culex* Only")) +
+  labs(x = "*Aedes*-to-Host <br>Transmission Fraction", y = "R<sub>0</sub>") +
   plot_theme + 
-  theme(legend.position="none",
-        axis.title.x = element_text(size = 9))
+  theme(legend.position="none")
 
 #muA
 df_plot <- as.data.frame(R0_plot_dat_mean[[2]])
@@ -76,9 +76,10 @@ plot.muA_mean <- plot.muA+
     geom_point(data = mean_pts,aes(x = X, y = R0_A), col = "coral4", size = 2) +
     geom_point(data = mean_pts, aes(x = X, y = R0_C), col = "coral4", size = 2) +
   geom_hline(aes(yintercept = 1.0), col = "dark grey", linetype = "dashed") +
-    scale_color_manual(name = "Mosquito System", values = c("1B" = "slateblue2", "2A" = "Indianred2", "3C" ="darkslategray3", "coral4" = "coral4", "gray" = "gray" ), 
-                       labels = expression(paste(italic("Aedes"), " and ", italic("Culex")),  paste(italic("Aedes"), " Only"), paste(italic("Culex"), " Only"), paste("Mean Mosquito Populations"), paste("Mean Peak Mosquito Populations"))) +
-  labs(x = expression(paste(italic("Aedes"), " Mortality Rate")), y = expression(paste("R" [0]))) +
+  scale_color_manual(name = "Mosquito System", values = c("1B" = "slateblue2", "2A" = "Indianred2", "3C" ="darkslategray3" ), 
+                     labels = c("*Aedes* and *Culex*",  "*Aedes* Only", 
+                                "*Culex* Only")) +
+  labs(x = "*Aedes* Mortality Rate", y = "R<sub>0</sub>") + 
   plot_theme + 
   theme(legend.position="none")
 
@@ -101,9 +102,10 @@ plot.biteA_mean  <- plot.biteA +
     geom_point(data = mean_pts,aes(x = X, y = R0_A), col = "coral4", size = 2) +
     geom_point(data = mean_pts, aes(x = X, y = R0_C), col = "coral4", size = 2) +
   geom_hline(aes(yintercept = 1.0), col = "dark grey", linetype = "dashed") +
-    scale_color_manual(name = "Mosquito System", values = c("1B" = "slateblue2", "2A" = "Indianred2", "3C" ="darkslategray3", "coral4" = "coral4", "gray" = "gray" ), 
-                       labels = expression(paste(italic("Aedes"), " and ", italic("Culex")),  paste(italic("Aedes"), " Only"), paste(italic("Culex"), " Only"), paste("Mean Mosquito Populations"), paste("Mean Peak Mosquito Populations"))) +
-  labs(x = expression(paste(italic("Aedes"), " Bite Rate")), y = expression(paste("R" [0]))) +
+  scale_color_manual(name = "Mosquito System", values = c("1B" = "slateblue2", "2A" = "Indianred2", "3C" ="darkslategray3" ), 
+                     labels = c("*Aedes* and *Culex*",  "*Aedes* Only", 
+                                "*Culex* Only")) +
+  labs(x = "*Aedes* Bite Rate", y = "R<sub>0</sub>") +
   plot_theme + 
   theme(legend.position="none")
 
@@ -126,9 +128,10 @@ plot.q_mean <- plot.q +
     geom_point(data = mean_pts,aes(x = X, y = R0_A), col = "coral4", size = 2) +
     geom_point(data = mean_pts, aes(x = X, y = R0_C), col = "coral4", size = 2) +
   geom_hline(aes(yintercept = 1.0), col = "dark grey", linetype = "dashed") +
-    scale_color_manual(name = "Mosquito System", values = c("1B" = "slateblue2", "2A" = "Indianred2", "3C" ="darkslategray3", "coral4" = "coral4", "gray" = "gray" ), 
-                       labels = expression(paste(italic("Aedes"), " and ", italic("Culex")),  paste(italic("Aedes"), " Only"), paste(italic("Culex"), " Only"), paste("Mean Mosquito Populations"), paste("Mean Peak Mosquito Populations"))) +
-  labs(x = "Transovarial Transmission \nFraction", y = expression(paste("R" [0]))) +
+  scale_color_manual(name = "Mosquito System", values = c("1B" = "slateblue2", "2A" = "Indianred2", "3C" ="darkslategray3" ), 
+                     labels = c("*Aedes* and *Culex*",  "*Aedes* Only", 
+                                "*Culex* Only")) +
+  labs(x = "Transovarial Transmission <br>Fraction", y = "R<sub>0</sub>") +
   plot_theme + 
   theme(legend.position="none")
 
@@ -151,12 +154,12 @@ plot.Tcsl_mean <- plot.Tcsl +
     geom_point(data = mean_pts,aes(x = X, y = R0_A), col = "coral4", size = 2) +
     geom_point(data = mean_pts, aes(x = X, y = R0_C), col = "coral4", size = 2) +
   geom_hline(aes(yintercept = 1.0), col = "dark grey", linetype = "dashed") +
-    scale_color_manual(name = "Mosquito System", values = c("1B" = "slateblue2", "2A" = "Indianred2", "3C" ="darkslategray3", "coral4" = "coral4", "gray" = "gray" ), 
-                       labels = expression(paste(italic("Aedes"), " and ", italic("Culex")),  paste(italic("Aedes"), " Only"), paste(italic("Culex"), " Only"), paste("Mean Mosquito Populations"), paste("Mean Peak Mosquito Populations"))) +
-  labs(x = expression(paste(italic("Culex"), "-to-Host Transmission Fraction")), y = expression(paste("R" [0]))) +
+  scale_color_manual(name = "Mosquito System", values = c("1B" = "slateblue2", "2A" = "Indianred2", "3C" ="darkslategray3" ), 
+                     labels = c("*Aedes* and *Culex*",  "*Aedes* Only", 
+                                "*Culex* Only")) +
+  labs(x = "*Culex*-to-Host <br>Transmission Fraction", y = "R<sub>0</sub>") +
   plot_theme + 
-  theme(legend.position="none",
-        axis.title.x = element_text(size = 9))
+  theme(legend.position="none")
 
 #muC
 df_plot <- as.data.frame(R0_plot_dat_mean[[6]])
@@ -177,9 +180,10 @@ plot.muC_mean <- plot.muC +
     geom_point(data = mean_pts,aes(x = X, y = R0_A), col = "coral4", size = 2) +
     geom_point(data = mean_pts, aes(x = X, y = R0_C), col = "coral4", size = 2) +
   geom_hline(aes(yintercept = 1.0), col = "dark grey", linetype = "dashed") +
-    scale_color_manual(name = "Mosquito System", values = c("1B" = "slateblue2", "2A" = "Indianred2", "3C" ="darkslategray3", "coral4" = "coral4", "gray" = "gray" ), 
-                       labels = expression(paste(italic("Aedes"), " and ", italic("Culex")),  paste(italic("Aedes"), " Only"), paste(italic("Culex"), " Only"), paste("Mean Mosquito Populations"), paste("Mean Peak Mosquito Populations"))) +
-  labs(x = expression(paste(italic("Culex"), " Mortality Rate")), y = expression(paste("R" [0]))) +
+  scale_color_manual(name = "Mosquito System", values = c("1B" = "slateblue2", "2A" = "Indianred2", "3C" ="darkslategray3" ), 
+                     labels = c("*Aedes* and *Culex*",  "*Aedes* Only", 
+                                "*Culex* Only")) +
+  labs(x = "*Culex* Mortality Rate", y = "R<sub>0</sub>") +
   plot_theme  + 
   theme(legend.position="none")
 
@@ -202,9 +206,10 @@ plot.biteC_mean <- plot.biteC +
     geom_point(data = mean_pts,aes(x = X, y = R0_A), col = "coral4", size = 2) +
     geom_point(data = mean_pts, aes(x = X, y = R0_C), col = "coral4", size = 2) +
   geom_hline(aes(yintercept = 1.0), col = "dark grey", linetype = "dashed") +
-    scale_color_manual(name = "Mosquito System", values = c("1B" = "slateblue2", "2A" = "Indianred2", "3C" ="darkslategray3", "coral4" = "coral4", "gray" = "gray" ), 
-                       labels = expression(paste(italic("Aedes"), " and ", italic("Culex")),  paste(italic("Aedes"), " Only"), paste(italic("Culex"), " Only"), paste("Mean Mosquito Populations"), paste("Mean Peak Mosquito Populations"))) +
-  labs(x = expression(paste(italic("Culex"), " Bite Rate")), y = expression(paste("R" [0]))) +
+  scale_color_manual(name = "Mosquito System", values = c("1B" = "slateblue2", "2A" = "Indianred2", "3C" ="darkslategray3" ), 
+                     labels = c("*Aedes* and *Culex*",  "*Aedes* Only", 
+                                "*Culex* Only")) +
+  labs(x = "*Culex* Bite Rate", y = "R<sub>0</sub>") +
   plot_theme + 
   theme(legend.position="none")
 
@@ -215,21 +220,16 @@ leg <- ggplot() +
   geom_line(data = df_plot, aes(x = Value, y = R0_C, col = "3C"), alpha=0)  +
   geom_point(data = mean_pts, aes(x = X, y = R0_C_peak, col = "gray"), alpha=0 , size = 2) +
   geom_point(data = mean_pts, aes(x = X, y = R0_both, col = "coral4"), alpha=0 , size = 2) +
-  scale_color_manual(name = "Mosquito System", values = c("1B" = "slateblue2", "2A" = "Indianred2", "3C" ="darkslategray3", "coral4" = "coral4", "gray" = "gray" ), 
-                     labels = expression(paste(italic("Aedes"), " and ", italic("Culex")),  paste(italic("Aedes"), " Only"), paste(italic("Culex"), " Only"), paste("Mean Mosquito Populations"), paste("Mean Peak Mosquito Populations"))) +
+  scale_color_manual(name = "Mosquito System", values = c("1B" = "slateblue2", "2A" = "Indianred2", "3C" ="darkslategray3", "coral4" = "coral4", "gray" = "gray"  ), 
+                     labels = c("*Aedes* and *Culex*",  "*Aedes* Only", "*Culex* Only", "Mean Mosquito Populations", "Mean Peak Mosquito Populations")) +
+  labs(x = "*Aedes* Bite Rate", y = "R<sub>0</sub>") +
   guides(color = guide_legend(override.aes = list(alpha=1, size = 5))) +
   theme_void()+
   theme(legend.position = c(0.65,0.5),
         legend.key.size = unit(.25, "cm"),
-        legend.text.align = 0,
-        legend.text = element_text(size =  7),
-        legend.title = element_text(size = 8, face = "bold")) #+
-        #guides(color = guide_legend(override.aes = list(linewidth=10)))
-  #theme(legend.position = c(0.5,0.5),
-  #      legend.key.size = unit(1, "cm"),
-  #      legend.text.align = 0,
-  #      legend.text = element_text(size =  12),
-  #      legend.title = element_text(size = 15, face = "bold"))
+        legend.title = element_markdown(size = 12, family = 'sans'),
+        legend.text = element_markdown(size = 10, family = 'sans', margin = margin(r = .5, unit = 'cm')),
+        legend.text.align = 0)#,
 
 leg
 
@@ -248,6 +248,6 @@ FigS4.R0 <- ggarrange( plot.Tasl_mean, plot.Tcsl_mean, plot.muA_mean, plot.muC_m
 
 
 
-ggexport(FigS4.R0, filename = "Publication_Figures/Fig S4 R0 change with params plots mean and mean peak pops.pdf", ncol = 2, nrow = 4, width = 5, height = 7)
+ggexport(FigS4.R0, filename = "Publication_Figures/Fig S4 R0 change with params plots mean and mean peak pops.pdf", ncol = 2, nrow = 4, width = 6, height = 9)
 
 

@@ -39,11 +39,14 @@ Get.Outbreak.Dataframe <- function(df, sigma_sl){
       group_by(MosqYear, Year, Month)%>%
       mutate(IS_count = if_else(IS <1, 0, IS))%>%
       mutate(IL_count = if_else(IL <1, 0, IL))%>%
-      summarise(Endemic = round(sum(IS_count, IL_count, na.rm = TRUE)/(1/sigma_sl),3))
+      summarise(Endemic = round(sum(IS_count, IL_count, na.rm = TRUE)/(1/sigma_sl),3),
+                Daily_Sh = mean(NSL, na.rm = TRUE))
     
-    empt.df = empt.df%>%
+    empt.df1 = empt.df%>%
       group_by(MosqYear)%>%
-      summarise(Endemic = sum(Endemic, na.rm = TRUE),
+      summarise(Endemic = round(sum(Endemic, na.rm = TRUE),0),
+                Total_Sh_pop = round(mean(Daily_Sh),0),
+                Perc_inf = round(Endemic/Total_Sh_pop,3)*100,
                 Month = round(mean(Month, na.rm = TRUE),3),
                 Yr = round(mean(Year, na.rm = TRUE),3))%>%
       mutate(Month = replace(Month, is.na(Month), 0))%>%
@@ -54,7 +57,7 @@ Get.Outbreak.Dataframe <- function(df, sigma_sl){
       select(-Month, -Yr)
     
   }
-  return(empt.df)
+  return(empt.df1)
 }
 
 #Identify the Peak populations of infected mosquitoes by MosqYear
