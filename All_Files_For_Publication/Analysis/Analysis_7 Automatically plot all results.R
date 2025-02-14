@@ -28,15 +28,7 @@ vax.proportion <- .18 #Proportion of the flock user wants to remain vaccinated a
 vax.25_higher <- FALSE #Run simulation with a host vaccination rate that is 3 x higher
 vax.25_lower <- FALSE
 #Run simulation with a host vaccination rate that is 25% higher
-vax.burst <- FALSE #Change to true if you want to do a burst vaccination during the winter season of a given MosqYear, select a time frame (early, middle, late)
-if(vax.burst == TRUE){
-  Early <- FALSE
-  EarlyWithOutbreak <- FALSE
-  Late <- FALSE
-  LateWithOutbreak <- FALSE
-  One <- FALSE 
-  vax.proportion <- 0.99##Proportion of the flock user wants to vaccinate in a burst effort (7 days in July of selected MosqYear; R can't handle 100% of the herd - or 1.0 proportion)
-}
+
 #Always False:
 SA <- FALSE #This should always be FALSE: If you want to run a sensitivity analysis, you need to use a different simulation file 
 Var_Select <- FALSE  #This should always be FALSE: If you want to run a sensitivity analysis, you need to use a different simulation file 
@@ -73,7 +65,6 @@ if(vector_of_scenarios[lvec] == "Exemplar"){
 }
 
 if(Vaccinate == TRUE){
-  burst <- FALSE
   for(vax_param in vector_of_vax_scenarios){
     vax.25_higher <- FALSE
     vax.25_lower <- FALSE
@@ -132,8 +123,6 @@ if(Vaccinate == TRUE){
                               sigC = sigimpCMean, 
                               sigdevA = sigimp_dev_ALP,
                               sigdevC = sigimp_dev_CLP,
-                              sigvax = sigimp_vax,
-                              vax.b = burst,
                               end.t = end.time
     )
     
@@ -255,8 +244,6 @@ if(param_change == "muC.25_lower"){
                             sigC = sigimpCMean, 
                             sigdevA = sigimp_dev_ALP,
                             sigdevC = sigimp_dev_CLP,
-                            sigvax = sigimp_vax,
-                            vax.b = burst,
                             end.t = end.time
   )
   
@@ -307,23 +294,6 @@ if(param_change == "muC.25_lower"){
   
   PeakInfectedMosq <- full_join(PeakInfectedMosq, Outbreaks)
   
-  #Calculate the mean population sizes
- #m_NS <- mean(final.populations$NS, na.rm = TRUE)
- #m_NL <- mean(final.populations$NL, na.rm = TRUE)
- #m_NSL <- mean(final.populations$NSL, na.rm = TRUE)
- #m_AE <- mean(final.populations$All_AEggs, na.rm = TRUE)
- #
- ##Mean population sizes across ALL years when a mosquito of the relevant species is present
- ##Aedes
- #m_NAedes <- Get.Mean.Vec.Pops(final.populations, "NAedes")[1]
- #max_NAedes <- Get.Mean.Vec.Pops(final.populations, "NAedes")[2]
- #m_peak_NAedes <- Get.Mean.Vec.Pops(final.populations, "NAedes")[3]
- #
- ##Culex
- #m_NC <- Get.Mean.Vec.Pops(final.populations, "NC")[1]
- #max_NC <- Get.Mean.Vec.Pops(final.populations, "NC")[2]
- #m_peak_NC <- Get.Mean.Vec.Pops(final.populations, "NC")[3]
-  
   
   ###################################
   #Add Effective R0 to final.populations
@@ -332,8 +302,6 @@ if(param_change == "muC.25_lower"){
   Reff.list <- apply(R_pops, 1, function(x) R_eff(x,  params = R0params, get.fun1 = calc_R0))
   
   final.populations$Reff <- Reff.list  
-  
-  
   
   #Plot and save
   source("./All_Files_For_Publication/Analysis/Analysis_1 Code for multiplots.R")
@@ -353,7 +321,7 @@ if(param_change == "muC.25_lower"){
   print("Fig S4 and S5 completed")
   
   #S13
-  source("./All_Files_For_Publication//Analysis/Analysis_0 Select from param space exploration.R")
+  source("./All_Files_For_Publication/Analysis/Analysis_0 Select from param space exploration.R")
   print("Fig S13 compltee")
       
 
