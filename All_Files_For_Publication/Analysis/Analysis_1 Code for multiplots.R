@@ -19,6 +19,7 @@ library(ggtext)
 library(ragg)
 library(gridtext)
 library(viridis)
+library(scales)
 
 
 #Load plotting functions
@@ -26,12 +27,13 @@ source(here("All_Files_For_Publication/Functions", "Function 3 Plot simulations 
 
 #Set ggplot theme
 plot_theme <- theme_classic() +
-  theme(axis.text = element_text(size = 9, colour = "black")) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
-  theme(axis.title = element_text(size = 12)) + 
-  theme(legend.text = element_text(size = 9)) + 
-  theme(legend.title = element_text(size = 12)) + 
-  theme(plot.title = element_text(size=16))
+  theme(text = element_text(family = "serif"),
+    axis.text = element_text(size = 9, colour = "black"),
+  axis.text.x = element_text(angle = 90, hjust = 1), 
+  axis.title = element_text(size = 12),
+  legend.text = element_text(size = 9), 
+  legend.title = element_text(size = 12), 
+  plot.title = element_text(size=16))
 
 ########################################################
 ########################################################
@@ -45,12 +47,13 @@ MosqAplot <-ggplot(final.populations, aes(time)) +
   geom_line(aes(y = IA, colour = "IA")) +
   labs( x = "Year", y = "*Aedes*<br>Mosquitoes") + #= my_y_title.a) +  
   scale_x_continuous(labels = unique(final.populations$Year), breaks = seq(from = 2, to = end.time, by = 365)) +
+  scale_y_continuous(labels = scales::label_number(big.mark = " ")) +
   scale_colour_manual(name = "Population", values =c("SA" = "black","IA"= "red"), labels = c("IA", "SA")) +
   plot_theme+
-  theme(axis.title = element_markdown(size = 13, family = "sans"),
-        legend.text = element_markdown(size = 10, family = 'sans', margin = margin(r = .5, unit = 'cm')),
-        axis.text = element_markdown(size = 9, family = 'sans'),
-        legend.title = element_markdown(size = 10, family = 'sans'),
+  theme(axis.title = element_markdown(size = 13, family = "serif"),
+        legend.text = element_markdown(size = 10, family = 'serif', margin = margin(r = .5, unit = 'cm')),
+        axis.text = element_markdown(size = 9, family = 'serif'),
+        legend.title = element_markdown(size = 10, family = 'serif'),
         plot.margin=unit(c(0,.5,0,.5),"cm"),
         legend.key.size = unit(.15, "cm")
   )
@@ -62,10 +65,11 @@ MosqIAEplot <- ggplot(final.populations, aes(time)) +
   labs(x = "Year", y = "Infected<br>*Aedes* Eggs") + #my_y_title.iae) +
   scale_x_continuous(labels = unique(final.populations$Year), breaks = seq(from = 2, to = end.time, by = 365)) +
   scale_colour_manual(name = "Population", values =c("IAE" = "#8B4000")) +
+  scale_y_continuous(labels = scales::label_number(big.mark = " ")) +
   plot_theme+
   theme(plot.margin=unit(c(.5,0,0,.5),"cm"),
-        axis.title = element_markdown(size = 13, family = "sans", margin = c(0, 0, 0, 3)),
-        axis.text = element_markdown(size = 9, family = 'sans'),
+        axis.title = element_markdown(size = 13, family = "serif", margin = c(0, 0, 0, 3)),
+        axis.text = element_markdown(size = 9, family = "serif"),
         legend.key = element_rect(fill = "white", color = "white"), legend.text = element_text(color = "white"), legend.title = element_text(color = "white")) +
   guides(color = guide_legend(override.aes = list(color = NA)))
 
@@ -76,12 +80,13 @@ MosqCplot <- ggplot(final.populations, aes(time)) +
   labs(x = "Year", y = "*Culex*<br>Mosquitoes") + #y = my_y_title.c) +
   scale_x_continuous(labels = unique(final.populations$Year), breaks = seq(from = 2, to = end.time, by = 365)) +
   scale_colour_manual(name = "Population", labels = c("SC" = "SC", "IC" = "IC"), values =c("SC" = "black","IC"= "pink")) +
+  scale_y_continuous(labels = scales::label_number(big.mark = " ")) +
   plot_theme+
   theme(plot.margin=unit(c(0,.5,0,.5),"cm"),
-        axis.title = element_markdown(size = 13, family = "sans"),
-        legend.text = element_markdown(size = 10, family = 'sans', margin = margin(r = .5, unit = 'cm')),
-        axis.text = element_markdown(size = 9, family = 'sans'),
-        legend.title = element_markdown(size = 10, family = 'sans'),
+        axis.title = element_markdown(size = 13, family = "serif"),
+        legend.text = element_markdown(size = 10, family = "serif", margin = margin(r = .5, unit = 'cm')),
+        axis.text = element_markdown(size = 9, family = "serif"),
+        legend.title = element_markdown(size = 10, family = "serif"),
         legend.key.size = unit(.15, "cm"))
 
 #' Total Infected Mosquitoes
@@ -92,12 +97,13 @@ MosqIAll <-ggplot(final.populations, aes(time)) +
   labs( x = "Year", y = "Infected<br>Mosquitoes") + #y = my_y_title.all)+ 
   scale_x_continuous(labels = unique(final.populations$Year), breaks = seq(from = 2, to = end.time, by = 365)) +
   scale_colour_manual(name = "Population", values =c("IA" = "red","IC"= "pink")) +
+  scale_y_continuous(labels = scales::label_number(big.mark = " ")) +
   plot_theme+
-  theme(axis.title = element_markdown(size = 13, family = "sans", margin = margin(t = 0, r = 0, b = 0, l = 0, unit = 'pt')),
+  theme(axis.title = element_markdown(size = 13, family = "serif", margin = margin(t = 0, r = 0, b = 0, l = 0, unit = 'pt')),
         axis.title.y = element_markdown(valign = 4),
-        legend.text = element_markdown(size = 10, family = 'sans', margin = margin(r = .5, unit = 'cm')),
-        axis.text = element_markdown(size = 9, family = 'sans'),
-        legend.title = element_markdown(size = 10, family = 'sans'),
+        legend.text = element_markdown(size = 10, family = "serif", margin = margin(r = .5, unit = 'cm')),
+        axis.text = element_markdown(size = 9, family = "serif"),
+        legend.title = element_markdown(size = 10, family = "serif"),
         plot.margin=unit(c(0,.5,0,.5),"cm"),
         legend.key.size = unit(.15, "cm"))
 
@@ -116,10 +122,10 @@ SLplot <-ggplot(final.populations, aes(x=time)) +
   scale_colour_manual( name = "Population", values =c("SS" = "black","IS"= "red", "RS" = "green", "SL" = "gray","IL"= "pink", "RL" = "light green", "AL" = "violet")) +
   plot_theme+
   theme(plot.margin=unit(c(0,.5,0,.5),"cm"),
-        axis.title = element_markdown(size = 13, family = "sans", margin = margin(t = -10, r = 0, b = 0, l = 0, unit = 'pt')),
-        legend.text = element_markdown(size = 10, family = 'sans', margin = margin(r = .5, unit = 'cm')),
-        axis.text = element_markdown(size = 9, family = 'sans'),
-        legend.title = element_markdown(size = 10, family = 'sans'),
+        axis.title = element_markdown(size = 13, family = "serif", margin = margin(t = -10, r = 0, b = 0, l = 0, unit = 'pt')),
+        legend.text = element_markdown(size = 10, family = "serif", margin = margin(r = .5, unit = 'cm')),
+        axis.text = element_markdown(size = 9, family = "serif"),
+        legend.title = element_markdown(size = 10, family = "serif"),
         legend.key.size = unit(.15, "cm"))#decrease space between the legend items
 
 #Sheep and lambs including vaccinated animals
@@ -139,10 +145,10 @@ SLplot_vax <-ggplot(final.populations, aes(x=time)) +
   scale_colour_manual( name = "Population", values =c("SS" = "black","IS"= "red", "RS" = "green", "VS" = "blue", "SL" = "gray","IL"= "pink", "RL" = "light green", "VL" = "light blue", "AL" = "violet")) +
   plot_theme+
   theme(plot.margin=unit(c(0,.5,0,.5),"cm"),
-        axis.title = element_markdown(size = 13, family = "sans", margin = margin(t = -10, r = 0, b = 0, l = 0, unit = 'pt')),
-        legend.text = element_markdown(size = 10, family = 'sans', margin = margin(r = .5, unit = 'cm')),
-        axis.text = element_markdown(size = 9, family = 'sans'),
-        legend.title = element_markdown(size = 10, family = 'sans'),
+        axis.title = element_markdown(size = 13, family = "serif", margin = margin(t = -10, r = 0, b = 0, l = 0, unit = 'pt')),
+        legend.text = element_markdown(size = 10, family = "serif", margin = margin(r = .5, unit = 'cm')),
+        axis.text = element_markdown(size = 9, family = "serif"),
+        legend.title = element_markdown(size = 10, family = "serif"),
         legend.key.size = unit(.15, "cm"))#decrease space between the legend items
 
 
@@ -176,15 +182,15 @@ SLplot_historical <- ggplot(final.populations, aes(x=time)) +
   geom_line(aes(y = RL, colour = "RL")) +
   geom_line(aes(y = AL, colour = "AL")) +
   geom_vline(xintercept = 9915, color = "dark blue")+#This is 2-15-2010
-  labs( x = "Year", y = "Sheep<br>and Lambs") +#, color = "Population") + 
+  labs( x = "Year", y = "Sheep<br> and &#20; Lambs") +#, color = "Population") + 
   scale_x_continuous(labels = unique(final.populations$Year), breaks = seq(from = 1, to = end.time, by = 365)) +
   scale_colour_manual( name = "Population", values =c("SS" = "black","IS"= "red", "RS" = "green", "SL" = "gray","IL"= "pink", "RL" = "light green", "AL" = "violet")) +
   plot_theme+
   theme(plot.margin=unit(c(0,.5,0,.5),"cm"),
-        axis.title = element_markdown(size = 13, family = "sans"),
-        legend.text = element_markdown(size = 10, family = 'sans', margin = margin(r = .5, unit = 'cm')),
-        axis.text = element_markdown(size = 9, family = 'sans'),
-        legend.title = element_markdown(size = 10, family = 'sans'),
+        axis.title = element_markdown(size = 13, family = "serif"),
+        legend.text = element_markdown(size = 10, family = "serif", margin = margin(r = .5, unit = 'cm')),
+        axis.text = element_markdown(size = 9, family = "serif"),
+        legend.title = element_markdown(size = 10, family = "serif"),
         legend.key.size = unit(.15, "cm")) + 
   geom_text(aes(x = HV_1983, y = 450, label = "\U2605"), size=4)+  
   geom_text(aes(x = HV_1985, y = 450, label = "\U2605"), size=4)+  
@@ -204,8 +210,8 @@ Reffect.plot <- ggplot(final.populations, aes(x=time, y = Reff)) +
   plot_theme +
   scale_color_manual(name = "che", values = c("cheese" = "cornflowerblue"))+ 
   theme(plot.margin=unit(c(.5,.5,.5,.5),"cm"),
-        axis.title = element_markdown(size = 13, family = "sans"),
-        axis.text = element_markdown(size = 9, family = 'sans'))
+        axis.title = element_markdown(size = 13, family = "serif"),
+        axis.text = element_markdown(size = 9, family = "serif"))
 
 
 ########################################################
@@ -226,11 +232,13 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_higher ==  FALSE & va
     #Make figure
     fil.name <- "Publication_Figures/Fig 1 Full Simulation SL IM IAE_Aedes SA-IA SC-IC and Re_no_legend.pdf"
     Fig1 <- ggarrange(SLplot_historical_nl, MosqIAll_nl, MosqIAEplot_nl, MosqAplot_nl, MosqCplot_nl,  Reffect.plot_nl, draw = FALSE,
-                      labels = c("A", "B", "C", "D", "E", "F"),
-                      heights = c(1.3,1,1,1,1,1.5),
+                      labels = c("(a)", "(b)", "(c)", "(d)", "(e)", "(f)"),
+                      heights = c(1.5,1,1,1,1,1.5),
                       align = "v", 
-                      ncol = 1, nrow = 6)
-    ggexport(Fig1[1], filename = fil.name, width=5, height=8)
+                      label.y= c(1, 1.2, 1.2, 1.2, 1.2, 1),
+                      ncol = 1, nrow = 6,
+                      font.label = list(size = 11, color = "black", face = "italic", family = "serif"))
+    ggexport(Fig1[1], filename = fil.name, width=5, height=8, res = 300)
     
     #Make a legend to be added to the bottom of the plot via another software system
     SLplot_legend_no_vax <- SLplot_historical + 
@@ -295,8 +303,8 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_higher ==  FALSE & va
     PeakIMosq_Plot <- ggplot(PeakInfectedMosq, aes(x = Ratio_iCu_to_iAe, y = Endemic), label = MosqYear +1 )+ #Add 1 to the Mosq year to get the actual year for the spring of the mosquito season
       geom_point()+ 
       lims(x=c(0,7))+
-      geom_text(aes(label=ifelse(Ratio_iCu_to_iAe>2, MosqYear +1 , "")), hjust = -0.35,vjust = 0.35) +
-      geom_text(aes(label=ifelse(MosqYear == 2008, MosqYear +1 , "")), hjust=-.35,vjust=1) +
+      geom_text(aes(label=ifelse(Ratio_iCu_to_iAe>2, MosqYear +1 , "")), family = "serif", hjust = -0.35, vjust = 0.35) +
+      geom_text(aes(label=ifelse(MosqYear == 2008, MosqYear +1 , "")), family = "serif", hjust = -0.35, vjust=1) +
       labs( x = expression(paste("Ratio of Infected ", italic("Culex"), " to Infected ", italic("Aedes"), " Populations")), y = "Infected Animals")+ 
       plot_theme + 
       theme(plot.margin=unit(c(.5,.5,.5,.5),"cm"))
@@ -315,10 +323,11 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_higher ==  FALSE & va
     fil.name.muC.norm <- "Publication_Figures/Fig S9B Full Simulation exemplar muC_no_legend.pdf"
     
     FigS9B <- ggarrange(SLplot_nl, MosqIAll_nl,  MosqIAEplot_nl, Reffect.plot_nl, draw = FALSE,
-                        labels = c("A", "B", "C", "D"),
+                        labels = c("(a)", "(b)", "(c)", "(d)"),
                         heights = c(1.25,1.25,1.2,1.25),
                         align = "v", 
-                        ncol = 1, nrow = 4)
+                        ncol = 1, nrow = 4,
+                        font.label = list(size = 11, color = "black", face = "italic", family = "serif"))
     
     
     ggexport(FigS9B[1], filename = fil.name.muC.norm, width=5, height=7)
@@ -347,10 +356,11 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_higher ==  FALSE & va
      
 
     FigS9A <- ggarrange(SLplot_nl, MosqIAll_nl,  MosqIAEplot_nl, Reffect.plot_nl, draw = FALSE,
-                        labels = c("A", "B", "C", "D"),
+                        labels = c("(a)", "(b)", "(c)", "(d)"),
                         align = "hv", 
                         heights = c(1.25,1.25,1.2,1.25),
-                        ncol = 1, nrow = 4)
+                        ncol = 1, nrow = 4,
+                        font.label = list(size = 11, color = "black", face = "italic", family = "serif"))
     
     ggexport(FigS9A[1], filename = fil.name.bite.lo, width=5, height=7)
     
@@ -366,10 +376,11 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_higher ==  FALSE & va
       SLplot_nl <- SLplot + theme(legend.position = "none")
       
       FigS9C <- ggarrange(SLplot_nl, MosqIAll_nl,  MosqIAEplot_nl, Reffect.plot_nl, draw = FALSE,
-                          labels = c("A", "B", "C", "D"),
+                          labels = c("(a)", "(b)", "(c)", "(d)"),
                           align = "v", 
                           heights = c(1.25,1.25,1.2,1.25),
-                          ncol = 1, nrow = 4)
+                          ncol = 1, nrow = 4,
+                          font.label = list(size = 11, color = "black", face = "italic", family = "serif"))
       
       ggexport(FigS9C[1], filename = fil.name.muC.hi, width=5, height=7)
       
@@ -472,10 +483,10 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_higher ==  FALSE & va
           "Decadal<br>persistence", 
           "No<br>decadal<br>persistence")
         ),
-      x = c(0.08, 0.185, 0.145, 0.05, 0.205, 0.195, 0.065 ),
+      x = c(0.06, 0.19, 0.155, 0.05, 0.205, 0.205, 0.055 ),
       y = c(0.06, 0.06, 0.9, 0.6, 0.6, 0.43, 0.33 ),
       color = c("darkgreen", "darkgreen", "orange", "darkblue", "darkblue", "black", "black"),
-      size = 8
+      size = 9
     )
     
     
@@ -498,7 +509,7 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_higher ==  FALSE & va
       scale_y_continuous(expand = c(0,0)) +
       #Orange wedge that indicates the parameter space available
       geom_polygon_pattern(
-        data = dat2, aes(x = x, y = y), fill = 'orange',  colour = 'orange', pattern_fill = "black")+#,, pattern = "circle",
+        data = dat2, aes(x = x, y = y), fill = 'orange',  colour = 'orange', pattern_fill = "black")+#, pattern = "circle",
       geom_polygon(
         data = dat3, aes(x = x, y = y), fill = 'orange')+#,  colour = 'orange')+#, pattern_fill = "black")+  
       #pattern_spacing = 0.05, pattern_density = 0.4) + 
@@ -511,23 +522,20 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_higher ==  FALSE & va
       geom_line(data = persist_q, aes(x = biteA, y = q), colour = "chartreuse4", size = 1)+ 
       #Text
       geom_richtext(data = text_df, aes(x = x, y = y,
-                    label = label, color = color), fill = NA, label.colour = NA, size = 3) +
+                    label = label, color = color), fill = NA, family = "serif", fontface = "bold", label.colour = NA,  size = 4) +
       scale_colour_manual(values=c(  "black" = "chartreuse4", "darkblue" = "deeppink2", "darkgreen" = "cornflowerblue",  "orange" = "darkorange"), guide = "none") +
       #Annotate orange area
-      annotate("segment", xend = 0.075, x = 0.1, yend = 0.8, y = 0.89, colour = "darkorange", size = 0.7, arrow=arrow(length = unit(0.3, "cm"))) +
-      annotate("segment", xend = 0.17, x = 0.14, yend = 0.6, y = 0.6, colour = "deeppink2", size = 0.7, arrow=arrow(length = unit(0.3, "cm"))) +
-      annotate("segment", xend = 0.08, x = 0.14, yend = 0.6, y = 0.6, colour = "deeppink2", size = 0.7, arrow=arrow(length = unit(0.3, "cm"))) +
-      annotate("segment", xend = 0.16, x = 0.13, yend = 0.06, y = 0.06, colour = "cornflowerblue", size = 0.7, arrow=arrow(length = unit(0.3, "cm"))) +
-      annotate("segment", xend = 0.10, x = 0.13, yend = 0.06, y = 0.06, colour = "cornflowerblue", size = 0.7, arrow=arrow(length = unit(0.3, "cm"))) +
-      annotate("segment", xend = 0.16, x = 0.13, yend = 0.43, y = 0.4, colour = "chartreuse4", size = 0.7, arrow=arrow(length = unit(0.3, "cm"))) +
-      annotate("segment", xend = 0.08, x = 0.13, yend = 0.35, y = 0.4, colour = "chartreuse4", size = 0.7, arrow=arrow(length = unit(0.3, "cm"))) +
-      
+      annotate("segment", xend = 0.075, x = 0.1, yend = 0.8,  y = 0.89,  colour = "darkorange",     size = 0.7, arrow=arrow(length = unit(0.3, "cm"))) +
+      annotate("segment", xend = 0.17, x = 0.14, yend = 0.6,  y = 0.6,   colour = "deeppink2",      size = 0.7, arrow=arrow(length = unit(0.3, "cm"))) +
+      annotate("segment", xend = 0.08, x = 0.14, yend = 0.6,  y = 0.6,   colour = "deeppink2",      size = 0.7, arrow=arrow(length = unit(0.3, "cm"))) +
+      annotate("segment", xend = 0.16, x = 0.13, yend = 0.06, y = 0.06,  colour = "cornflowerblue", size = 0.7, arrow=arrow(length = unit(0.3, "cm"))) +
+      annotate("segment", xend = 0.10, x = 0.13, yend = 0.06, y = 0.06,  colour = "cornflowerblue", size = 0.7, arrow=arrow(length = unit(0.3, "cm"))) +
+      annotate("segment", xend = 0.16, x = 0.13, yend = 0.43, y = 0.4,   colour = "chartreuse4",    size = 0.7, arrow=arrow(length = unit(0.3, "cm"))) +
+      annotate("segment", xend = 0.08, x = 0.13, yend = 0.35, y = 0.4,   colour = "chartreuse4",    size = 0.7, arrow=arrow(length = unit(0.3, "cm"))) +
       plot_theme+
-      theme(axis.text = element_text(size = 10),
-            axis.title = element_markdown(size = 12),
-            #axis.title = element_text(size = 12),
-            
-            legend.text = element_text(size = 10),
+      theme(axis.text    = element_text(size = 10),
+            axis.title   = element_markdown(size = 12),
+            legend.text  = element_text(size = 10),
             legend.title = element_text(size = 12))
     
     Fig2.Seroprev.contour.plot
@@ -541,6 +549,7 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_higher ==  FALSE & va
 ######
     #Fig S8
     #Change to factor
+    AeC_q_vs_biteA_R0$q <- round(AeC_q_vs_biteA_R0$q,2)
     AeC_q_vs_biteA_R0$q <- as.factor(as.character(AeC_q_vs_biteA_R0$q))
     
     R0.seroprev.plot <- ggplot(AeC_q_vs_biteA_R0, aes_string(x = "mean_popn_R0", y = "Mean_Annual_Seroprevalence", color = "q"))+      geom_point(aes(shape = Persist_long), size = 1.5)+
@@ -555,8 +564,10 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_higher ==  FALSE & va
       labs(x = expression(paste("R" [0])), y = "Mean Annual \nSeroprevalence")+
       theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
             panel.background = element_blank(), axis.line = element_line(colour = "black"), 
-            axis.title = element_text(colour = "black", size=12), 
-            axis.text = element_text(colour = "black", size = 10),
+            axis.title = element_text(colour = "black", size=12, family = "serif"), 
+            axis.text = element_text(colour = "black", size = 10, family = "serif"),
+            legend.title = element_text(colour = "black", size=12, family = "serif"), 
+            legend.text = element_text(colour = "black", size = 10, family = "serif"),
             legend.position = "right")+
       guides(col = guide_legend(order = 3), shape = guide_legend(order = 2), linetype = guide_legend(order = 1)) #set legend order
     
@@ -574,15 +585,18 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_higher ==  FALSE & va
       labs(x = expression(paste("Seasonal R" [0])), y = "Mean Annual \nSeroprevalence")+
       theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
             panel.background = element_blank(), axis.line = element_line(colour = "black"), 
-            axis.title = element_text(colour = "black", size=12), 
-            axis.text = element_text(colour = "black", size = 10),
+            axis.title = element_text(colour = "black", size=12, family = "serif"), 
+            axis.text = element_text(colour = "black", size = 10, family = "serif"),
+            legend.title = element_text(colour = "black", size=12, family = "serif"), 
+            legend.text = element_text(colour = "black", size = 10, family = "serif"),
             legend.position = "right")+
       guides(col = guide_legend(order = 3), shape = guide_legend(order = 2), linetype = guide_legend(order = 1)) #set legend order
     
       FigS8 <- ggarrange(R0.seroprev.plot, R0.seroprev.plot.q0, draw = FALSE,
-                      labels = c("A", "B"),
+                      labels = c("(a)", "(b)"),
                       ncol = 1, nrow = 2,
-                      common.legend = TRUE, legend = "right")
+                      common.legend = TRUE, legend = "right",
+                      font.label = list(size = 11, color = "black", face = "italic", family = "serif"))
     fil.namefigS8 <- "./Publication_Figures/Fig S8 R0 and seroprevalence while changing biteA and q.pdf"
     ggexport(FigS8[1], filename = fil.namefigS8, width=6, height=5)    
     
@@ -607,10 +621,10 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_higher ==  FALSE & va
       scale_color_brewer(palette="Dark2", name = "Parameter", labels = c("Daily Extrinsic \nIncubation", "*Aedes*-to-Ruminant \nTransmission Fraction", "Ruminant-to-*Aedes* \nTransmission Fraction", "Transovarial Transmission \nFraction"))+
       labs(x = "Parameter Value", y ="Years of Persistence")+
       plot_theme +
-      theme(axis.title = element_markdown(size = 13, family = "sans"),
-            legend.text = element_markdown(size = 10, family = 'sans', margin = margin(r = .5, unit = 'cm')),
-            axis.text = element_markdown(size = 9, family = 'sans'),
-            legend.title = element_markdown(size = 10, family = 'sans'),
+      theme(axis.title = element_markdown(size = 13, family = "serif"),
+            legend.text = element_markdown(size = 10, family = "serif", margin = margin(r = .5, unit = 'cm')),
+            axis.text = element_markdown(size = 9, family = "serif"),
+            legend.title = element_markdown(size = 10, family = "serif"),
             legend.key.size = unit(.4, "cm"),
             legend.text.align = 0,
             plot.margin=unit(c(t=0,r=6.5,0,l = 1),"cm"),
@@ -626,15 +640,17 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_higher ==  FALSE & va
       plot_theme+
       theme(legend.position = "none",
             plot.margin=unit(c(0,0,0,1),"cm"),
-            axis.title = element_markdown(size = 13, family = "sans"),
-            axis.text = element_markdown(size = 9, family = 'sans'))
+            axis.title = element_markdown(size = 13, family = "serif"),
+            axis.text = element_markdown(size = 9, family = "serif"))
     
     #Load data for Variable by variable plots (C & D)
     AeC_q_vs_biteA <- read.csv(here("All_Files_For_Publication/Data_for_sensitivity_analysis", "Seroprevalence plot q vs biteA  for 34 years 2025_02_11 For Publication.csv"))
     AeC_q_vs_tasl_Persist <- read.csv(here("All_Files_For_Publication/Data_for_sensitivity_analysis", "Persistence plot q vs Tasl  for 34 years 2025_02_11 For Publication.csv"))
     
     #Change to factor
+    AeC_q_vs_biteA$q <- round(AeC_q_vs_biteA$q,2)
     AeC_q_vs_biteA$q <- as.factor(as.character(AeC_q_vs_biteA$q))
+    AeC_q_vs_tasl_Persist$q <- round(AeC_q_vs_tasl_Persist$q,2)
     AeC_q_vs_tasl_Persist$q <- as.factor(as.character(AeC_q_vs_tasl_Persist$q))
     
     #Plot
@@ -643,23 +659,24 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_higher ==  FALSE & va
     
     plot.7Sc <- plot.7Sc+
       theme(plot.margin=unit(c(t=0,0,0,01),"cm"),
-            axis.title = element_markdown(size = 13, family = "sans"),
-            axis.text = element_markdown(size = 9, family = 'sans')
+            axis.title = element_markdown(size = 13, family = "serif"),
+            axis.text = element_markdown(size = 9, family = "serif")
             )
     
     
     plot.7Sd <- plot.7Sd+
       theme(plot.margin=unit(c(t=0,0,0,1),"cm"),
-            axis.title = element_markdown(size = 13, family = "sans"),
-            axis.text = element_markdown(size = 9, family = 'sans'),
-            legend.title = element_markdown(size = 10, family = 'sans'),
-            legend.text = element_markdown(size = 10, family = 'sans', margin = margin(r = .5, unit = 'cm')),
+            axis.title = element_markdown(size = 13, family = "serif"),
+            axis.text = element_markdown(size = 9, family = "serif"),
+            legend.title = element_markdown(size = 10, family = "serif"),
+            legend.text = element_markdown(size = 10, family = "serif", margin = margin(r = .5, unit = 'cm')),
             legend.key.size = unit(.4, "cm"))
     #Combine plots in S5
     
     FigS7 <- ggarrange(Plot.SeroP, Plot.Extinction, plot.7Sc, plot.7Sd, ncol = 2, nrow = 2,
-                      labels = c("A", "B", "C", "D"), align = "h", 
-                      heights = c(300,300),  widths = c(1.5,2.5))
+                      labels = c("(a)", "(b)", "(c)", "(d)"), align = "h", 
+                      heights = c(300,300),  widths = c(1.5,2.5),
+                      font.label = list(size = 11, color = "black", face = "italic", family = "serif"))
     fil.nameS7 <- "./Publication_Figures/Fig S7 Combined plots of single and dual variable effect on seroprevalence and persistance for publication.pdf"
     
     ggexport(FigS7, filename = fil.nameS7, width=9 , height=5)
@@ -682,9 +699,10 @@ if(Vaccinate == TRUE & no.amp.vecs == FALSE & No.q == FALSE & Only.q == FALSE & 
             plot.margin= margin(t = 5, b = 50, unit = "pt"))
     fil.name4a <- "Publication_Figures/Fig 4A Full Simulation SL_no Legend.pdf"
     Fig4a <- ggarrange(SLplot_vax1,
-                           labels = c("A"),
+                           labels = c("(a)"),
                            heights = 2.5,
-                           ncol = 1, nrow = 1)
+                           ncol = 1, nrow = 1,
+                       font.label = list(size = 11, color = "black", face = "italic", family = "serif"))
     ggexport(Fig4a, filename = fil.name4a, width=5, height=2.5) #FigVaxSim[1]???
     
     #Fig4b
@@ -693,9 +711,10 @@ if(Vaccinate == TRUE & no.amp.vecs == FALSE & No.q == FALSE & Only.q == FALSE & 
       theme(legend.position = "none", 
             plot.margin= margin(t = 5, b = 50, unit = "pt"))
     Fig4b <- ggarrange( MosqIAll_vax,
-                           labels = c( "B"),
+                           labels = c( "(b)"),
                            heights = 2.5,
-                           ncol = 1, nrow = 1)
+                           ncol = 1, nrow = 1,
+                        font.label = list(size = 11, color = "black", face = "italic", family = "serif"))
     ggexport(Fig4b, filename = fil.name4b, width=5, height=2.5) #FigVaxSim[1]???
     
     
@@ -750,8 +769,10 @@ if(Vaccinate == TRUE & no.amp.vecs == FALSE & No.q == FALSE & Only.q == FALSE & 
       labs(x = "Percent Vaccinated", y = "Year of \nExtinction") +
       theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
             panel.background = element_blank(), axis.line = element_line(colour = "black"), 
-            axis.title = element_text(colour = "black", size=18), 
-            axis.text = element_text(colour = "black", size = 14), 
+            axis.title = element_text(colour = "black", size=18, family = "serif"), 
+            axis.text = element_text(colour = "black", size = 14, family = "serif"), 
+            legend.title = element_text(colour = "black", size=18, family = "serif"), 
+            legend.text = element_text(colour = "black", size = 14, family = "serif"), 
             plot.margin= margin(l = 5, b = 50, unit = "pt")) + 
       guides(pattern = guide_legend(override.aes = list(fill = "white")),
              fill = guide_legend(override.aes = list(pattern = "none"))) 
@@ -760,8 +781,9 @@ if(Vaccinate == TRUE & no.amp.vecs == FALSE & No.q == FALSE & Only.q == FALSE & 
     fil.name4c <- "Publication_Figures/Fig 4C diff Infected Pops.pdf"
     
     plot_vax_ipersist <- ggarrange( plot_vax_ipersist,
-                             labels = c( "C"),
-                             ncol = 1, nrow = 1)
+                             labels = c( "(c)"),
+                             ncol = 1, nrow = 1,
+                             font.label = list(size = 11, color = "black", face = "italic", family = "serif"))
     
     ggexport(plot_vax_ipersist, filename = fil.name4c, width=7, height=3.5, ncol = 1,nrow = 1) 
     
@@ -790,7 +812,8 @@ if(Vaccinate == TRUE & no.amp.vecs == FALSE & No.q == FALSE & Only.q == FALSE & 
     FigS10part <- ggarrange(SLplot_vax2, 
                             MosqIAEplot_vax,
                             align = "v", 
-                           labels = c("A", "B"), nrow = 2, heights = c(300, 300))
+                           labels = c("(a)", "(b)"), nrow = 2, heights = c(300, 300),
+                           font.label = list(size = 11, color = "black", face = "italic", family = "serif"))
     
     #Save files
     ggexport(FigS10part, filename = fil.nameS10part, width=5 , height=4)
@@ -821,7 +844,8 @@ if(Vaccinate == TRUE & no.amp.vecs == FALSE & No.q == FALSE & Only.q == FALSE & 
       FigS10part <- ggarrange(SLplot_vax2, 
                               MosqIAEplot_vax,
                               align = "v", 
-                              labels = c("A", "B"), nrow = 2, heights = c(300, 300))
+                              labels = c("(a)", "(b)"), nrow = 2, heights = c(300, 300),
+                              font.label = list(size = 11, color = "black", face = "italic", family = "serif"))
       
       #Save files
       ggexport(FigS10part, filename = fil.nameS10part, width=5 , height=4)
@@ -849,9 +873,10 @@ if(Vaccinate == TRUE & no.amp.vecs == FALSE & No.q == FALSE & Only.q == FALSE & 
       
     fil.nameS11 <- "Publication_Figures/Fig S11 Only Aedes transmission SL IM IAE_Aedes_no_legend.pdf"
     FigS11 <- ggarrange(SLplot_nl, MosqIAll_nl, MosqIAEplot_nl, draw = FALSE,
-                       labels = c("A", "B", "C"),
+                       labels = c("(a)", "(b)", "(c)"),
                        align = "v", 
-                       ncol = 1, nrow = 3)
+                       ncol = 1, nrow = 3,
+                       font.label = list(size = 11, color = "black", face = "italic", family = "serif"))
     ggexport(FigS11[1], filename = fil.nameS11, width=5, height=7)
   }
    
@@ -880,8 +905,8 @@ if(Only.q == TRUE & Vaccinate == FALSE & no.amp.vecs == FALSE & No.q == FALSE & 
     scale_colour_manual( name = "Population", values =c("SS" = "black","IS"= "red", "RS" = "green", "SL" = "gray","IL"= "pink", "RL" = "light green", "AL" = "violet")) +
     plot_theme+
     theme(plot.margin=unit(c(t = 0.5, r = 0.25, b=0, l = 0.5),"cm"),
-          axis.title = element_markdown(size = 13, family = "sans",margin = c(0, 0, 0, 3)),
-          axis.text = element_markdown(size = 9, family = 'sans'),
+          axis.title = element_markdown(size = 13, family = "serif",margin = c(0, 0, 0, 3)),
+          axis.text = element_markdown(size = 9, family = "serif"),
           #legend.key.size = unit(.15, "cm"),
           legend.position = "none")#decrease space between the legend items
   
@@ -891,8 +916,8 @@ if(Only.q == TRUE & Vaccinate == FALSE & no.amp.vecs == FALSE & No.q == FALSE & 
     labs(x = "Year", y = "Infected<br>*Aedes* Eggs") + #my_y_title.iae) +
     plot_theme+
     theme(plot.margin=unit(c(t = 0.5, r = 0.25, b=0, l = 0.5),"cm"),
-          axis.title = element_markdown(size = 13, family = "sans", margin = c(0, 0, 0, 3)),
-          axis.text = element_markdown(size = 9, family = 'sans'),
+          axis.title = element_markdown(size = 13, family = "serif", margin = c(0, 0, 0, 3)),
+          axis.text = element_markdown(size = 9, family = "serif"),
           legend.position = "none")
     
   SLplot_no_horiz <- SLplot +
@@ -908,9 +933,10 @@ if(Only.q == TRUE & Vaccinate == FALSE & no.amp.vecs == FALSE & No.q == FALSE & 
           legend.position = "none")
 
   FigS6 <- ggarrange(SLplot_no_q, MosqIAEplot_no_q, SLplot_no_horiz, MosqIAEplot_no_horiz, MosqIAll_no_horiz,
-                    labels = c("A", "B", "C", "D", "E"), 
+                    labels = c("(a)", "(b)", "(c)", "(d)", "(e)"), 
                     nrow = 5, heights = c(500, 500, 500, 500, 500), 
-                    align = "hv" )
+                    align = "hv",
+                    font.label = list(size = 11, color = "black", face = "italic", family = "serif") )
   
   fil.nameS6 <- "./Publication_Figures/Fig S6 Combined Sims with no q and no horizontal transmission_no_legend.pdf"
   
@@ -967,7 +993,8 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Vaccinate == FALSE & no.amp.
     
     
     FigS2 <- ggarrange(FigS2.Rain, FigS2.Temp, 
-                       ncol = 1, nrow = 2, align = "v", labels = c("A", "B"))
+                       ncol = 1, nrow = 2, align = "v", labels = c("(a)", "(b)"),
+                       font.label = list(size = 11, color = "black", face = "italic", family = "serif"))
     fil.name.rain <- "./Publication_Figures/Fig S2 Rainfall and Temp during study period for publication.pdf"
     
     ggexport(FigS2, filename = fil.name.rain, width=5, height=4)
@@ -1006,14 +1033,15 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Vaccinate == FALSE & no.amp.
     #my_y_title.S12a <- expression(atop(italic("Aedes"), paste(" Population Size")))
     S12.Ae.Plot <-ggplot(Ran.Year, aes(simtime)) + 
       geom_line(aes(y = NAedes)) + 
-      labs( x = "Month", y = "*Aedes* Population <br>Size") +      
+      labs( x = "Month", y = "*Aedes*<br>Population &#20; Size") +      
       scale_x_continuous(labels = break.labels, breaks = c( 30, 61, 91, 122, 153, 181, 212, 242, 273, 303, 334, 365)) +
+      scale_y_continuous(labels = scales::label_number(big.mark = " ")) +
       plot_theme+
       theme(plot.margin=unit(c(0,.5,0,.5),"cm"),
-            axis.title = element_markdown(size = 13, family = "sans"),
-            legend.text = element_markdown(size = 10, family = 'sans', margin = margin(r = .5, unit = 'cm')),
-            axis.text = element_markdown(size = 9, family = 'sans'),
-            legend.title = element_markdown(size = 10, family = 'sans'),
+            axis.title = element_markdown(size = 13, family = "serif"),
+            legend.text = element_markdown(size = 10, family = "serif", margin = margin(r = .5, unit = 'cm')),
+            axis.text = element_markdown(size = 9, family = "serif"),
+            legend.title = element_markdown(size = 10, family = "serif"),
             legend.key.size = unit(.15, "cm"))
     
     #################
@@ -1021,20 +1049,22 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Vaccinate == FALSE & no.amp.
 
     S12.Cu.Plot <-ggplot(Ran.Year, aes(simtime)) + 
       geom_line(aes(y = NC)) + 
-      labs( x = "Month", y = "*Culex* Population <br>Size") +     
+      labs( x = "Month", y = "*Culex*<br>Population &#20; Size") +     
       scale_x_continuous(labels = break.labels, breaks = c( 30, 61, 91, 122, 153, 181, 212, 242, 273, 303, 334, 365)) +
+      scale_y_continuous(labels = scales::label_number(big.mark = " ")) +
       plot_theme+
       theme(plot.margin=unit(c(0,.5,0,.5),"cm"),
-            axis.title = element_markdown(size = 13, family = "sans"),
-            legend.text = element_markdown(size = 10, family = 'sans', margin = margin(r = .5, unit = 'cm')),
-            axis.text = element_markdown(size = 9, family = 'sans'),
-            legend.title = element_markdown(size = 10, family = 'sans'),
+            axis.title = element_markdown(size = 13, family = "serif"),
+            legend.text = element_markdown(size = 10, family = "serif", margin = margin(r = .5, unit = 'cm')),
+            axis.text = element_markdown(size = 9, family = "serif"),
+            legend.title = element_markdown(size = 10, family = "serif"),
             legend.key.size = unit(.15, "cm"))
     
     S12.MosqPop.Plot <- ggarrange(S12.Ae.Plot, S12.Cu.Plot, draw = FALSE,
-                                 labels = c("A", "B"),
+                                 labels = c("(a)", "(b)"),
                                 align = "v",
-                                 ncol = 1, nrow = 2)
+                                 ncol = 1, nrow = 2,
+                                font.label = list(size = 11, color = "black", face = "italic", family = "serif"))
     
     fil.name.AeCu <- "./Publication_Figures/Fig S12 Aedes and Culex pops over one year for publication.pdf"
     

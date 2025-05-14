@@ -15,8 +15,8 @@ library(png)
 #Set ggplot theme
 plot_theme <- theme_classic() +
   theme(plot.margin=unit(c(1,0.5,0,1),"cm"),
-        axis.title = element_markdown(size = 12, family = "sans"),
-        axis.text = element_markdown(size = 9, family = 'sans'),
+        axis.title = element_markdown(size = 12, family = "serif"),
+        axis.text = element_markdown(size = 9, family = 'serif'),
         axis.text.x = element_markdown(angle = 90, hjust = 1),
         )
 
@@ -133,7 +133,7 @@ final.pops.list <- list()
 for(i in 1:nrow(filtered_data2)){
 #for(i in c(6)){
   #Source through line 91 - after loading the parameters
-  source2(file = "./All_Files_For_Publication/1- Run RVFV Simulations.R", start = 1, end = 155) #load param_vec
+  source2(file = "./All_Files_For_Publication/1- Run RVFV Simulations.R", start = 1, end = 118) #load param_vec
   #Change selected params
   param_vec["muAE"] <- filtered_data2[i,"muAE"]
   param_vec["NAEmax"] <- filtered_data2[i,"NAEmax"]
@@ -142,7 +142,7 @@ for(i in 1:nrow(filtered_data2)){
   param_vec["biteC"] <- filtered_data2[i,"biteC"]
   param_vec["q"] <- filtered_data2[i,"q"]
   #Run model
-  source2(file = "./All_Files_For_Publication/1- Run RVFV Simulations.R", start = 156, end = 250)
+  source2(file = "./All_Files_For_Publication/1- Run RVFV Simulations.R", start = 119, end = 207)
   #Save to list
   final.pops.list[[i]] <- final.populations
   #final.pops.list[[1]] <- final.populations
@@ -166,9 +166,10 @@ for(i in 1:nrow(filtered_data2)){
 #include 1 and 6 as examples of simulations that were not included in supplemental figures for the methods supplement
 fil.name <- "Publication_Figures/Fig S13 Examples of parameters that were not selected for the final model.pdf"
 FigS13 <- ggarrange(Sh_Scenario_2, Sh_Scenario_1, Sh_Scenario_6, draw = FALSE,
-                  labels = c("A", "B", "C"),
+                  labels = c("(a)", "(b)", "(c)"),
                   align = "v", 
-                  ncol = 1, nrow = 3)
+                  ncol = 1, nrow = 3,
+                  font.label = list(size = 11, color = "black", face = "italic", family = "serif"))
 
 ggexport(FigS13[1], filename = fil.name, width=5, height=5)
 

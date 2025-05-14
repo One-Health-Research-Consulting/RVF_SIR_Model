@@ -26,11 +26,11 @@ peak_C_only <- c(NS = m_NS, NL = m_NL, Na = 0,              NC = m_peak_NC)
 #Set ggplot theme for printing PDFs (for pngs change to thesis_theme and adjust saving file type)
 plot_theme <- theme_classic() +
   theme(plot.margin=unit(c(t=0.5,r = 0.5,b=0,l = 0.5),"cm"),
-        axis.title = element_markdown(size = 13, family = "sans"),
-        axis.text = element_markdown(size = 9, family = 'sans'),
+        axis.title = element_markdown(size = 13, family = "serif"),
+        axis.text = element_markdown(size = 9, family = "serif"),
         axis.text.x = element_markdown(angle = 90, hjust = 1),
-        legend.title = element_markdown(size = 12, family = 'sans'),
-        legend.text = element_markdown(size = 10, family = 'sans', margin = margin(r = .5, unit = 'cm')),
+        legend.title = element_markdown(size = 12, family = "serif"),
+        legend.text = element_markdown(size = 10, family = "serif", margin = margin(r = .5, unit = 'cm')),
         legend.key.size = unit(.4, "cm"))
 
 ################################################################################
@@ -217,7 +217,8 @@ plot.list <- list(plot.Tasl, plot.Tcsl,
 FigS4.R0.init <- ggarrange( plot.Tasl, plot.Tcsl, plot.muA, plot.muC, plot.biteA, plot.biteC, 
                       plot.q,
                       ncol = 2, nrow = 4, 
-                      labels = c("A", "B", "C", "D", "E", "F", "G"))
+                      labels = c("(a)", "(b)", "(c)", "(d)", "(e)", "(f)", "(g)"),
+                      font.label = list(size = 11, color = "black", face = "italic", family = "serif"))
 
 
 
@@ -267,15 +268,15 @@ All.param.plot.dat$param <- factor(All.param.plot.dat$param, levels = rev(as.cha
 #Plot Fig S5
 All.param.plot <- ggplot(All.param.plot.dat) +
   geom_boxplot(aes(x = param, y = R0, colour = TaxaGroup)) + 
-  scale_x_discrete(labels=c("*Culex* bite rate", "*Culex*-to-ruminants Transmission", 
-                                     "Ruminants-to-*Culex* Transmission", "*Culex* carrying capacity", 
+  scale_x_discrete(labels=c("*Culex* bite rate", "*Culex*-to-ruminant Transmission", 
+                                     "Ruminant-to-*Culex* Transmission", "*Culex* carrying capacity", 
                                      "Culex egg mortality rate", "Adult *Culex* mortality rate", 
                                      "Days before *Culex* first blood meal", "*Culex* hatching rate", 
                                      "Survival fraction of *Culex* larve/pupae", 
                                      "Proportion of infected *Culex* eggs that survive", "Number of *Culex* eggs laid", 
                                      "*Culex* egg laying rate", "Rate of new *Aedes* eggs development", 
-                                     "Transovarial transmission", "*Aedes*-to-ruminants Transmission", 
-                                     "Ruminants-to-*Aedes* Transmission", "*Aedes* bite rate", 
+                                     "Transovarial transmission", "*Aedes*-to-ruminant Transmission", 
+                                     "Ruminant-to-*Aedes* Transmission", "*Aedes* bite rate", 
                                      "Extrinsic incubation", "Days before *Aedes* first blood meal", 
                                      "*Aedes* hatching rate", "Survival fraction of *Aedes* larve/pupae", 
                                      "*Aedes* carrying capacity", "*Aedes* egg mortality rate", 

@@ -24,11 +24,12 @@ load(here("./All_Files_For_Publication/Data_for_sensitivity_analysis/", "SA_tran
 
 #Set ggplot theme
 plot_theme <- theme_classic() +
-  theme(axis.text = element_text(size = 10, colour = "black")) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
-  theme(axis.title = element_text(size = rel(1.5))) + 
-  theme(legend.text = element_text(size = 10)) + 
-  theme(plot.title = element_text(size=16))
+  theme(text = element_text("serif"),
+        axis.text = element_text(size = 10, colour = "black"),
+        axis.text.x = element_text(angle = 90, hjust = 1), 
+        axis.title = element_text(size = rel(1.5)),
+        legend.text = element_text(size = 10),
+        plot.title = element_text(size=16))
 
 SA_trans <- data
 

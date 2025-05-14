@@ -227,8 +227,8 @@ leg <- ggplot() +
   theme_void()+
   theme(legend.position = c(0.65,0.5),
         legend.key.size = unit(.25, "cm"),
-        legend.title = element_markdown(size = 12, family = 'sans'),
-        legend.text = element_markdown(size = 10, family = 'sans', margin = margin(r = .5, unit = 'cm')),
+        legend.title = element_markdown(size = 12, family = 'serif'),
+        legend.text = element_markdown(size = 10, family = 'serif', margin = margin(r = .5, unit = 'cm')),
         legend.text.align = 0)#,
 
 leg
@@ -244,7 +244,8 @@ plot.list <- list(plot.Tasl_mean, plot.Tcsl_mean,
 FigS4.R0 <- ggarrange( plot.Tasl_mean, plot.Tcsl_mean, plot.muA_mean, plot.muC_mean, plot.biteA_mean, plot.biteC_mean, 
                       plot.q_mean, leg,
                       ncol = 2, nrow = 4, 
-                      labels = c("A", "B", "C", "D", "E", "F", "G", ""))
+                      labels = c("(a)", "(b)", "(c)", "(d)", "(e)", "(f)", "(g)", ""),
+                      font.label = list(size = 11, color = "black", face = "italic", family = "serif"))
 
 
 
