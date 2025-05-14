@@ -785,7 +785,7 @@ if(Vaccinate == TRUE & no.amp.vecs == FALSE & No.q == FALSE & Only.q == FALSE & 
                              ncol = 1, nrow = 1,
                              font.label = list(size = 11, color = "black", face = "italic", family = "serif"))
     
-    ggexport(plot_vax_ipersist, filename = fil.name4c, width=7, height=3.5, ncol = 1,nrow = 1) 
+    ggexport(plot_vax_ipersist, filename = fil.name4c, width=7, height=3.7, ncol = 1,nrow = 1) 
     
     #Combine Fig 4s already made
     rl2 <- lapply(list( "./Publication_Figures/Fig 4A Full Simulation SL_no Legend.pdf", "Publication_Figures/Fig 4B Full Simulation IM_no_legend.pdf", "Publication_Figures/Fig 4C diff Infected Pops.pdf"), magick::image_read_pdf)     
