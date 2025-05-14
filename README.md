@@ -1,9 +1,9 @@
-# RVF_SIR_Model
+## RVF_SIR_Model
 Repository of code to simulate 34-years of RVFV transmission at a single pan in central South Africa.
 
 To run the simulations, run the scripts in order according to the file number. If the file name starts with the term Function or Model, then it should not be run by the user and will be called by the main scripts. If a file name starts with the term Analysis, then it may be run by the user depending on the level of analysis they would like to do. The main scripts will allow the user to run the 34-year simulation with the option of various scenarios (e.g., vaccination), run the Latin hypercube sensitivity analysis, run the variable-by-variable analyses and estimate R_0. The analysis scripts will produce plots and analyze the Latin hypercube results. The model scripts contain the parameter list, the mosquito hatching determination and the ODE function. The function scripts have all other functions defined for the analyses. 
 
-1. Run the simulation:
+#1. Run the simulation:
 Start with the “1-Run RVFV Simulations.R” file. The user will start by indicating whether they would like to run a specific scenario (with vaccination, without transovarial transmission, without horizontal transmission, a low starting population of infected Aedes eggs, and with a higher or lower Culex mortality rate). If the vaccination scenario is selected the user must also indicate the proportion of animals that will be vaccinated and may select scenarios with a 3 times higher or 25% lower vaccine proportion from what was selected. The user may also set vax.burst to true and then can choose from various years during which animals are vaccinated at the given vax.proportion over 7 days in July for each year that is indicated by the user.  To run these additional vaccine scenarios both “Vaccinate”, and the proportion higher or lower or vax.burst must be set to “TRUE”. If all scenarios are set to FALSE, then the full, exemplar simulation will be run. Note that the SA scenario should always be FALSE, as there is a separate code to run the Latin hypercube sensitivity analysis.
 
 Source all required code. If a scenario is selected, then the code will adjust the parameter list as required.
@@ -32,7 +32,7 @@ Files sourced:
  	**Model 1 - RVFV Optimized Parameters for publication.R (sourced within Model 2 *Mosquito hatch rates at daily timestep.R)
 *Model 3 RVFV ODE SIRS function.R
 
-2. Run the Latin hypercube sensitivity analysis:
+#2. Run the Latin hypercube sensitivity analysis:
 2_RVF_LHC_Sensitivity_Analysis.R. 
 Ensure that SA is always set to TRUE (this ensures that the parameter ranges for the sensitivity analysis in the parameters code file is run). Set h as the number of simulations to run. It is automatically set to 4000, which is the number used in the publication. Please note that with this large number of simulations, the analysis takes a significant amount of computing power and time. Var_Select and burst should always be set to FALSE. Source all functions and climate data.
 
@@ -50,7 +50,7 @@ Files sourced:
 *Model 3 RVFV ODE SIRS function.R
 
 
-3. Run the R0 analysis
+#3. Run the R0 analysis
 Run the 3- Calculate and Plot_R0.R code. This code will calculate R_0 for various populations and then plot the sensitivity analyses. Use the function lst.R0.var (defined in Function 5 Calculate R0 dfs for plot.R) to produce a list of data frames, where each data frame has the value of R_0 for each population size as you vary the variables listed in R0_vec. Calculate the value of R_0 using the values of the parameters used in the full simulation for the peak_popn, peak_A_only and peak_C_only and store in a dataframe.
 
 The population vectors are defined for the hosts and vectors as follows:
@@ -76,8 +76,8 @@ Function 5 Calculate R0 dfs for plot.
 Analysis 5 Plot R0 changes at peak and mean populations.R
 
 
-Analysis Code
-A1. Analyze the simulation results:
+#Analysis Code
+#A1. Analyze the simulation results:
 “Analysis/Analysis 1 Code for multiplots.R” 
 Create plots of the simulation and scenarios. Run the code. This code will produce Figures 1-3; S2-S7 and S9-S12.
 
@@ -116,7 +116,7 @@ Files sourced:
 *Function 3 Plot simulations of a given time period.R
 *And multiple datafiles
 
-A2. Examine how the simulated seroprevalence and persistence change as the values of select parameter pairs are varied. 
+#A2. Examine how the simulated seroprevalence and persistence change as the values of select parameter pairs are varied. 
 Run Analysis_2_Plot_seroprev_as_key_params_change. Note, depending on how many values are being evaluated for each parameter this can take significant computing power and time to run. The code can be run for the five variable pairs and corresponding outcomes described in the paper. Set one of the five to TRUE and keep the others FALSE:
 
 Q_biteA_Seroprev.mean: Transovarial Transmission vs Aedes bite rate evaluating seroprevalence
@@ -152,7 +152,7 @@ Files sourced:
 *Model 2 Mosquito hatch rates at daily timestep.R
 *Model 3 RVFV ODE SIRS function.R
 
-A3. Analyze the effects of varying select parameters on the simulated seroprevalence and persistence. 
+#A3. Analyze the effects of varying select parameters on the simulated seroprevalence and persistence. 
 
 Run the Analysis_3_Plot_outcome_vs_single_key_param.R file. It is designed to vary one of five parameters: transovarial transmission, host-to-Aedes transmission, Aedes-to-host transmission, extrinsic incubation period and vaccination. The following must all be set to false: SA, Var_Select, Vaccinate, No.q, Only.q, vax.burst, and burst. It can run one parameter at a time, which is set to TRUE at the beginning of the code. For each parameter, a simulation will be run for every value between 0 and 1 at 0.5 intervals and for the value used in the full model (except Check_vax, which has additional values). An if_else statement has a separate code for Check_Vax as this requires changing the initial population values and includes the day that RVFV goes functionally extinct in the Aedes egg population. After each simulation the mean seroprevalence and days of persistence are estimated. The data are then saved and single parameter plots against seroprevalence and persistence are produced and saved.
 
@@ -162,25 +162,25 @@ Files sourced:
 *Model 3 RVFV ODE SIRS function.R
 *Model 2 Mosquito hatch rates at daily timestep.R
 
-A4. Analyze the data from the sensitivity analysis:
+#A4. Analyze the data from the sensitivity analysis:
 Run the Analysis 4 Assessing the sensitivity analysis.R file. This file will produce the data for and plot Figure 3 from the output of the Latin hypercube sensitivity analysis (2_RVF_LHC_Sensitivity_Analysis.R). We also calculated the proportion of simulations that: become extinct, have a high seroprevalence, or persist and are within our target seroprevalence. 
 
 To make the data for the plot, vectors are made of the parameters to compare and the outcomes. The data is subset to just the parameters being evaluated. Estimate the partial correlation coefficient for each variable. The estimates and confidence intervals are used to make the tornado plot. Save the plot.
 
-A5. Add lines of the effect that varying the selected parameters have on the estimate of R0 at mean host and vector populations
+#A5. Add lines of the effect that varying the selected parameters have on the estimate of R0 at mean host and vector populations
 
 Run the Analysis 5 Plot R0 changes at peak and mean populations.R file (note: this file can only be run after 3- Calculate and Plot_R0.R). First make a list of data frames that gives the value of R0 for the three population sizes (mean_popn [mean host and vector populations], mean_A_only [mean host and Aedes populations] and mean_C_only [mean host and Culex populations]. Then make a vector of the R0 value of the parameters used in the full simulation. 
 
 Figure S4. Make a plot of the R0 using mean and mean peak vector populations as each parameter is varied (Tsal, muA, biteA, q, Tcsl, muC, and biteC.). Combine each all of the plots and save the final figure.
 
-Model_Scripts
-M1. Optimized parameters used in the simulation.
+#Model_Scripts
+#M1. Optimized parameters used in the simulation.
 
 File: Model 1 - RVFV Optimized Parameters.R
 
 This file is sourced within the Model 2 *Mosquito hatch rates at daily timestep.R file. All model parameters are defined and placed into a vector for the full simulation, the R0 analysis and the sensitivity analysis. Full definitions and references are provided in Table S4. Different parameters and ranges are used for the exmplar model and the parameter selection process - for details see 0_RVF_LHC_to_select_params below.
 
-M2. Define mosquito hatching days and daily rates.
+#M2. Define mosquito hatching days and daily rates.
 
 File: Model 2 Mosquito hatch rates at daily timestep.R
 
@@ -191,14 +191,14 @@ Files sourced:
 *Function 2 - Aedes and Culex Hatch Forcing by Mean Temps.R
 *Model 1 - RVFV Optimized Parameters.R
 
-M3. ODE function with full set of differential equations to define model.
+#M3. ODE function with full set of differential equations to define model.
 
 File: Model 3 RVFV ODE SIRS function.R
 
 This file describes a function that takes  a population vector, a series of timesteps, a parameter vector (as a list), vectors to allow daily control over hatching, development and vaccination rates, indicator as to whether the vax.burst scenario is in place and the end time of the model. It describes the differential equations used to run the simulation (also described in the supplemental text Equations S1-S30) and which derivatives and populations to return.
 
-Function Codes: 
-*Function 1 Define Functions for Output of Sensitivity Analysis.R
+#Function Codes: 
+#*Function 1 Define Functions for Output of Sensitivity Analysis.R
 
 A set of functions written to assess the outputs of the sensitivity analysis as well as other useful calculations. The following functions are defined:
 
@@ -228,7 +228,7 @@ Get.Prop.Infected.Eggs() is a function that estimates the proportion of infected
 Get.Prop.Infected.Mosq() is a function that estimates the proportions of the infected population of any vector population (e.g., IA, IC, IAE). It takes the following arguments: the simulation population data frame (df) and the name of the column with the infected vector population of interest (i_pop; e.g. “IAE”). It calculates the proportions for timesteps when at least one adult mosquito of the given vector population is present and for the entire 34-year simulation. It outputs three elements: mean.prop (the mean proportion of infected eggs over all timesteps), range.prop.low (the minimum proportion of infected eggs across all timesteps), range.prop.hi (the maximum proportion of infected eggs across all timesteps).
 
 
-F2. Define Aedes and Culex hatching days.
+#F2. Define Aedes and Culex hatching days.
 
 File: Function 2 - Aedes and Culex Hatch Forcing by Mean Temps.R
 
@@ -244,7 +244,7 @@ dev_CLP: takes the following parameters: dat (a climate data frame), and species
 
 dev_ALP: takes the following parameters: dat (a climate data frame), and species-specific parameters defined in Rueda et al 1980 (rh025, HA, TH, HH) to calculate the development of Aedes larva/pupae. The calculation is found in Rueda et al 1980.
 
-F3. Functions to support plotting.
+#F3. Functions to support plotting.
 
 File: Function 3 Plot simulations for a given time period.R
 
@@ -258,7 +258,7 @@ SL_plotter takes the following parameters: df (the simulation data frame), legnd
 
 IAE_plotter takes the following parameters: df (the simulation data frame), legnd (a logical parameter indicating whether or not a legend should be included on the plot). This function is used to plot the infected Aedes eggs dynamics plot (e.g. Fig 1c) and is primarily used for Fig S11.
 
-F4. Functions to calculate R0 and effective R0
+#F4. Functions to calculate R0 and effective R0
 
 File: Function 4 Calculate R0.R
 
@@ -272,22 +272,22 @@ Next generation matrices were defined for a small domain K_S (using only the row
 
 R_eff takes the following parameters: pop_matrix (a of populations, including those of the susceptible populations of hosts, Aedes and Culex populations and the MosqYear – must be in order SS, SL, SA, SC), params (a vector of parameters used in the simulation [from Model 1 - RVFV Optimized Parameters.R]) and get.fun1 (the R0 calculation function to run [calc_R0]). The function calculates the R0 for that population of susceptible hosts and vectors.
 
-F5. Create data frames for the sensitivity analysis of R0 for RVFV.
+#F5. Create data frames for the sensitivity analysis of R0 for RVFV.
 
 File: Function 5 Calculate R0 dfs for plot.R
 
 This file has one function in it: lst.R0.var. The function takes the following parameters: empty.dat (an empty database), empty.lst (an empty list), the host/vector populations to be evaluated - both.pop, A.pop, C.pop (indicate which vector of populations for the hosts, Aedes and Culex populations (both.pop), hosts and Aedes (A.pop) and hosts and Culex (C.pop) [e.g. mean_popn vs peak_popn]), R0params.func (the optimized parameters used in the R0 calculation (from Model 1 - RVFV Optimized Parameters.R), get.fun.1 (the function to run, e.g. calc_R0 from Function 4 Calculate R0.R) and var_vec (the list of variables that will be evaluated). The function will produce a list of data frames, where each data frame has the value of R0 for each population size as you vary the variables listed in var_vec. The calculated data frame is used to make the plots for Figure S7.
 
-F6. Conduct the Latin Hypercube analysis
+#F6. Conduct the Latin Hypercube analysis
 
 File: Function 6 Latin Hypercube Analysis.R
 
 The function, HypercubeSA, with 21 inputs is described. The main simulation code from 1-Run RVFV Simulations.R and Model 2 Mosquito hatch rates at daily timestep.R included in the function. After the simulation is run, six outcome functions are run. They are detailed when the function is called, but must be left in order as some require specific arguments and these are hard coded into the function. Further, they need to be in order so that the column names applied after the function is run labels the results correctly. If needed an option to save each simulation data file can be uncommented and used to evaluate the actual simulation if something more than the output summary is required. This was designed to run within an mclapply function.
 
-0. Parameter selection code:
+#0. Parameter selection code:
 The above code and scripts run using the parameters for the exemplar simulation (or specific scenarios that change individual parameters. There were six parameters for which there were no reliable estimates available: transovarial transmission, the mortality rate of Aedes eggs, Aedes and Culex bite rates, and Aedes and Culex carrying capacity. To identify realistic estimates, a Latin hypercube sampling method was used to evaluate 80,000 combinations of these six parameters.
 
 This code is written in the file: 0_RVF_LHC_to_select_params.R.
 
- A5. Analysis_5 Plot R0 changes at peak and mean populations.R evaluates the results of the 80,000 iterations of the Latin hypercube using six criteria:  mean annual seroprevalence was between 5-40%, the virus persisted for the entire simulation, at least one outbreak “spike” was detected, the ratio of infected Aedes eggs remain relatively constant during the simulation and the mean seroprevalence remained relatively constant during the simulation. An outbreak was considered a “spike” if the ratio of infected animals in that year compared to the average number of infected animals in the three years before and after was 2:1 or greater. The population of Aedes eggs and mean seroprevalence was determined to be “relatively constant” if the ratio of the mean value from the first half of the simulation to that of the second half of the simulation was within 0.9-1. For the infected Aedes eggs we averaged the annual maximum number of eggs. For the seroprevalence we averaged the annual mean seroprevalence. The iterations that met the 6 criteria were visually assessed and the closest match to the historical RVFV pattern was selected. The parameter values for the six parameters were then input into the parameter list (Model 1 - RVFV Optimized Parameters.R).
+#A5. Analysis_5 Plot R0 changes at peak and mean populations.R evaluates the results of the 80,000 iterations of the Latin hypercube using six criteria:  mean annual seroprevalence was between 5-40%, the virus persisted for the entire simulation, at least one outbreak “spike” was detected, the ratio of infected Aedes eggs remain relatively constant during the simulation and the mean seroprevalence remained relatively constant during the simulation. An outbreak was considered a “spike” if the ratio of infected animals in that year compared to the average number of infected animals in the three years before and after was 2:1 or greater. The population of Aedes eggs and mean seroprevalence was determined to be “relatively constant” if the ratio of the mean value from the first half of the simulation to that of the second half of the simulation was within 0.9-1. For the infected Aedes eggs we averaged the annual maximum number of eggs. For the seroprevalence we averaged the annual mean seroprevalence. The iterations that met the 6 criteria were visually assessed and the closest match to the historical RVFV pattern was selected. The parameter values for the six parameters were then input into the parameter list (Model 1 - RVFV Optimized Parameters.R).
 
