@@ -10,10 +10,10 @@ Rostal MK, Prentice J, Ross N, Kemp A, Thompson PN, Anyamba A, Cleaveland S, Cor
 ###  RVF_SIR_Model
 Repository of code to simulate 34-years of RVFV transmission at a single pan in central South Africa.
 
-All code referred to below are in the "All_Files_For_Publication" folder. To run the simulations, run the scripts in order according to the file number. If the file name starts with the term Function or Model, then it should not be run by the user and will be called by the main scripts. If a file name starts with the term Analysis, then it may be run by the user depending on the level of analysis they would like to do. The main scripts will allow the user to run the 34-year simulation with the option of various scenarios (e.g., vaccination), run the Latin hypercube sensitivity analysis, run the variable-by-variable analyses and estimate R_0. The analysis scripts will produce plots and analyze the Latin hypercube results. The model scripts contain the parameter list, the mosquito hatching determination and the ODE function. The function scripts have all other functions defined for the analyses. 
+All code referred to below are in the *"All_Files_For_Publication" folder*. To run the simulations, run the scripts in order according to the file number. If the file name starts with the term Function or Model, then it should not be run by the user and will be called by the main scripts. If a file name starts with the term Analysis, then it may be run by the user depending on the level of analysis they would like to do. The main scripts will allow the user to run the 34-year simulation with the option of various scenarios (e.g., vaccination), run the Latin hypercube sensitivity analysis, run the variable-by-variable analyses and estimate R_0. The analysis scripts will produce plots and analyze the Latin hypercube results. The model scripts contain the parameter list, the mosquito hatching determination and the ODE function. The function scripts have all other functions defined for the analyses. 
 
-_#1. Run the simulation:_
-Start with the “1-Run RVFV Simulations.R” file. The user will start by indicating whether they would like to run a specific scenario (with vaccination, without transovarial transmission (Only.q = no horizontal transmission or no.amp.vec = no transmission by Culex), without horizontal transmission (No.q), a low starting population of infected Aedes eggs (lo.eggs), and with a higher (muC.25_higher) or lower Culex (muC.25_lower) mortality rate). If the vaccination scenario is selected the user must also indicate the coverage (proportion of animals in which we maintain immunity via vaccination, (vax.proportion))  and may select scenarios with a 3 times higher (vax.25_higher) or 25% lower vaccine proportion (vax.25__higher_lower) from what was selected.  To run these additional vaccine scenarios both “Vaccinate”, and the proportion higher or lower must be set to “TRUE”. If all scenarios are set to FALSE, then the full, exemplar simulation will be run. Note that the SA scenario should always be FALSE, as there is a separate code to run the Latin hypercube sensitivity analysis.
+**#1. Run the simulation:**
+Start with the _“1-Run RVFV Simulations.R”_ file. The user will start by indicating whether they would like to run a specific scenario (with vaccination, without transovarial transmission (Only.q = no horizontal transmission or no.amp.vec = no transmission by Culex), without horizontal transmission (No.q), a low starting population of infected Aedes eggs (lo.eggs), and with a higher (muC.25_higher) or lower Culex (muC.25_lower) mortality rate). If the vaccination scenario is selected the user must also indicate the coverage (proportion of animals in which we maintain immunity via vaccination, (vax.proportion))  and may select scenarios with a 3 times higher (vax.25_higher) or 25% lower vaccine proportion (vax.25__higher_lower) from what was selected.  To run these additional vaccine scenarios both “Vaccinate”, and the proportion higher or lower must be set to “TRUE”. If all scenarios are set to FALSE, then the full, exemplar simulation will be run. Note that the SA scenario should always be FALSE, as there is a separate code to run the Latin hypercube sensitivity analysis.
 
 Source all required code. If a scenario is selected, then the code will adjust the parameter list as required.
 
@@ -32,17 +32,18 @@ The code saves data from the following scenarios for use in the Analysis_1 Code 
 Calculate the effective R0 for each timestep of the simulation.
 
 Files sourced:
-*Function 1 Define Functions for Output of Sensitivity Analysis.R
-*Function 3 Plot simulations for a given time period.R
-*Function 4 Calculate R0.R
-*Function 5 Calculate R0 dfs for plot.R
-*Model 2 Mosquito hatch rates at daily timestep.R (which includes)
-	**Function 2 - Aedes and Culex Hatch Forcing by Mean Temps.R
- 	**Model 1 - RVFV Optimized Parameters for publication.R (sourced within Model 2 *Mosquito hatch rates at daily timestep.R)
-*Model 3 RVFV ODE SIRS function.R
 
-#2. Run the Latin hypercube sensitivity analysis:
-"2_RVF_LHC_Sensitivity_Analysis.R". 
+* Function 1 Define Functions for Output of Sensitivity Analysis.R
+* Function 3 Plot simulations for a given time period.R
+* Function 4 Calculate R0.R
+* Function 5 Calculate R0 dfs for plot.R
+* Model 2 Mosquito hatch rates at daily timestep.R (which includes)
+	** Function 2 - Aedes and Culex Hatch Forcing by Mean Temps.R
+ 	** Model 1 - RVFV Optimized Parameters for publication.R (sourced within Model 2 *Mosquito hatch rates at daily timestep.R)
+* Model 3 RVFV ODE SIRS function.R
+
+**#2. Run the Latin hypercube sensitivity analysis:**
+*"2_RVF_LHC_Sensitivity_Analysis.R"*.
 Ensure that SA is always set to TRUE (this ensures that the parameter ranges for the sensitivity analysis in the parameters code file is run). Set h as the number of simulations to run. It is automatically set to 4000, which is the number used in the publication. Please note that with this large number of simulations, the analysis takes a significant amount of computing power and time. Var_Select should always be set to FALSE. Source all functions and climate data.
 
 The Latin hypercube function was designed to run in parallel on multiple cores. The code was set to either run on 20 cores or if there are more cores than number of simulations to run, then use one core per simulation to maximize efficiency.
@@ -52,11 +53,12 @@ The hypercube parameters are inputted as a list and split by row. Two blank data
 The results from the function are turned into a list and bound by rows, then the columns are named for each output. A file name is created using the current date and the data is saved.
 
 Files sourced: 
-*Function 1 Define Functions for Output of Sensitivity Analysis.R
-*Function 2 - Aedes and Culex Hatch Forcing by Mean Temps.R
-*Function 6 Latin Hypercube Analysis.R
-*Model 1 - RVFV Optimized Parameters for publication.R
-*Model 3 RVFV ODE SIRS function.R
+
+* Function 1 Define Functions for Output of Sensitivity Analysis.R
+* Function 2 - Aedes and Culex Hatch Forcing by Mean Temps.R
+* Function 6 Latin Hypercube Analysis.R
+* Model 1 - RVFV Optimized Parameters for publication.R
+* Model 3 RVFV ODE SIRS function.R
 
 
 #3. Run the R0 analysis
