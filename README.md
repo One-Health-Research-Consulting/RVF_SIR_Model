@@ -187,7 +187,7 @@ Run the *"Analysis/Analysis_6_Clark_et_al_data.R"* file. This file has the code 
 Run the *"Analysis/Analysis_7 Automatically plot all results.R"* file. This file will run all the files and scenarios to make all of the plots from the publication, without the need to mannually select a scenario. Initially all scenarios are set to FALSE and should stay that way. The the script runs through the vaccination scenarios and resulting plots, then it runs through the remaining scenarios and creates the resulting plots, finally it sources to code to make the plots from other analysis files.
 
 
-###Model_Scripts
+### Model Scripts
 
 **M1. Optimized parameters used in the simulation.**
 
@@ -280,7 +280,7 @@ File: *Function 6 Latin Hypercube Analysis.R*
 
 The function, HypercubeSA, with 21 inputs is described. The main simulation code from 1-Run RVFV Simulations.R and Model 2 Mosquito hatch rates at daily timestep.R included in the function. After the simulation is run, six outcome functions are run. They are detailed when the function is called, but must be left in order as some require specific arguments and these are hard coded into the function. Further, they need to be in order so that the column names applied after the function is run labels the results correctly. If needed an option to save each simulation data file can be uncommented and used to evaluate the actual simulation if something more than the output summary is required. This was designed to run within an mclapply function.
 
-###Selecting parameters, if desired
+### Selecting parameters, if desired
 
 **0. Parameter selection code:**
 
