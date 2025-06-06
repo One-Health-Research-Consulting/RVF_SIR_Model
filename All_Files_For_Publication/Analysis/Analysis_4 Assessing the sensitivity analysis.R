@@ -231,15 +231,15 @@ SA <- SA%>%
     plot_theme
   
   #Italics titles
-  y_x_title.Abite <- expression(paste(italic("Aedes"), " Bite Rate"))
-  y_x_title.Tsla  <- expression(paste("Transmission from ", italic("Aedes"), " to Host")) 
-  y_x_title.Tasl  <- expression(paste("Transmission from Host to ", italic("Aedes"))) 
-  y_x_title.muA   <- expression(paste(italic("Aedes"), " Mortality Rate")) 
-  y_x_title.muAE  <- expression(paste("Mortality Rate of ", italic("Aedes"), " Eggs")) 
-  y_x_title.biteC <- expression(paste(italic("Culex"), " Bite Rate"))
-  y_x_title.Tslc  <- expression(paste("Transmission from ", italic("Culex"), " to Host"))
-  y_x_title.Tcsl  <- expression(paste("Transmission from Host to ", italic("Culex")))
-  y_x_title.muC   <- expression(paste(italic("Culex"), " Mortality Rate"))
+  y_x_title.Abite <- expression(italic(Aedes)~plain(Bite~Rate))
+  y_x_title.Tsla  <- expression(Transmission~from~italic(Aedes)~plain(to~Host)) 
+  y_x_title.Tasl  <- expression(Transmission~from~Host~to~italic(Aedes)) 
+  y_x_title.muA   <- expression(italic(Aedes)~plain(~Mortality~Rate)) 
+  y_x_title.muAE  <- expression(Mortality~Rate~of~italic(Aedes)~plain(Eggs)) 
+  y_x_title.biteC <- expression(italic(Culex)~plain(Bite~Rate))
+  y_x_title.Tslc  <- expression(Transmission~from~italic(Culex)~plain(to~Host))
+  y_x_title.Tcsl  <- expression(Transmission~from~Host~to~italic(Culex))
+  y_x_title.muC   <- expression(italic(Culex)~plain(Mortality~Rate))
   
   #Facet labels
  facet.lab <- c("Extinction.Day" = "Persistence", "Mean.Annual.Seroprevalence" = "Mean Seroprevalence \nAcross All Years", "Get.Prop.Infected.Eggs_last_day" = "Proportion of Infected Eggs \nat End of Simulation", "Get.Mean.Outbreak.lengths.MosqYear" = "Mean Outbreak Length",  "Get.Mean.Outbreak.Size.MosqYear" = "Mean Outbreak Size", "Max.Outbreak.Size.MosqYear" = "Maximum Single \nOutbreak Size")
@@ -288,9 +288,15 @@ SA <- SA%>%
     coord_flip() +
     plot_theme +
     theme(legend.position = "blank",
-          plot.margin = margin(1,1,1.5,1.2, "cm"),
-          strip.text.x = element_text(size = 7),
-          axis.text = element_text(size = 8, colour = "black"))
+          plot.margin = margin(1,1,1,1, "cm"),
+          #strip.text.x = element_text(size = 11),
+          strip.text = element_text(size = 11),
+          axis.title.y = element_text(margin = margin(t = 0, r = 40, b = 0, l = 0)),
+          axis.text.x = element_text(size = 11, colour = "black", margin = margin(5,0,0,0)),
+          axis.text.y = element_text(size = 11, colour = "black", margin = margin(0,10,0,0))
+          #axis.text = element_text(size = 11, colour = "black", margin = margin(0,20,0,0)),
+          #base_size = 11
+          )
   
   Fig3Tornado
   
@@ -298,8 +304,13 @@ SA <- SA%>%
                     ncol = 1, nrow = 1)
   
   fil.namefig3.pdf <- "./Publication_Figures/Fig 3 Tornado Plot of sensitivity analysis results.pdf"
+  fil.namefig3.png <- "./Publication_Figures/Fig 3 Tornado Plot of sensitivity analysis results.png"
  
+  png(fil.namefig3.png, width = 11.03, height = 7.44, res = 300, units = "in")
+  print(Fig3Tornado)
+  dev.off()
   
-  ggexport(Fig3, filename = fil.namefig3.pdf, width=11, height= 6)
+  #ggexport(Fig3, filename = fil.namefig3.pdf, width=11, height= 6)
+  #ggsave(Fig3Tornado, filename = fil.namefig3.png, dpi = 300, width=11.03, height= 7.44, unit = "in", device='png')
 
   
