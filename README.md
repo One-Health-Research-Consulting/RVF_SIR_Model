@@ -1,10 +1,19 @@
-## RVF_SIR_Model
+# Inter-epidemic Rift Valley fever in a changing climate
+
+This repository contains code, data, and figures that support:
+
+Rostal MK, Prentice J, Ross N, Kemp A, Thompson PN, Anyamba A, Cleaveland S, Cordel C, Msimang V, van Vuren, JP, Haydon D, Karesh WB, Paweska JP, Matthews L. (2025) Localized Rift Valley Fever Virus Persistence Explains Epidemic and Interepidemic Dynamics and Guides Control Strategies. *Proceedings of the Royal Society B: Biological Sciences*
+
+
+---
+
+###  RVF_SIR_Model
 Repository of code to simulate 34-years of RVFV transmission at a single pan in central South Africa.
 
 To run the simulations, run the scripts in order according to the file number. If the file name starts with the term Function or Model, then it should not be run by the user and will be called by the main scripts. If a file name starts with the term Analysis, then it may be run by the user depending on the level of analysis they would like to do. The main scripts will allow the user to run the 34-year simulation with the option of various scenarios (e.g., vaccination), run the Latin hypercube sensitivity analysis, run the variable-by-variable analyses and estimate R_0. The analysis scripts will produce plots and analyze the Latin hypercube results. The model scripts contain the parameter list, the mosquito hatching determination and the ODE function. The function scripts have all other functions defined for the analyses. 
 
 #1. Run the simulation:
-Start with the “1-Run RVFV Simulations.R” file. The user will start by indicating whether they would like to run a specific scenario (with vaccination, without transovarial transmission, without horizontal transmission, a low starting population of infected Aedes eggs, and with a higher or lower Culex mortality rate). If the vaccination scenario is selected the user must also indicate the proportion of animals that will be vaccinated and may select scenarios with a 3 times higher or 25% lower vaccine proportion from what was selected. The user may also set vax.burst to true and then can choose from various years during which animals are vaccinated at the given vax.proportion over 7 days in July for each year that is indicated by the user.  To run these additional vaccine scenarios both “Vaccinate”, and the proportion higher or lower or vax.burst must be set to “TRUE”. If all scenarios are set to FALSE, then the full, exemplar simulation will be run. Note that the SA scenario should always be FALSE, as there is a separate code to run the Latin hypercube sensitivity analysis.
+Start with the “1-Run RVFV Simulations.R” file. The user will start by indicating whether they would like to run a specific scenario (with vaccination, without transovarial transmission (Only.q = no horizontal transmission or no.amp.vec = no transmission by Culex), without horizontal transmission (No.q), a low starting population of infected Aedes eggs (lo.eggs), and with a higher (muC.25_higher) or lower Culex (muC.25_lower) mortality rate). If the vaccination scenario is selected the user must also indicate the coverage (proportion of animals in which we maintain immunity via vaccination, (vax.proportion))  and may select scenarios with a 3 times higher (vax.25_higher) or 25% lower vaccine proportion (vax.25__higher_lower) from what was selected.  To run these additional vaccine scenarios both “Vaccinate”, and the proportion higher or lower must be set to “TRUE”. If all scenarios are set to FALSE, then the full, exemplar simulation will be run. Note that the SA scenario should always be FALSE, as there is a separate code to run the Latin hypercube sensitivity analysis.
 
 Source all required code. If a scenario is selected, then the code will adjust the parameter list as required.
 
@@ -18,7 +27,7 @@ The code also calculates some metrics and provides a data frame of the number of
 
 The code produces Table S1, which includes the mean seroprevalence, the mean annual maximum host-vector ratio, mean annual proportion of infected Aedes eggs, mean annual proportion of infected adult Aedes, and the mean annual proportion of infected adult Culex. The table will be saved if no other scenarios are selected (e.g., all scenarios are set to FALSE).
 
-The code saves data from the following scenarios for use in the Analysis_1 Code for multiplots.R file: No.q, vax.burst: Early, EarlyWithOutbreak, LateWithOutbreak and Late.
+The code saves data from the following scenarios for use in the Analysis_1 Code for multiplots.R file: No.q.
 
 Calculate the effective R0 for each timestep of the simulation.
 
@@ -33,8 +42,8 @@ Files sourced:
 *Model 3 RVFV ODE SIRS function.R
 
 #2. Run the Latin hypercube sensitivity analysis:
-2_RVF_LHC_Sensitivity_Analysis.R. 
-Ensure that SA is always set to TRUE (this ensures that the parameter ranges for the sensitivity analysis in the parameters code file is run). Set h as the number of simulations to run. It is automatically set to 4000, which is the number used in the publication. Please note that with this large number of simulations, the analysis takes a significant amount of computing power and time. Var_Select and burst should always be set to FALSE. Source all functions and climate data.
+"2_RVF_LHC_Sensitivity_Analysis.R". 
+Ensure that SA is always set to TRUE (this ensures that the parameter ranges for the sensitivity analysis in the parameters code file is run). Set h as the number of simulations to run. It is automatically set to 4000, which is the number used in the publication. Please note that with this large number of simulations, the analysis takes a significant amount of computing power and time. Var_Select should always be set to FALSE. Source all functions and climate data.
 
 The Latin hypercube function was designed to run in parallel on multiple cores. The code was set to either run on 20 cores or if there are more cores than number of simulations to run, then use one core per simulation to maximize efficiency.
 
@@ -51,7 +60,7 @@ Files sourced:
 
 
 #3. Run the R0 analysis
-Run the 3- Calculate and Plot_R0.R code. This code will calculate R_0 for various populations and then plot the sensitivity analyses. Use the function lst.R0.var (defined in Function 5 Calculate R0 dfs for plot.R) to produce a list of data frames, where each data frame has the value of R_0 for each population size as you vary the variables listed in R0_vec. Calculate the value of R_0 using the values of the parameters used in the full simulation for the peak_popn, peak_A_only and peak_C_only and store in a dataframe.
+Run the "3- Calculate and Plot_R0.R" code. This code will calculate R_0 for various populations and then plot the sensitivity analyses. Use the function lst.R0.var (defined in Function 5 Calculate R0 dfs for plot.R) to produce a list of data frames, where each data frame has the value of R_0 for each population size as you vary the variables listed in R0_vec. Calculate the value of R_0 using the values of the parameters used in the full simulation for the peak_popn, peak_A_only and peak_C_only and store in a dataframe.
 
 The population vectors are defined for the hosts and vectors as follows:
 mean_popn: All population means calculated across the entire simulation – the mean population of adult sheep, lambs and the mean population (when at least one adult mosquito of the species is present) of Aedes and Culex. 
@@ -72,63 +81,60 @@ Finally, calculate the R0 estimate at different populations.
 Files sourced:
 1- Run RVFV Simulations.R
 Function 4 Calculate R0.R
-Function 5 Calculate R0 dfs for plot.
+Function 5 Calculate R0 dfs for plot.R
 Analysis 5 Plot R0 changes at peak and mean populations.R
 
 
 #Analysis Code
 #A1. Analyze the simulation results:
 “Analysis/Analysis 1 Code for multiplots.R” 
-Create plots of the simulation and scenarios. Run the code. This code will produce Figures 1-3; S2-S7 and S9-S12.
+Create plots of the simulation and scenarios. Run the code. This code will produce Figures 1-4 ; S2-S4; S6-S7 and S9-S12.
 
 If the plots should be saved (and the plots for Figure 1 combined) set Multiplot to be TRUE. Set the plot theme elements to be used for all plots.
 
 Make plots of the Aedes mosquito, Culex mosquito, infected Aedes egg, and all infected mosquito populations as well as of the host population. The outbreaks reported during the simulation time period in Pienaar et al (2013) are listed and those that were in the highveld area (Free State/Northern Cape Provinces) or were reported but from an unknown location are identified and included on the host plot. A plot of the effective R_0  on each timestep of the simulation is also produced. 
 
-Figure 1. If no scenarios are selected and Multiplot is TRUE, the code will combine the population plots and the R_0 plot to make Figure 1. Supplementary figures S2, S3 and S9 are also made if no scenarios are selected. 
+Figure 1. If no scenarios are selected and Multiplot is TRUE, the code will combine the population plots and the effective R_0 plot to make Figure 1. As are Figure2 and Supplementary figures S2, S3, S7, S8 and S12 are also made if no scenarios are selected. Figures S9 is compiled when no scenarios are selected, but plots S9a and S9c must have already been created by running thoses scenarios.
 
-Figure 2 is made (assuming no scenarios are selected) using data from the R_0 analyses, looking at transovarial transmission vs Aedes bite rate and the impact on R_0 and seroprevalence. Similarly, Figure S10 is made looking at the same outcomes as transovarial transmission and Culex mortality rate changes.
+Figure 2 is made (assuming no scenarios are selected) using saved data from the R_0 analyses (Data_for_sensitivity_analysis folder), looking at transovarial transmission vs Aedes bite rate and the impact on R_0 and seroprevalence. Similarly, Figures S7 and S8 are made looking at similar outcomes as transovarial transmission and Culex mortality rate changes.
 
-Figure 4 is made when the Vaccinate is set to TRUE and no specific vaccination scenarios are selected. It produces the host and infected mosquitoes (A and B) and collates the plots with those of the vaccination vs extinction with low and high transovarial transmission (TOT), which is made using the data saved in the Data_for_sensitivity_analysis folder and produced in the Analysis_2_Plot_seroprev_as_key_params_change.R code, as well as a burst vacciation in a single year that is saved when the following scenario is run: Vaccinate  <- TRUE, vax.burst <- TRUE, One <- TRUE. Figure S11b is also saved.
+Figure 4 is made when the Vaccinate is set to TRUE and no specific vaccination scenarios are selected. It produces the host and infected mosquitoes (A and B) and collates the plots with those of the vaccination vs extinction with low and high transovarial transmission (TOT), which is made using the data saved in the Data_for_sensitivity_analysis folder and produced in the Analysis_2_Plot_seroprev_as_key_params_change.R code. Figure S11b is also saved.
 
 Figures S2 (rainfall and temperature) is produced if no scenarios are selected.
 
 Figure S3 (infected hosts vs the ratio of infected Culex to Aedes) is made if no scenarios are selected
 
-Figures S4 & S5 are not coded here - see 3- Calculate and Plot_R0.R
+Figures S4 & S5 are not coded here. THe code for these plots are in the Calculate and Plot_R0.R file.
 
-Figure S6 is compiled if the scenario with no horizontal transmission (Only.q; S4B) is selected and calls the No.q scenario data from Data_for_sensitivity_analysis if the scenario with no transovarial transmission (data is saved for S4A) is made when the No.q scenario is selected. and . They are compiled when the no horizontal transmission scenario is selected.
+Figure S6 is compiled if the scenario with no horizontal transmission (Only.q; S4B) is selected and calls the saved No.q scenario data from Data_for_sensitivity_analysis if the scenario with no transovarial transmission (No.q scenario) has already been run. (data is saved for S4A). The two plots are compiled when the no horizontal transmission scenario (Only.q) is selected.
 
-Figure S7 is made using data from the sensitivity analysis where we compare changes in simulated seroprevalence and persistence as a single (S7a and S7b) variable is varied or as two variables are varied (S7c and S7d). The data for these plots is sourced from Data_for_sensitivity_analysis and created by Analysis_2_Plot_seroprev_as_key_params_change.R and Analysis_3_Plot_outcome_vs_single_key_param.R files.
+Figure S7 is made using data from the sensitivity analysis where we compare changes in simulated seroprevalence and persistence as a single (S7a and S7b) variable is varied or as two variables are varied (S7c and S7d). The data for these plots is sourced from Data_for_sensitivity_analysis folder and created by Analysis_2_Plot_seroprev_as_key_params_change.R and Analysis_3_Plot_outcome_vs_single_key_param.R files.
 
 Figure S8 is also made from data that is sourced from Data_for_sensitivity_analysis and created by Analysis_2_Plot_seroprev_as_key_params_change.R.
 
 Figure S9. If the scenario with the 25% lower Culex mortality rate is TRUE (muC.25_lower = TRUE) then Figure S9a is made). If the scenario with the 25% higher Culex mortality rate is TRUE (muC.25_higher = TRUE) then Figure S9c is made). 
-and S9b (the simulation run without changing the Culex mortality rate) are also made. The complied figure of S9 is produced using previously produced Figures of S9a and S9c.
+Figure S9b (the simulation run without changing the Culex mortality rate) and the complied figure of S9 are made if no scenarios are being run AND Figures S9b and S9c have already been made.
 
-Figure S10c and S10a are  plotted if both Vaccinate is set to TRUE and vax.25_higher or vax.25_lower are set to TRUE, respectively. The plots are arranged and saved. Figure S10 is compiled with the previously saved plots when Vaccinate is set to TRUE and no scenarios of 25% higher or lower are selected and vax.burst is set to FALSE.
+Figure S10-right and S10-left are  plotted if both Vaccinate is set to TRUE and vax.25_higher (S10 - right) or vax.25_lower (S10 - left) are set to TRUE, respectively. The plots are arranged and saved. Figure S10 is compiled with the previously saved plots when Vaccinate is set to TRUE and no scenarios of 25% higher or lower are selected and vax.burst is set to FALSE.
 
-Figure S11a, S11b, S11c, and S11d are plotted if both Vaccinate is set to TRUE and vax.burst set to TRUE. The plot is made of the scenarios: Early, EarlyWithOutbreak, Late, and LateWithOutbreak and which save the data to Data_for_sensitivity_analysis. This plot is compiled when vaccinate is set to TRUE and no further vaccine scenarios (25% higher or lower or vax.burst) are selected.
+Figure S11 is a plot of the scenario where no Culex are permitted to transmiss (no.amp.vec == TRUE). Aedes are able to transmit both vertically and horizontally.
 
-Figure S12 is produced by selecting a random year of simulation and plotting the total Aedes and Culex populations, provided no scenarios are selected. 
+Figure S12 is produced if no scenarios are selected and shows the population dynamics of Aedes and Culex over a randomly selected year.
+
 
 Files sourced:
 *Function 3 Plot simulations of a given time period.R
 *And multiple datafiles
 
 #A2. Examine how the simulated seroprevalence and persistence change as the values of select parameter pairs are varied. 
-Run Analysis_2_Plot_seroprev_as_key_params_change. Note, depending on how many values are being evaluated for each parameter this can take significant computing power and time to run. The code can be run for the five variable pairs and corresponding outcomes described in the paper. Set one of the five to TRUE and keep the others FALSE:
+Run "Analysis/Analysis_2_Plot_seroprev_as_key_params_change.R." Note, depending on how many values are being evaluated for each parameter this can take significant computing power and time to run. The code can be run for the five variable pairs and corresponding outcomes described in the paper. Set one of the five to TRUE and keep the others FALSE:
 
-Q_biteA_Seroprev.mean: Transovarial Transmission vs Aedes bite rate evaluating seroprevalence
-Q_muC_Seroprev.mean: Transovarial Transmission vs Culex mortality rate evaluating seroprevalence
-Vax_Q_Persistence: Transovarial Transmission vs vaccination rate evaluating persistence
-Q_Tasl_Persistence: Transovarial Transmission vs host-to-Aedes transmission rate evaluating persistence
-Q_IAE_Persistence: Transovarial Transmission vs the initial infected egg population evaluating persistence
+Figure S4c data: Q_biteA_Seroprev.mean: Transovarial Transmission vs Aedes bite rate evaluating seroprevalence
+Figure S4d data:Q_Tasl_Persistence: Transovarial Transmission vs host-to-Aedes transmission rate evaluating persistenceQ_muC_Seroprev.mean: Transovarial Transmission vs Culex mortality rate evaluating seroprevalence
+Figure 4c data: Vax_Q_Persistence: Transovarial Transmission vs vaccination rate evaluating persistence
+Figures 2 and S8: Q_biteA_Seroprev.mean AND R0_plot ==TRUE evaluates scenarios examining the effects of seasonal R0 for the following outcomes: Mean seroprevalence, persistence (the timestep after which there are no more infected hosts) and R0 (calculated at the mean host and vector populations).
+Q_IAE_Persistence: Transovarial Transmission vs the initial infected egg population evaluating persistence (this data was not used as a figure)
 
-Further, R0 can be evaluated with the following scenarios: Q_biteA_Seroprev.mean and Q_muC_Seroprev.mean. Set the R0_plot to true to produce the data for Figures 2 and S8.
-
-
-Once a variable pair is selected, R0_plot may also be set to TRUE. If set to true it will evaluate the following outcomes: Mean seroprevalence, persistence (the timestep after which there are no more infected hosts) and R0 (calculated at the mean host and vector populations).
 
 The values for each variable that were evaluated for the manuscript are given next. Then variables, functions and outcomes are defined for each specific variable pair. A blank data frame (summary.dat) is created and a counter parameter (j) is set. 
 
@@ -138,7 +144,7 @@ The model is then run, and the output database is modified.
 
 If the R0_plot is selected, then estimate the mean population sizes and development rate and calculate R0.
 
-Add everything to the summary.dat data frame.
+Everything is added to the summary.dat data frame.
 
 If the R0_plot is selected, and after all of the simulations in the for loop are completed, add a column with the value of R0 calculated when the transovarial transmission fraction is set to zero by filtering and merger the data frame. Calculate the seasonal and long-term persistence.
 
@@ -154,7 +160,7 @@ Files sourced:
 
 #A3. Analyze the effects of varying select parameters on the simulated seroprevalence and persistence. 
 
-Run the Analysis_3_Plot_outcome_vs_single_key_param.R file. It is designed to vary one of five parameters: transovarial transmission, host-to-Aedes transmission, Aedes-to-host transmission, extrinsic incubation period and vaccination. The following must all be set to false: SA, Var_Select, Vaccinate, No.q, Only.q, vax.burst, and burst. It can run one parameter at a time, which is set to TRUE at the beginning of the code. For each parameter, a simulation will be run for every value between 0 and 1 at 0.5 intervals and for the value used in the full model (except Check_vax, which has additional values). An if_else statement has a separate code for Check_Vax as this requires changing the initial population values and includes the day that RVFV goes functionally extinct in the Aedes egg population. After each simulation the mean seroprevalence and days of persistence are estimated. The data are then saved and single parameter plots against seroprevalence and persistence are produced and saved.
+Run the "Analysis/Analysis_3_Plot_outcome_vs_single_key_param.R" file. It is designed to vary one of four parameters: transovarial transmission, host-to-Aedes transmission, Aedes-to-host transmission, and extrinsic incubation period. The following must all be set to false: SA, Var_Select, Vaccinate, No.q, Only.q. It can run one parameter at a time, which is set to TRUE at the beginning of the code. For each parameter, a simulation will be run for every value between 0 and 1 at 0.5 intervals and for the value used in the full model (except Check_vax, which has additional values). An if_else statement has a separate code for Check_Vax as this requires changing the initial population values and includes the day that RVFV goes functionally extinct in the Aedes egg population. After each simulation the mean seroprevalence and days of persistence are estimated. The data are then saved and single parameter plots against seroprevalence and persistence are produced and saved.
 
 Files sourced:
 *Function 1 Define Functions for Output of Sensitivity Analysis.R
@@ -163,15 +169,22 @@ Files sourced:
 *Model 2 Mosquito hatch rates at daily timestep.R
 
 #A4. Analyze the data from the sensitivity analysis:
-Run the Analysis 4 Assessing the sensitivity analysis.R file. This file will produce the data for and plot Figure 3 from the output of the Latin hypercube sensitivity analysis (2_RVF_LHC_Sensitivity_Analysis.R). We also calculated the proportion of simulations that: become extinct, have a high seroprevalence, or persist and are within our target seroprevalence. 
+Run the "Analysis/Analysis_4 Assessing the sensitivity analysis.R" file. This file will produce the data for and plot Figure 3 from the output of the Latin hypercube sensitivity analysis (2_RVF_LHC_Sensitivity_Analysis.R). We also calculated the proportion of simulations that: become extinct, have a high seroprevalence, or persist and are within our target seroprevalence. 
 
 To make the data for the plot, vectors are made of the parameters to compare and the outcomes. The data is subset to just the parameters being evaluated. Estimate the partial correlation coefficient for each variable. The estimates and confidence intervals are used to make the tornado plot. Save the plot.
 
 #A5. Add lines of the effect that varying the selected parameters have on the estimate of R0 at mean host and vector populations
 
-Run the Analysis 5 Plot R0 changes at peak and mean populations.R file (note: this file can only be run after 3- Calculate and Plot_R0.R). First make a list of data frames that gives the value of R0 for the three population sizes (mean_popn [mean host and vector populations], mean_A_only [mean host and Aedes populations] and mean_C_only [mean host and Culex populations]. Then make a vector of the R0 value of the parameters used in the full simulation. 
+Run the "Analysis/Analysis_5 Plot R0 changes at peak and mean populations.R" file (note: this file can only be run after 3- Calculate and Plot_R0.R). First make a list of data frames that gives the value of R0 for the three population sizes (mean_popn [mean host and vector populations], mean_A_only [mean host and Aedes populations] and mean_C_only [mean host and Culex populations]. Then make a vector of the R0 value of the parameters used in the full simulation. 
 
 Figure S4. Make a plot of the R0 using mean and mean peak vector populations as each parameter is varied (Tsal, muA, biteA, q, Tcsl, muC, and biteC.). Combine each all of the plots and save the final figure.
+
+#A6. Analyze the data from the sensitivity analysis:
+Run the "Analysis/Analysis_6_Clark_et_al_data.R" file. This file has the code for calculating the target seroprevalence range. The data used was part of the supplementary data provided by [Clark et al. 2018] (https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0006627) with minor corrections made to the dataset as described in the supplemental methods.  The script then calculates the median, range and 95% confidence intervals for the seroprevalence estimates for each species and for all species included.
+
+#A7. Analyze the data from the sensitivity analysis:
+Run the "Analysis/Analysis_7 Automatically plot all results.R" file. This file will run all the files and scenarios to make all of the plots from the publication, without the need to mannually select a scenario. Initially all scenarios are set to FALSE and should stay that way. The the script runs through the vaccination scenarios and resulting plots, then it runs through the remaining scenarios and creates the resulting plots, finally it sources to code to make the plots from other analysis files.
+
 
 #Model_Scripts
 #M1. Optimized parameters used in the simulation.
@@ -184,7 +197,7 @@ This file is sourced within the Model 2 *Mosquito hatch rates at daily timestep.
 
 File: Model 2 Mosquito hatch rates at daily timestep.R
 
-This file pulls the climate data and uses functions (see below) to identify days in which the Culex and Aedes will hatch. Then it uses the approxfun() function to be able to feed the daily hatching data directly into the differential equation. approxfun is also used to feed the vector that determines whether burst vaccination will occur on a particular day or not (it's ingests a vector of 0's and 1's).
+This file pulls the climate data and uses functions (see below) to identify days in which the Culex and Aedes will hatch. Then it uses the approxfun() function to be able to feed the daily hatching data directly into the differential equation.
 
 Files sourced:
 *Data: Combined Temp and Precip Data for RVF Simulation.csv
@@ -195,7 +208,7 @@ Files sourced:
 
 File: Model 3 RVFV ODE SIRS function.R
 
-This file describes a function that takes  a population vector, a series of timesteps, a parameter vector (as a list), vectors to allow daily control over hatching, development and vaccination rates, indicator as to whether the vax.burst scenario is in place and the end time of the model. It describes the differential equations used to run the simulation (also described in the supplemental text Equations S1-S30) and which derivatives and populations to return.
+This file describes a function that takes a population vector, a series of timesteps, a parameter vector (as a list), vectors to allow daily control over hatching, development and vaccination rates, and the end time of the model. It describes the differential equations used to run the simulation (also described in the supplemental text Equations S1-S30) and which derivatives and populations to return.
 
 #Function Codes: 
 #*Function 1 Define Functions for Output of Sensitivity Analysis.R

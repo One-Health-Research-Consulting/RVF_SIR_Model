@@ -4,9 +4,39 @@
 #' date: April 10, 2022
 #' ##################
 #' 
-#' Purpose: Create a function to conduct the sensitivity analysis and that can be used in an lapply command.
+#' HypercubeSA
+#' Purpose: Create a function to conduct the sensitivity analysis and that can be used in an mclapply command.
+#' The main simulation code from 1-Run RVFV Simulations.R and Model 2 Mosquito hatch 
+#' rates at daily timestep.R included in the function. After the simulation is run, 
+#' six outcome functions are run (get.fun1-6). They are detailed when the function 
+#' is called, but must be left in order as some require specific arguments and these 
+#' are hard coded into the function. Further, they need to be in order so that the 
+#' column names applied after the function is run labels the results correctly. If 
+#' needed an option to save each simulation data file can be uncommented and used to 
+#' evaluate the actual simulation if something more than the output summary is required. 
+#' This was designed to run within an mclapply function.
 #' 
-#' empty.dat must be as long as your parameter vector plus the output columns to add
+#' @param param_matrix The dataframe of parameters and lhs variables from "Model 1 - RVFV Selected Parameters.R and split by rows
+#' @param empty.dat Empty dataframe for results
+#' @param empty.dat.precip Empty dataframe for calculating climate-based variables
+#' @param precip.dat The climate dataframe
+#' @param precipdef.fun the DayDefinition function from Function 2 - Aedes and Culex Hatch Forcing by Mean Temps.R
+#' @param Ae.endem.fun the AedesForcingEndemicMeanT function from from Function 2 - Aedes and Culex Hatch Forcing by Mean Temps.R
+#' @param Cu.fun the CulexForcingMeanT function from Function 2 - Aedes and Culex Hatch Forcing by Mean Temps.R
+#' @param Ae.dev.fun the dev_ALP function from function from Function 2 - Aedes and Culex Hatch Forcing by Mean Temps.R
+#' @param Cu.dev.fun the dev_CLP from function from Function 2 - Aedes and Culex Hatch Forcing by Mean Temps.R
+#' @param ode.fun the ODE.RVFV.deterministic.SIRS from Model 3 RVFV ODE SIRS function.R
+#' @param get.fun0 the Define.MosqYr function from Function 1 Define Functions for Output of Sensitivity Analysis.R
+#' @param get.fun1 the Get.Extinct.Day function from Function 1 Define Functions for Output of Sensitivity Analysis.R
+#' @param get.fun2 the Get.Max.Outbreak.Size.MosqYear function from Function 1 Define Functions for Output of Sensitivity Analysis.R
+#' @param get.fun3 the Get.Mean.SeroP.MosqY function from Function 1 Define Functions for Output of Sensitivity Analysis.R
+#' @param get.fun4 the Get.Mean.Outbreak.Size.MosqYear function from Function 1 Define Functions for Output of Sensitivity Analysis.R
+#' @param get.fun5 the Get.Mean.Outbreak.lengths.MosqYear function from Function 1 Define Functions for Output of Sensitivity Analysis.R
+#' @param get.fun6 the Get.Prop.Infected.Eggs function from Function 1 Define Functions for Output of Sensitivity Analysis.R
+#' @param dev_param_vec the dev.params.set from Rueda et al listed in Model 1 - RVFV Selected Parameters.R
+#' @param pop_vec the initial populations vector from Model 1 - RVFV Selected Parameters.R
+#' @param timestp the sequence of timesteps from the start to end of the model (1 day = 1 time step)
+#' @param file_date the Sys.Date() to save files in folder by date
 
 HypercubeSA <- function(param_matrix, empty.dat, empty.dat.precip, precip.dat, precipdef.fun, Ae.endem.fun, Cu.fun, Ae.dev.fun, Cu.dev.fun, ode.fun, get.fun0, get.fun1, get.fun2, get.fun3, get.fun4, get.fun5, get.fun6, dev_param_vec, pop_vec, timestp, file_date){ 
   print(1.05)

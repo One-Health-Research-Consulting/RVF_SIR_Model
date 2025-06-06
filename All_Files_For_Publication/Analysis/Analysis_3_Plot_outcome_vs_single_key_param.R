@@ -17,7 +17,7 @@ Check_Q <- FALSE
 Check_Tasl <- FALSE
 Check_Tsla <- TRUE
 Check_epsilon <- FALSE
-Check_Vax <- FALSE
+Check_Vax <- FALSE #Data for figure 4 RVFV persistence in host and aedes vs vaccine prop
 
 #Always False:
 SA <- FALSE #Sensitivity analysis, needs a different simulation file 

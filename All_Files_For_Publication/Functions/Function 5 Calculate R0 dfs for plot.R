@@ -2,8 +2,17 @@
 #' Author: Mindy Rostal
 #' Date: 5/3/2022
 #' 
-#' 
+#' lst.R0.var
 #' Purpose: To get a list of data frames, where each dataframe has the value of R0 for each population size as you vary the variables listed in var_vec.
+#'  
+#' @param empty.dat an empty database
+#' @param empty.lst an empty list
+#' @param both.pop a vector of populations for the hosts, Aedes and Culex populations
+#' @param A.pop a vector of populations for the hosts and Aedes
+#' @param C.pop a vector of populations for the hosts and Culex (e.g. mean_popn vs peak_popn)
+#' @param R0params.func the optimized parameters used in the R0 calculation (from Model 1 - RVFV Optimized Parameters.R)
+#' @param get.fun.1 the function to run, e.g. calc_R0 from Function 4 Calculate R0.R
+#' @param var_vec the list of variables that will be evaluated)
 
 
 lst.R0.var <- function(empty.dat, empty.lst, both.pop, A.pop, C.pop, R0params.func, get.fun.1, var_vec){

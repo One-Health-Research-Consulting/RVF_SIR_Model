@@ -7,6 +7,18 @@
 
 ###########################################################################
 #1
+#' ParamByParamPlot 
+#' This function is used to plot the parameter-by-parameter analyses included in Figures S7 and S8. 
+#'
+#' @param df1 data frame with the results of the parameter by parameter simulation ([Analysis_2_Plot_seroprev_as_key_params_change.R)
+#' @param colx colx (the parameter to be plotted on the X-axis)
+#' @param coly coly (the outcome factor to be plotted on the Y-axis)
+#' @param color1 color1 (the second parameter being evaluated and presented as discreet data in the plot)
+#' @param no.leg no.leg (TRUE or FALSE, whether a legend should be plotted or not)
+#' @param R0 logical (TRUE if plotting an R0 plot will include 11 colors rather than 6)
+#'
+#' @return the plot
+#'
 ParamByParamPlot <- function(df1, colx, coly, color1, no.leg, R0){
   
   discrete_vec <- as.factor(sort(unique(df1[[color1]])))
@@ -105,6 +117,15 @@ ParamByParamPlot <- function(df1, colx, coly, color1, no.leg, R0){
 
 ###########################################################################
 #2
+#' Plot between the years
+#' This function is used to plot the simulation results between a specific subset of years (e.g., Figure S6 plots the simulation results between 2004-2006; also used in Figure S12).
+#'
+#' @param df1 the simulation data frame
+#' @param yr1 the lower bound of year range
+#' @param yr2 the upper bound of the year range
+#'
+#' @return dataframe that just represents a subet of simulation years.
+#'
 plot.between.years <- function(df1, yr1, yr2){
 
   df1$Year = as.numeric(df1$Year)
@@ -276,6 +297,15 @@ element_custom <- function() {
 
 ###########################################################################
 #3
+
+#' SL_plotter 
+#' This function is used to plot the sheep and lamb (host) dynamics plot (e.g. Fig 1a) and is primarily used for Fig S11.
+#'
+#' @param df the simulation data frame
+#' @param legnd a logical parameter indicating whether or not a legend should be included on the plot
+#'
+#' @return set of regular plots
+#'
 SL_plotter <- function(df, legnd){
   
   plot_theme <- theme_classic() +
@@ -314,6 +344,18 @@ SL_plotter <- function(df, legnd){
 return(SLplot_fun)
   }
 
+
+####
+#.4 IAE_plotter
+#' This function is used to plot the infected Aedes eggs dynamics plot (e.g. Fig 1c) and is primarily used for Fig S11.
+
+#' Title
+#'
+#' @param df the simulation data frame
+#' @param legnd a logical parameter indicating whether or not a legend should be included on the plot
+#'
+#' @return a plot
+#'
 IAE_plotter <- function(df, legnd){
   
   plot_theme <- theme_classic() +

@@ -8,6 +8,13 @@ library(rlang)
 
 #Add MosqYear/Month info to final.populations database 
 
+#' Define.MosqYr
+#' A function that adds the seasonal (“MosqYear”/Month) info to the population data frame. The MosqYear is defined as being from September to August (e.g., September 1982-August 1983 = MosqYear 1982). 
+#' @param dat the simulation population data frame
+#' @param precip.df the precipitation/temperature data frame
+#'
+#' @return dat updated with "MosqYear" and Month columns
+
 Define.MosqYr <- function(dat, precip.df){
   is = dat$IS
   il = dat$IL
@@ -28,6 +35,13 @@ Define.MosqYr <- function(dat, precip.df){
 }
 
 #Get dataframe of outbreaks by year
+#' A function that makes a data frame of all outbreaks by year/season.
+#'
+#' @param df the simulation population data frame
+#' @param sigma_sl the sheep/lamb recovery rate
+#'
+#' @return empt.df1 a data frame of all outbreaks by year/season
+#'
 Get.Outbreak.Dataframe <- function(df, sigma_sl){
   is = df$IS
   il = df$IL
@@ -61,6 +75,21 @@ Get.Outbreak.Dataframe <- function(df, sigma_sl){
 }
 
 #Identify the Peak populations of infected mosquitoes by MosqYear
+#' function that produces a data frame indicating when and the magnitude of the 
+#' largest population of vectors occurs each year. The simulation data frame has 
+#' one row per simulation season (MosqYear). For the populations of infected Aedes, 
+#' infected Culex, Susceptible Aedes and Susceptible Culex it indicates the timestep 
+#' (“SimDay”) and the size of the maximum population on a single timestep during that 
+#' season. It indicates which species has a higher peak of infected mosquitoes that 
+#' season and the size of the maximum population of infected Aedes eggs that season. 
+#' It calculates the ratio of the peak Culex and Aedes population for that season 
+#' (note these will not have occurred on the same day). Finally, it binds the outbreak 
+#' data frame to the peak infected mosquito data frame indicating the number of hosts infected during that season.   
+#'
+#' @param df the simulation population data frame 
+#'
+#' @return dat
+
 InfectedMosqPeak <- function(df){
   dat = data.frame() #Blank dataframe
   j = 1 #Counter
@@ -119,7 +148,17 @@ InfectedMosqPeak <- function(df){
 }
 
 
-#Calculate mean vector populations
+#' Calculate mean vector populations
+#' A function that calculates the mean of the vector populations (across timesteps where there is at least one adult mosquito of that species present). 
+#'
+#' @param df the simulation population data frame (df)
+#' @param pop_var the population parameter of interest (e.g., “NAedes”). 
+#'
+#' @return It outputs three estimates: the overall mean population size (m_mosq_pop), 
+#' the maximum peak population, which is the maximum seasonal population size (per “MosqYear”) 
+#' of the simulation (max_mosq_pops), and the mean peak population, which is the mean of the 
+#' seasonal vector populations during a 34-season simulation (m_peak_Mosq_pop).
+#'
 Get.Mean.Vec.Pops <- function(df, pop_var){
 
   #Filter for timesteps that have at least one mosquito present
@@ -142,6 +181,14 @@ Get.Mean.Vec.Pops <- function(df, pop_var){
 }
   
 #' Mean Annual proportion of recovered hosts
+#' A function that first identifies the largest proportion of recovered hosts (the 
+#'seroprevalence) during that season (MosqYear), then calculates the mean of the 
+#'seasonal proportions during the 34-year simulation. 
+#'
+#' @param df the simulation population data frame 
+#' 
+#' @return The estimate of the mean end of season seroprevalence/proportion of recovered hosts 
+#' 
 Get.Mean.SeroP.MosqY <- function(df){
   rs = df$RS
   rl = df$RL
@@ -164,6 +211,15 @@ Get.Mean.SeroP.MosqY <- function(df){
 }
 
 #'  How long until the virus goes extinct (days)
+#' A function that identifies the timestep after which no hosts are infected (IS 
+#' and IL are both <1). Extinction in the host is our conservative definition for 
+#' RVFV extinction. Thus, this function identifies how long the virus persists in 
+#' the host populations. 
+#' 
+#' @param df  the simulation population data frame
+#' 
+#' @return The last day after which there no more infected hosts
+#' 
 Get.Extinct.Day <- function(df){
   is = df$IS
   il = df$IL
@@ -178,6 +234,20 @@ Get.Extinct.Day <- function(df){
 }
 
 #'  How long until the virus goes extinct (days)
+#' A function that identifies the timestep after which no Aedes Eggs are infected 
+#' (IAE is <1). There are two types of extinction in the eggs, the measure we use 
+#' is fuctional extinction (e.g. the rate of infected mosquitoes is so low that 
+#' the hosts don't become infected). Based on simulation with various initial 
+#' population sizes for the infected eggs using the lo.IAE scenario in which it 
+#' was determined that the minimum popultion was 14,400 is our conservative 
+#' definition for RVFV extinction. Thus, this function identifies how long the 
+#' virus persists in the host populations. 
+#'
+#' @param df the simulation population data frame
+#' @param min.pop <144000
+#' 
+#' @return The last day after which there no more infected aedes eggs
+#' 
 Get.Extinct.IAE.Day <- function(df, min.pop){
   iae = df$IAE
   if(any(is.na(iae)) ){
@@ -199,6 +269,19 @@ Get.Extinct.IAE.Day <- function(df, min.pop){
 
 
 #'* Maximum size of an outbreak (by season) 
+#' A function that sums the total number of infected hosts per season (MosqYear). 
+#'During the calculation it is assumed for any host population, that if the number 
+#'of infected hosts (IS and/or IL) is < 1, there are effectively 0 infected hosts 
+#'in that population during that timestep. It then sums the number of infected 
+#'animals for each season (divided by the recovery rate as an individual will stay 
+#'infected for more than one timestep. The function outputs the number of infected 
+#'hosts during the largest seasonal outbreak of the simulation.
+#'
+#' @param df the simulation population data frame
+#' @param sigma the recovery rate
+#' 
+#' @return The MosqYear during which the largest outbreak occurred
+#' 
 Get.Max.Outbreak.Size.MosqYear <- function(df, sigma){
   is = df$IS
   il = df$IL
@@ -221,6 +304,16 @@ Get.Max.Outbreak.Size.MosqYear <- function(df, sigma){
 }
 
 #Average size of seasonal outbreak
+#' MosqYear is a function that sums the total number of infected hosts per season, 
+#' as described for the Get.Max.Outbreak.Size.MosqYear() function, then takes the 
+#' mean across all of the seasons of the simulation (34) to provide the average 
+#' size of seasonal outbreak.
+#'
+#' @param df the simulation population data frame
+#' @param sigma and the recovery rate
+#'
+#' @return the mean size of the outbreaks across each season
+#'
 Get.Mean.Outbreak.Size.MosqYear <- function(df, sigma){
   is = df$IS
   il = df$IL
@@ -238,6 +331,14 @@ Get.Mean.Outbreak.Size.MosqYear <- function(df, sigma){
 }
 
 #Average outbreak length per season
+#' A function that sums the number of days an infected host is present during 
+#' the season. Then it takes the mean across the seasons of the simulation to 
+#' provide the average outbreak length per season.
+#'
+#' @param df the simulation population data frame
+#'
+#' @return average outbreak length across all seasons
+#'
 Get.Mean.Outbreak.lengths.MosqYear <- function(df){
   is = df$IS
   il = df$IL
@@ -254,6 +355,17 @@ Get.Mean.Outbreak.lengths.MosqYear <- function(df){
 }
 
 #Get the proportion of infected eggs at the end of the simulation
+#' A function that estimates the proportion of infected eggs on the last timestep 
+#' of the 34-year simulation. It also estimates the range and mean of the proportion 
+#' if infected eggs across the full simulation period. 
+#'
+#' @param df the simulation population data frame
+#'
+#' @return It outputs four elements: mean.prop.i (the mean proportion of infected eggs over all timesteps), 
+#'                                    max.prop.i (the maximum proportion of infected eggs across all timesteps), 
+#'                                    min.prop.i (the minimum proportion of infected eggs across all timesteps), 
+#'                                    end.prop.i (the proportion of infected eggs at the final timestep of the simulation).
+#'
 Get.Prop.Infected.Eggs <- function(df){
   iae = df$IAE
   sae = df$SAE
@@ -275,6 +387,18 @@ Get.Prop.Infected.Eggs <- function(df){
 }
 
 #Get the proportion of the mosquito population that is infected (IA, IC, IAE etc.)
+#' A function that estimates the proportions of the infected population of any 
+#' vector population (e.g., IA, IC, IAE). It calculates the proportions for timesteps 
+#' when at least one adult mosquito of the given vector population is present and 
+#' for the entire 34-year simulation. 
+#'
+#' @param df the simulation population data frame
+#' @param i_pop the name of the column with the infected vector population of interest (i_pop; e.g. “IAE”)
+#'
+#' @return It outputs three elements: mean.prop (the mean proportion of infected eggs over all timesteps), 
+#'                                    range.prop.low (the minimum proportion of infected eggs across all timesteps), 
+#'                                    range.prop.hi (the maximum proportion of infected eggs across all timesteps).
+#'
 Get.Prop.Infected.Mosq <- function(df, i_pop){
   ia = df$IA
   ea = df$EA

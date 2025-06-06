@@ -3,8 +3,14 @@
 
 #####################
 
-clark_dat <- read.csv("Clark interepidemic seroprevalences.csv")
+#Libraries
+library(dplyr)
+library(tidyr)
 
+#Data
+clark_dat <- read.csv("./All_Files_For_Publication/Data_for_sensitivity_analysis/Clark interepidemic seroprevalences.csv")
+
+#Descriptive calulations
 range(clark_dat$Sheep)
 
 #Column summaries

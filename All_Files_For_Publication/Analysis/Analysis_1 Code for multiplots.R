@@ -999,7 +999,7 @@ if(muC.25_lower == FALSE & muC.25_higher == FALSE & Vaccinate == FALSE & no.amp.
     
     ggexport(FigS2, filename = fil.name.rain, width=5, height=4)
 
-  #Effective R0 plot S14 - enlarged
+  #plot S12
     # Select a random year for this plot and the mosquito plot
     Myear<- final.populations%>%#Remove years with partial data
       filter(!MosqYear == "1982")%>%

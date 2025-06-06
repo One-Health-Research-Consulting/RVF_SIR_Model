@@ -1,5 +1,5 @@
 #' Title: Calculate and Plot R0
-#' Author: Mindy Rostal,
+#' Author: Louise Matthews, Jamie Prentice
 #' Date: 5/3/2022
 #' 
 #' 
@@ -16,6 +16,16 @@ theme_louise <- function () {
 
 
 
+#' calc_R0
+#' The R0 analysis was done in wxMaxima, which allowed a numeric solution to estimated. The algebraic equations and the transmission and transition matrices were defined by the wxMaxima analysis, then input into this function to allow the quick calculation of R0 when varying the parameters and the population sizes in the R ecosystem. 
+#' @param parameters a vector of parameters used in the simulation (from Model 1 - RVFV Optimized Parameters.R)
+#' @param pop_size  vector of the host, Aedes and Culex populations
+#' @param DEBUG = FALSE
+#'
+#' @return
+#' @export
+#'
+#' @examples
 calc_R0 <- function(parameters, pop_size, DEBUG=FALSE) {
   with(as.list(c(parameters, pop_size)), {
     
@@ -116,7 +126,16 @@ calc_R0 <- function(parameters, pop_size, DEBUG=FALSE) {
   })
 }
 
-#Function to calculate the effective R0 for each row in the final.populations dataframe
+#' Title
+#' Function to calculate the effective R0 
+#' The function calculates the R0 for that population of susceptible hosts and vectors for each row in the final.populations dataframe
+#'
+#' @param pop_matrix a of populations, including those of the susceptible populations of hosts, Aedes and Culex populations and the MosqYear – must be in order SS, SL, SA, SC
+#' @param params a vector of parameters used in the simulation (from Model 1 - RVFV Optimized Parameters.R)
+#' @param get.fun1 the R0 calculation function to run (calc_R0)
+#'
+#' @return A dataframe that includes a daily calculation of effective R0
+#'
 R_eff <- function(pop_matrix, params, get.fun1){
   #name the objects in the vector made from the row of the data.frame
   name_pops = c(NS = pop_matrix[[1]], NL = pop_matrix[[2]], Na = pop_matrix[[3]], NC = pop_matrix[[4]])

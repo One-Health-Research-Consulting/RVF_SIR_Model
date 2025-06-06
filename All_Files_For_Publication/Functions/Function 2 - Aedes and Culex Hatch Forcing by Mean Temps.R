@@ -35,7 +35,22 @@ library(codetools)
 
 #' Function DayDefinition
 #' ======================
-#' This function is to finalize the precipitation data by populating the Aedes and Culex wet and warm days.  After this, the data can be put into the Aedes or Culex Forcing functions.
+#' This function is to finalize the precipitation data by populating the Aedes and Culex 
+#' wet and warm days.  After this, the data can be put into the Aedes or Culex Forcing functions.
+#' To help account for variability in hatching in Culex, which is based on standing 
+#' water and for which we do not have data, we adjusted the proportion of eggs that 
+#' hatch is given by taking the 3-day cumulative and dividing it by the maximum 3-cumulative 
+#' precipitation that season. This allows more hatching when there is more precipitation. 
+#' After running this function, each timestep is defined in terms of whether it surpasses 
+#' the thresholds set by temperature and precipitation for hatching for Aedes and Culex a
+#' nd what proportion of Culex eggs may hatch.
+#'
+#' @param df climate dataframe
+#' @param rollcumrainA15 number of days to include in estimate of the cumulative rainfall for Aedes hatching
+#' @param cumrainC15 number of days to include in estimate of the cumulative rainfall for Culex hatching
+#' @param minrainC the minimum amount of precipitation for Culex hatching
+#' @param minrainA the minimum amount of precipitation for Culex hatching
+#' @param Htemp the temperature threshold for hatching
 
 DayDefinition <- function(df, rollcumrainA15,  cumrainC15, minrainC, minrainA, Htemp){# add the function for warm temps later
     df <- as.data.frame(df)   #this helps with formatting and viewing outputs
@@ -60,6 +75,16 @@ DayDefinition <- function(df, rollcumrainA15,  cumrainC15, minrainC, minrainA, H
     return(df)
 }
 
+#' AedesForcingEndemicMeanT: 
+#' The function adds a column to the data frame to dictate when Aedes egg hatching 
+#' is permitted (on the first 14 days of the season that surpass both the temperature 
+#' and precipitation thresholds).
+#'
+#' @param df a climate data frame
+#' @param hatchabledayA  Eggs are only viable once a year for 14 days with precipitation in the season
+#'
+#' @return Adds Aedes hatching days to the dataframe
+#'
 AedesForcingEndemicMeanT <- function(df, hatchabledayA){ 
   df0 <- data.frame()
   df$MosqYear<- as.numeric(df$MosqYear)
@@ -97,6 +122,16 @@ AedesForcingEndemicMeanT <- function(df, hatchabledayA){
   return(df)
 }
 
+#' CulexForcingMeanT
+#' The function adds a column to the data frame to dictate when Culex egg hatching 
+#' is permitted (on days of the season that surpass both the temperature and precipitation 
+#' thresholds that occur after the Aedes are finished hatching).
+#'
+#' @param df a climate data frame
+#' @param dayspostAhatch the number of days after the Aedes start hatching that the Culex can begin hatching
+#'
+#' @export Adds the days Culex can hatch.
+#'
 CulexForcingMeanT <- function(df,dayspostAhatch){ 
   df$warmMean <-as.numeric(df$warmMean)
   df$wetC <-as.numeric(df$wetC)
@@ -134,6 +169,15 @@ CulexForcingMeanT <- function(df,dayspostAhatch){
 #'
 #'Function to calculate daily development rate for Culex
 #'From Rueda 1980
+#'
+#' @param dat climate data
+#' @param rh025 defined in Rueda et al and sourced from Model 1 - RVFV Selected Parameters.R
+#' @param HA defined in Rueda et al and sourced from Model 1 - RVFV Selected Parameters.R
+#' @param TH defined in Rueda et al and sourced from Model 1 - RVFV Selected Parameters.R
+#' @param HH defined in Rueda et al and sourced from Model 1 - RVFV Selected Parameters.R
+#' 
+#' @return updated climate data with the culex development rate
+#' 
 dev_CLP <-  function(dat, rh025, HA, TH, HH){
   dat = as.data.frame(dat)
   dat$MeanK = dat$FinalMeanTemp + 273.15 #change to Kelvins
@@ -142,6 +186,17 @@ dev_CLP <-  function(dat, rh025, HA, TH, HH){
   return(dat)
 }
 
+#'Function to calculate daily development rate for Aedes
+#'From Rueda 1980
+#'
+#' @param dat climate data
+#' @param rh025 defined in Rueda et al and sourced from Model 1 - RVFV Selected Parameters.R
+#' @param HA defined in Rueda et al and sourced from Model 1 - RVFV Selected Parameters.R
+#' @param TH defined in Rueda et al and sourced from Model 1 - RVFV Selected Parameters.R
+#' @param HH defined in Rueda et al and sourced from Model 1 - RVFV Selected Parameters.R
+#'
+#' @return updated climate data with the aedes development rate
+#'
 dev_ALP <-  function(dat, rh025, HA, TH, HH){
   dat = as.data.frame(dat)
   dat$MeanK = dat$FinalMeanTemp + 273.15 #change to Kelvins
