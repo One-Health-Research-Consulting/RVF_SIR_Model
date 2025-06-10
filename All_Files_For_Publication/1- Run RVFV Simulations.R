@@ -70,6 +70,8 @@ if(Vaccinate == TRUE){
     param_vec["vax.prop"] <- vax.proportion * 0.750
   }
 
+  vax <- param_vec[["vax.prop"]]*(param_vec[["muL"]] + param_vec[["g"]])/ (1-param_vec[["vax.prop"]]) #vax = p*(muL+g)/(1-p)
+  param_vec["vax"] <- vax
 }
 
 #No transovarial transmission
@@ -374,7 +376,7 @@ nmes.rat.tab <- c("Factor", "mean (range)")
 names(Ratio_Tab) <- nmes.rat.tab
 
 if(muC.25_lower == FALSE & muC.25_higher == FALSE & vax.25_lower == FALSE & vax.25_higher == FALSE & lo.eggs == FALSE){
-  if(No.q == FALSE & Only.q == FALSE & Vaccinate == FALSE){
+  if(No.q == FALSE & Only.q == FALSE & Vaccinate == FALSE & no.amp.vecs == FALSE){
     write.csv(Ratio_Tab, "./Publication_Figures/Table S6 infected proportions host-vector ratios and seroprevalence_publication.csv", row.names = FALSE)
   }
 }
